@@ -1,0 +1,175 @@
+from GenomeGenerator import FamilyOriginator, GeneFamilySimulator
+from TreeGenerator import TreeGenerator
+from RatesManager import GeneEvolutionRates, SpeciesEvolutionRates
+import ete3
+import sys
+import os
+
+class SimuLYON():
+
+    def __init__(self):
+
+        self.tree_parameters = dict()
+        self.genome_parameters = dict()
+        self.sequence_parameters = dict()
+
+    def read_parameters(self, parameters_file, parameters):
+
+        with open(parameters_file) as f:
+            for line in f:
+
+                parameter, value = line.strip().split("\t")
+                parameters[parameter] = value
+
+    def obtain_species_trees(self, parameters_file, experiment_folder):
+
+        self.read_parameters(parameters_file, self.tree_parameters)
+
+        tg = TreeGenerator(parameters_file)
+
+        if self.tree_parameters["SPECIES_EVOLUTION_MODE"] == '0':
+            tg.generate_tree_mode_0()
+        elif self.tree_parameters["SPECIES_EVOLUTION_MODE"] == '1':
+            tg.generate_tree_mode_1()
+        elif self.tree_parameters["SPECIES_EVOLUTION_MODE"] == '2':
+            tg.generate_tree_mode_2()
+        elif self.tree_parameters["SPECIES_EVOLUTION_MODE"] == '3':
+            tg.generate_tree_mode_3()
+        elif self.tree_parameters["SPECIES_EVOLUTION_MODE"] == '4':
+            tg.generate_tree_mode_4()
+
+        #tg.get_extant_tree()
+        tg.store_log(experiment_folder)
+
+    def obtain_genomes(self, parameters_file, experiment_folder):
+
+        self.read_parameters(parameters_file, self.genome_parameters)
+
+        prefix = self.genome_parameters["PREFIX"]
+
+        stopping_rule = int(self.genome_parameters["STOPPING_RULE"])
+        my_stem = float(self.genome_parameters["STEM_LENGTH"])
+        families_in_stem = int(self.genome_parameters["STEM_FAMILIES"])
+        n_families = int(self.genome_parameters["N_FAMILIES"])
+        mean_genome_size = int(self.genome_parameters["MEAN_GENOME_SIZE"])
+
+        whole_tree_file = os.path.join(experiment_folder, "WholeTree")
+        events_file = os.path.join(experiment_folder, "SpeciesTreeEvents.tsv")
+        lineages_file = os.path.join(experiment_folder, "LineagesInTime.tsv")
+
+        profiles_file = os.path.join(experiment_folder, "Profiles.tsv")
+        duplications_file = os.path.join(experiment_folder, "Duplications.tsv")
+        leaving_transfers_file = os.path.join(experiment_folder, "LeavingTransfers.tsv")
+        arriving_transfers_file = os.path.join(experiment_folder, "ArrivingTransfers.tsv")
+        losses_file = os.path.join(experiment_folder, "Losses.tsv")
+
+        raw_gene_families_folder = os.path.join(experiment_folder, "RawGeneFamilies")
+
+        if os.path.isdir(raw_gene_families_folder):
+            pass
+        else:
+           os.mkdir(raw_gene_families_folder)
+
+        with open(whole_tree_file) as f:
+            tree = ete3.Tree(f.readline().strip(),format=1)
+
+        self._prepare_profile_file(tree, profiles_file)
+        self._prepare_profile_file(tree, duplications_file)
+        self._prepare_profile_file(tree, leaving_transfers_file)
+        self._prepare_profile_file(tree, arriving_transfers_file)
+        self._prepare_profile_file(tree, losses_file)
+
+        fo = FamilyOriginator(whole_tree_file, events_file)
+        gfs = GeneFamilySimulator(parameters_file, events_file, lineages_file)
+
+        if stopping_rule == 0:
+
+            for i in range(families_in_stem):
+
+                family_name = prefix + str(i)
+
+                print("Simulating family %s" % family_name)
+                gfs.origination("Root", 0, family_name)
+                gfs.run_mode_0()
+                gfs.complete_gene_family_information()
+                tree = gfs.get_gene_family_tree()
+
+                with open(os.path.join(raw_gene_families_folder, family_name), "w") as f:
+                    f.write(tree)
+
+                gfs.output_profile(profiles_file, "Profile")
+                gfs.output_profile(duplications_file, "Duplications")
+                gfs.output_profile(leaving_transfers_file, "LeavingTransfers")
+                gfs.output_profile(arriving_transfers_file, "ArrivingTransfers")
+                gfs.output_profile(losses_file, "Losses")
+
+            for j in range(i+1, n_families + i + 1):
+
+
+                family_name = prefix + str(j)
+
+                node, time = fo.create_families(stem_length = my_stem)
+
+                print("Simulating family %s appearing in node %s and in time %s" % (family_name, node, str(time)))
+
+                gfs.origination(node, time, family_name)
+                gfs.run_mode_0()
+                gfs.complete_gene_family_information()
+                tree = gfs.get_gene_family_tree()
+
+                with open(os.path.join(raw_gene_families_folder, family_name), "w") as f:
+                    f.write(tree)
+
+                gfs.output_profile(profiles_file, "Profile")
+                gfs.output_profile(duplications_file, "Duplications")
+                gfs.output_profile(leaving_transfers_file, "LeavingTransfers")
+                gfs.output_profile(arriving_transfers_file, "ArrivingTransfers")
+                gfs.output_profile(losses_file, "Losses")
+
+        elif stopping_rule == 1:
+
+            current_genome_size = 0
+
+            while current_genome_size <= mean_genome_size:
+                pass
+
+    def obtain_sequences(self, parameters_file, experiment_folder):
+        pass
+
+    def _prepare_profile_file(self,tree, myfile):
+
+        with open(myfile, "w") as f:
+            line = list()
+            line.append("Family")
+            myroot = tree.get_tree_root()
+            myroot.name = "Root"
+            for node in tree.traverse():
+                line.append(str(node.name))
+            myline = "\t".join(line) + "\n"
+            f.write(myline)
+
+
+if __name__ == "__main__":
+
+    args = sys.argv[1:]
+    if len(args) != 3:
+        print("Incorrect usage. Please read the manual. The usual way to run this script is:")
+        print("python simuLyon.py T Parameters_file.tsv /Output_folder")
+    else:
+        mode, parameters_file, experiment_folder = args
+
+        SL = SimuLYON()
+
+        if mode == "T":
+
+            if os.path.isdir(experiment_folder):
+                pass
+            else:
+                os.mkdir(experiment_folder)
+            SL.obtain_species_trees(parameters_file, experiment_folder)
+
+        elif mode == "G":
+            SL.obtain_genomes(parameters_file, experiment_folder)
+
+        else:
+            print("Incorrect usage. Please select a mode: T or G")
