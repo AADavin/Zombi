@@ -70,7 +70,7 @@ if __name__ == "__main__":
     args = sys.argv[1:]
     if len(args) <= 2:
         print("Incorrect usage. Please read the manual. The usual way to run this script is:")
-        print("python sampLyon.py N /Output_folder /Sampling_folder")
+        print("python sampLyon.py fraction_of_lineages_sampled /Output_folder /Sampling_folder")
     else:
         N, infolder, outfolder = args
 
@@ -82,5 +82,5 @@ if __name__ == "__main__":
             os.mkdir(os.path.join(infolder,outfolder))
 
         SM.prune_species_tree()
-        SM.prune_gene_trees()
+        #SM.prune_gene_trees()
 

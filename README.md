@@ -11,11 +11,11 @@ First, it uses a Birth-death model to generate a species tree.  Different functi
 
 Second, genome evolution is simulated by the evolution of different gene families  along this species tree.  Gene families can be already present in the stem branch or appear with a given rate of origination along the different branches of the species tree. Genes can evolve through events of **duplication, loss and transfer**. Transfers can be or not **replacement transfers**.  SimuLyon also can account for the fact that **transfers occur preferentially between closely related lineages**. It also presents a detailed output of the genome evolution including the total number of families that have gone extinct and the ancestral genomes for the different inner nodes in the species tree.		
 
-Third, the evolution of sequences (**TL**)
+Third, the evolution of sequences --- This is not written yet ---
 
 Please read the manual before using it. It should take around 15 minutes of your time.
 
-Writen by Adrián A. Davín and ...
+Writen by Adrián A. Davín 
 
 contact to aaredav@gmail.com
 
@@ -61,18 +61,13 @@ Then, you can simulate the evolution of genomes in that species tree using:
 Make sure that the Output_folder is the same!
 
 These two steps generate a species tree (with extinct lineages). To generate the sequences, it is first recommended using sampLyon
-
-
-
-
-
-Finally, we normally do not want to study the whole species tree but a smaller version of it. For that we use the script **sampLyon.py**. It cuts and prunes the Species Tree and the Gene Trees so that only a given fraction of the species surviving in present time are represented.
+We normally do not want to study the whole species tree but a smaller version of it. For that we use the script **sampLyon.py**. It cuts and prunes the Species Tree and the Gene Trees so that only a given fraction of the species surviving in present time are represented.
 
 For example, if we generate a Species Tree with 10 000 species out of 1000 survive, but we are interested having about 10% of those surviving species in our final dataset, we can run the command
 
-    python sampLyon.py 100 /Output_folder Sample100
+    python sampLyon.py 0.1 /Output_folder Sample10percent
 
-sampLyon will cut the species tree to 100 randomly selected species (out of those living ones) and will output the whole information in the folder Sample100. Probably the best way to understand how SimuLyon and SampLyon work is by following the examples including in this manual.
+sampLyon will cut the species tree to 10% randomly selected species (out of those living ones) and will output the whole information in the folder Sample100. Probably the best way to understand how SimuLyon and SampLyon work is by following the examples including in this manual. (which is not written yet)
 
 ### **Output** ###
 
@@ -186,8 +181,6 @@ If True (1), transfers take place preferentially between closely related species
 
 #### Sequence evolution ####
 
-**TL**
-
 **SEQUENCE_EVOLUTION_MODE**
 
  - 0: No heterogeneity
@@ -195,8 +188,3 @@ If True (1), transfers take place preferentially between closely related species
  - 2: Lineage-specific heterogeneity (lineage autocorrelated)
  - 3: Lineage-specific heterogeneity (uncorrelated)
  - 4: User defined heterogeneity
-
-**SUBSTITUTION_D**
-**SUBSTITUTION_P0**
-**SUBSTITUTION_P1**
-
