@@ -134,7 +134,7 @@ class SpeciesEvolutionRates():
         elif self.params["SPECIES_EVOLUTION_MODE"] == 3:
             pass # Uncorrelated
         elif self.params["SPECIES_EVOLUTION_MODE"] == 4:
-            pass # User defined
+            self.SPECIES_EVOLUTION_MODE_4() # User defined
 
     def mode_0(self):
 

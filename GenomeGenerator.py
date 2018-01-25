@@ -153,7 +153,7 @@ class GeneFamilySimulator():
 
                         elif event == "SP":
                             sc1, sc2 = children.split("+")
-                            self.gene_tree_speciation(snode, sc1, sc2, time_counter)
+                            self.gene_tree_speciation(snode, sc1, sc2)
 
             self.evolve_gene_family(duplication, transfer, loss, time_counter)
 
@@ -183,7 +183,7 @@ class GeneFamilySimulator():
 
                         elif event == "SP":
                             sc1, sc2 = children.split("+")
-                            self.gene_tree_speciation(snode, sc1, sc2, time_counter)
+                            self.gene_tree_speciation(snode, sc1, sc2)
 
             self.evolve_gene_family(duplication, transfer, loss, time_counter)
 

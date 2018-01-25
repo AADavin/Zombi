@@ -4,83 +4,85 @@ import sys
 import os
 from globals import *
 
-class SamplingManager():
 
-    def __init__(self, N, infolder, outfolder):
 
-        self.infolder = infolder
-        self.outfolder = os.path.join(infolder,outfolder)
+def prune_species_tree(infolder, outfolder, N):
 
-        treefile = os.path.join(infolder,"WholeTree")
+    treefile = os.path.join(infolder, "WholeTree")
 
-        with open(treefile) as f:
-            self.mytree = ete3.Tree(f.readline().strip(), format=1)
+    with open(treefile) as f:
+        mytree = ete3.Tree(f.readline().strip(), format=1)
 
-        lineagesfile = os.path.join(infolder, "LineagesInTime.tsv")
+    lineagesfile = os.path.join(infolder, "LineagesInTime.tsv")
 
-        with open(lineagesfile) as f:
-            for line in f:
-                pass
-
-        self.leaves_alive = line.strip().split("\t")[1].split(";") # We pick up the last line of the file
-
-        if int(N) > len(self.leaves_alive):
-            print("Error")
+    with open(lineagesfile) as f:
+        for line in f:
             pass
 
-        self.leaves_sampled = random.sample(self.leaves_alive, int(N))
+    leaves_alive = line.strip().split("\t")[1].split(";")  # We pick up the last line of the file
+    leaves_sampled = random.sample(leaves_alive, int(len(leaves_alive) * N))
 
-    def prune_species_tree(self):
+    mytree.prune(leaves_sampled, preserve_branch_length=True)
+    with open(os.path.join(outfolder, "SampledTree"),"w") as f:
+        f.write(mytree.write(format=1))
 
-        self.mytree.prune(self.leaves_sampled, preserve_branch_length=True)
-        with open(os.path.join(self.outfolder, "SampledTree"),"w") as f:
-            f.write(self.mytree.write(format=1))
+def prune_gene_trees(infolder, outfolder):
 
-    def prune_gene_trees(self):
+    fams = os.listdir(os.path.join(infolder, "RawGeneFamilies"))
 
-        gene_families = os.path.join(self.infolder, "Profiles.tsv")
+    with open(os.path.join(outfolder, "SampledTree")) as f:
 
-        fams = list()
+        mytree = ete3.Tree(f.readline().strip(), format=1)
+        leaves_sampled = [x.name for x in mytree.get_leaves()]
 
-        with open(gene_families) as f:
-            f.readline()
-            for line in f:
-                fam = line.strip().split("\t")[0]
-                fams.append(fam)
+    for fam in fams:
 
-        for fam in fams:
+        print("Pruning gene family" % fam)
 
-            with open(os.path.join(os.path.join(self.infolder, "RawGeneFamilies"), fam)) as f:
-                gf_tree = ete3.Tree(f.readline(), format=1)
+        with open(os.path.join(os.path.join(infolder, "RawGeneFamilies"), fam)) as f:
+            gf_tree = ete3.Tree(f.readline(), format=1)
 
-            geneleaves_sampled = [x.name for x in gf_tree.get_leaves() if
-                                  x.name.split("_")[0] in self.leaves_sampled and x.name.split("_")[1] == "A"]
 
-            if len(geneleaves_sampled) == 0:
-                continue
-            else:
-                gf_tree.prune(geneleaves_sampled, preserve_branch_length=True)
+        geneleaves_sampled = [x.name for x in gf_tree.get_leaves() if
+                              x.name.split("_")[0] in leaves_sampled and x.name.split("_")[1] == "A"]
 
-            with open(os.path.join(self.outfolder, fam), "w") as f:
-                f.write(gf_tree.write(format=1))
+        if len(geneleaves_sampled) == 0:
+            continue
+
+        else:
+            gf_tree.prune(geneleaves_sampled, preserve_branch_length=True)
+
+        with open(os.path.join(outfolder, fam), "w") as f:
+            f.write(gf_tree.write(format=1))
 
 
 if __name__ == "__main__":
 
     args = sys.argv[1:]
-    if len(args) <= 2:
+
+
+    if args[0] == "T":
+
+        infolder, outfolder, N = args[1:]
+
+        if float(N) <0 or float(N) > 1:
+            print("Error, N must be comprised between 0 and 1")
+        else:
+            os.mkdir(os.path.join(infolder, outfolder))
+            prune_species_tree(infolder, os.path.join(infolder, outfolder), float(N))
+
+    elif args[0] == "G":
+
+        infolder, outfolder = args[1:]
+        prune_gene_trees(infolder, os.path.join(infolder, outfolder))
+
+    else:
         print("Incorrect usage. Please read the manual. The usual way to run this script is:")
         print("python sampLyon.py fraction_of_lineages_sampled /Output_folder /Sampling_folder")
-    else:
-        N, infolder, outfolder = args
 
-        SM = SamplingManager(N,infolder,outfolder)
 
-        if os.path.isdir(os.path.join(infolder,outfolder)):
-            pass
-        else:
-            os.mkdir(os.path.join(infolder,outfolder))
 
-        SM.prune_species_tree()
-        #SM.prune_gene_trees()
+
+
+
 
