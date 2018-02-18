@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="59ba90f0-ee1f-4701-b72e-68f3e4c50e55" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/GenomeGenerator.py" afterPath="$PROJECT_DIR$/GenomeGenerator.py" />
-      <change beforePath="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" afterPath="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" />
-      <change beforePath="$PROJECT_DIR$/TreeGenerator.py" afterPath="$PROJECT_DIR$/TreeGenerator.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -63,8 +61,8 @@
       <file leaf-file-name="GenomeGenerator.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GenomeGenerator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="239">
-              <caret line="68" column="0" lean-forward="true" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
+            <state relative-caret-position="347">
+              <caret line="37" column="0" lean-forward="true" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -205,8 +203,8 @@
         <option value="$PROJECT_DIR$/simuLyon.py" />
         <option value="$PROJECT_DIR$/Parameters/SpeciesTreeParameters.tsv" />
         <option value="$PROJECT_DIR$/TreeGenerator.py" />
-        <option value="$PROJECT_DIR$/GenomeGenerator.py" />
         <option value="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" />
+        <option value="$PROJECT_DIR$/GenomeGenerator.py" />
       </list>
     </option>
   </component>
@@ -875,8 +873,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/GenomeGenerator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="68" column="0" lean-forward="true" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
+        <state relative-caret-position="347">
+          <caret line="37" column="0" lean-forward="true" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>

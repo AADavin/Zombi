@@ -6,6 +6,7 @@ import numpy
 import random
 from globals import *
 
+
 class FamilyOriginator():
 
     def __init__(self, tree_file, events_file):
@@ -35,21 +36,19 @@ class FamilyOriginator():
         self.vector_names = [x for x in self.branch_length.keys()]
         self.vector_lengths = [self.branch_length[x] for x in self.vector_names]
 
-    def create_families(self, stem_length =  0, families_in_stem = 0):
+    def create_families(self):
 
         # We select first a branch
 
         branch = numpy.random.choice(self.vector_names, 1, p=af.normalize(self.vector_lengths))[0]
-        while self.branch_length[branch] == 1:
-            branch = numpy.random.choice(self.vector_names, 1, p=af.normalize(self.vector_lengths))[0]
 
         # We select from an uniform distribution a position for the branch
 
-        time_in_branch = numpy.random.randint(1, self.branch_length[branch]) # Families cannot
+        time_in_branch = numpy.random.randint(0, self.branch_length[branch])
 
         # We give the absolute time
 
-        return branch, self.branch_length[branch] + self.branch_origin[branch]
+        return branch, time_in_branch + self.branch_origin[branch]
 
 
 class GeneFamilySimulator():
