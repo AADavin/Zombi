@@ -89,20 +89,33 @@ class TreeGenerator():
 
             if stopping_rule == 0:
                 if time_counter == total_time:
+                    if time_counter not in self.events:
+                        self.events[time_counter] = []
+                    self.events[time_counter].append(("END", None, None))
                     break
             elif stopping_rule == 1:
                 if all_lineages >= n_lineages:
+                    if time_counter not in self.events:
+                        self.events[time_counter] = []
+                    self.events[time_counter].append(("END", None, None))
                     break
             elif stopping_rule == 2:
                 if dead_lineages >= n_lineages:
+                    if time_counter not in self.events:
+                        self.events[time_counter] = []
+                    self.events[time_counter].append(("END", None, None))
                     break
             elif stopping_rule == 3:
                 if len(lineages_alive) >= n_lineages:
+                    if time_counter not in self.events:
+                        self.events[time_counter] = []
+                    self.events[time_counter].append(("END", None, None))
                     break
 
             if len(lineages_alive) == 0:
                 print("Simulation interrupted at time %s" % time_counter)
                 print("All lineages are dead")
+                self.events[time_counter].append(("END", None, None))
                 break
 
             self.lineages_in_time[time_counter] = [x.name for x in lineages_alive]
@@ -380,8 +393,13 @@ class TreeGenerator():
 
             for k,v in self.events.items():
                 for event,ln,cld in v:
+
+                    if ln == None:
+                        ln = "None"
+
                     if cld == None:
                         cld = "None"
+
                     line = "\t".join([str(k),event,ln,cld])+"\n"
                     f.write(line)
 

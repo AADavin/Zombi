@@ -30,7 +30,7 @@ class FamilyOriginator():
 
         for node in self.whole_tree.iter_descendants():
 
-            self.branch_length[node.name] = int(node.dist / TIME_INCREASE)
+            self.branch_length[node.name] = int(node.dist)
 
         self.vector_names = [x for x in self.branch_length.keys()]
         self.vector_lengths = [self.branch_length[x] for x in self.vector_names]
@@ -71,7 +71,12 @@ class GeneFamilySimulator():
             f.readline()
             for line in f:
                 time, dn, ln, cld = line.strip().split("\t")
-                if int(time) not in self.tree_events:
+
+                if dn == "END":
+                    self.total_time = int(time)
+                    continue
+
+                elif int(time) not in self.tree_events:
                     self.tree_events[int(time)] = list()
                 self.tree_events[int(time)].append((dn,ln,cld))
 
@@ -85,7 +90,7 @@ class GeneFamilySimulator():
 
     def choose_event(self, duplication, transfer, loss):
 
-        draw = numpy.random.choice(["D","T","L"], 1, p=af.normalize([duplication, transfer, loss]))
+        draw = numpy.random.choice(["D", "T", "L"], 1, p=af.normalize([duplication, transfer, loss]))
         return draw
 
     def choose_recipient(self, time_counter, donor, strategy):
@@ -99,7 +104,7 @@ class GeneFamilySimulator():
 
     def evolve_gene_family(self, duplication, transfer, loss, time_counter):
 
-        total_probability_of_event = (duplication + transfer + loss) * TIME_INCREASE
+        total_probability_of_event = duplication + transfer + loss
 
         active_lineages_gt = [x for x in self.gene_family["Gene_tree"].get_leaves() if
                               x.is_alive == True]
@@ -134,7 +139,7 @@ class GeneFamilySimulator():
 
         origin_time = self.gene_family["Origin_time"]
 
-        for time_counter in range(origin_time, int(TOTAL_TIME / TIME_INCREASE)):
+        for time_counter in range(origin_time, int(self.total_time)):
 
             self.increase_distances()
 
@@ -164,7 +169,7 @@ class GeneFamilySimulator():
 
         origin_time = self.gene_family["Origin_time"]
 
-        for time_counter in range(origin_time, int(TOTAL_TIME / TIME_INCREASE)):
+        for time_counter in range(origin_time, self.total_time):
 
             self.increase_distances()
 
@@ -198,7 +203,7 @@ class GeneFamilySimulator():
                                   x.is_alive == True]
 
         for node in active_lineages_gt:
-            node.dist += TIME_INCREASE
+            node.dist += 1
 
     def origination(self, branch, time_counter, name):
 
@@ -211,7 +216,7 @@ class GeneFamilySimulator():
         self.gene_family["Gene_tree"].add_feature("is_alive", True)
         self.gene_family["Gene_tree"].add_feature("current_branch", branch)
         self.gene_family["Gene_tree_extant"] = ete3.Tree()
-        self.gene_family["Events"].append(("Origination",time_counter * TIME_INCREASE, branch))
+        self.gene_family["Events"].append(("Origination",time_counter, branch))
         self.gene_family["is_alive"] = True # To avoid too large families
         self.gene_family["Profile"] = dict()
 
@@ -228,7 +233,7 @@ class GeneFamilySimulator():
     def get_duplicated(self, leaf, time_counter):
 
         self.gene_family["Events"].append(
-            ("Duplication", time_counter * TIME_INCREASE, leaf.current_branch))
+            ("Duplication", time_counter, leaf.current_branch))
 
         if leaf.current_branch not in self.gene_family["Duplications"]:
             self.gene_family["Duplications"][leaf.current_branch] = 0
@@ -249,7 +254,7 @@ class GeneFamilySimulator():
     def get_lost(self, leaf, time_counter):
 
         self.gene_family["Events"].append(
-            ("Loss", time_counter * TIME_INCREASE, leaf.current_branch))
+            ("Loss", time_counter, leaf.current_branch))
 
         if leaf.current_branch not in self.gene_family["Losses"]:
             self.gene_family["Losses"][leaf.current_branch] = 0
@@ -264,9 +269,9 @@ class GeneFamilySimulator():
         rt = float(self.parameters["REPLACEMENT_T"])
 
         self.gene_family["Events"].append(
-            ("LeavingTransfer", time_counter * TIME_INCREASE, leaf.current_branch))
+            ("LeavingTransfer", time_counter, leaf.current_branch))
         self.gene_family["Events"].append(
-            ("ArrivingTransfer", time_counter * TIME_INCREASE, recipient))
+            ("ArrivingTransfer", time_counter, recipient))
 
         self.gene_family["Transfers"].append((leaf.current_branch, recipient))
 
@@ -304,7 +309,7 @@ class GeneFamilySimulator():
             # I need to add the gene lost by replacement
 
             self.gene_family["Events"].append(
-                ("LossByReplacement", time_counter * TIME_INCREASE, recipient))
+                ("LossByReplacement", time_counter, recipient))
 
     def get_extinct(self, sp_branch):
 
@@ -355,7 +360,7 @@ class GeneFamilySimulator():
 
         myroot = self.gene_family["Gene_tree"].get_tree_root()
         one_leaf, distance_to_present = myroot.get_farthest_leaf()
-        myroot.dist = (TOTAL_TIME - distance_to_present) - self.gene_family["Origin_time"]
+        myroot.dist = (self.total_time - distance_to_present) - self.gene_family["Origin_time"]
 
         # Add names
 

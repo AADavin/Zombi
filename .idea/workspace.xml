@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="59ba90f0-ee1f-4701-b72e-68f3e4c50e55" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/Parameters/SpeciesTreeParameters.tsv" afterPath="$PROJECT_DIR$/Parameters/SpeciesTreeParameters.tsv" />
-      <change beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
+      <change beforePath="$PROJECT_DIR$/GenomeGenerator.py" afterPath="$PROJECT_DIR$/GenomeGenerator.py" />
+      <change beforePath="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" afterPath="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" />
       <change beforePath="$PROJECT_DIR$/TreeGenerator.py" afterPath="$PROJECT_DIR$/TreeGenerator.py" />
-      <change beforePath="$PROJECT_DIR$/globals.py" afterPath="$PROJECT_DIR$/globals.py" />
-      <change beforePath="$PROJECT_DIR$/simuLyon.py" afterPath="$PROJECT_DIR$/simuLyon.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -55,8 +53,8 @@
       <file leaf-file-name="TreeGenerator.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TreeGenerator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="258">
-              <caret line="349" column="17" lean-forward="false" selection-start-line="349" selection-start-column="8" selection-end-line="349" selection-end-column="17" />
+            <state relative-caret-position="717">
+              <caret line="122" column="42" lean-forward="true" selection-start-line="122" selection-start-column="42" selection-end-line="122" selection-end-column="42" />
               <folding />
             </state>
           </provider>
@@ -65,8 +63,8 @@
       <file leaf-file-name="GenomeGenerator.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GenomeGenerator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="335">
-              <caret line="32" column="73" lean-forward="false" selection-start-line="32" selection-start-column="58" selection-end-line="32" selection-end-column="73" />
+            <state relative-caret-position="239">
+              <caret line="68" column="0" lean-forward="true" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -99,8 +97,8 @@
       <file leaf-file-name="GenomeParameters.tsv" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Parameters/GenomeParameters.tsv">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" column="17" lean-forward="true" selection-start-line="3" selection-start-column="17" selection-end-line="3" selection-end-column="17" />
+            <state relative-caret-position="150">
+              <caret line="10" column="14" lean-forward="false" selection-start-line="10" selection-start-column="14" selection-end-line="10" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -140,11 +138,7 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>self.get</find>
-      <find>self.gene_families[</find>
-      <find>gene_family_id</find>
       <find>self.gene_families</find>
-      <find>Events</find>
       <find>event</find>
       <find>SpeciesT</find>
       <find>eventsfile</find>
@@ -170,6 +164,10 @@
       <find>TIME_</find>
       <find>TIME_INCREASE</find>
       <find>get_total</find>
+      <find>Events</find>
+      <find>TIME_INCRE</find>
+      <find>self.e</find>
+      <find>TIME_INC</find>
     </findStrings>
     <replaceStrings>
       <replace>transfer</replace>
@@ -208,6 +206,7 @@
         <option value="$PROJECT_DIR$/Parameters/SpeciesTreeParameters.tsv" />
         <option value="$PROJECT_DIR$/TreeGenerator.py" />
         <option value="$PROJECT_DIR$/GenomeGenerator.py" />
+        <option value="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" />
       </list>
     </option>
   </component>
@@ -829,17 +828,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="358">
-            <caret line="230" column="84" lean-forward="true" selection-start-line="225" selection-start-column="0" selection-end-line="230" selection-end-column="84" />
-            <folding />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/simuLyon.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
@@ -847,14 +835,6 @@
           <folding>
             <element signature="e#259#370#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Parameters/GenomeParameters.tsv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="17" lean-forward="true" selection-start-line="3" selection-start-column="17" selection-end-line="3" selection-end-column="17" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -868,16 +848,35 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/TreeGenerator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="258">
-          <caret line="349" column="17" lean-forward="false" selection-start-line="349" selection-start-column="8" selection-end-line="349" selection-end-column="17" />
+        <state relative-caret-position="717">
+          <caret line="122" column="42" lean-forward="true" selection-start-line="122" selection-start-column="42" selection-end-line="122" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="358">
+            <caret line="230" column="84" lean-forward="true" selection-start-line="225" selection-start-column="0" selection-end-line="230" selection-end-column="84" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Parameters/GenomeParameters.tsv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="14" lean-forward="false" selection-start-line="10" selection-start-column="14" selection-end-line="10" selection-end-column="14" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/GenomeGenerator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="335">
-          <caret line="32" column="73" lean-forward="false" selection-start-line="32" selection-start-column="58" selection-end-line="32" selection-end-column="73" />
+        <state relative-caret-position="239">
+          <caret line="68" column="0" lean-forward="true" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
