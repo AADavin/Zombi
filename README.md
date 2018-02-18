@@ -225,10 +225,10 @@ The seed used, to make reproducible the results.
 
 **STOPPING_RULE**
 
- - 0: Time stops arriving at 1
- - 1: Tree evolves until a total of species = SPECIES_NUMBER (extinct and alive) have been generated
- - 2: Tree evolves until a total of species = SPECIES_NUMBER (extinct) have been generated
- - 3: Tree evolves until a total of species = SPECIES_NUMBER (alive) have been generated
+ - 0: Time stops arriving at TOTAL_TIME
+ - 1: Tree evolves until a total of species = N_LINEAGES (extinct and alive) have been generated
+ - 2: Tree evolves until a total of species = N_LINEAGES (extinct) have been generated
+ - 3: Tree evolves until a total of species = N_LINEAGES (alive) have been generated
  
 **REESCALE**
 

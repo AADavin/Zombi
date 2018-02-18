@@ -62,28 +62,53 @@ class TreeGenerator():
         self.events[0] = []
         self.events[0].append(("SP", "Root", "n1+n2"))
 
-    def generate_tree_mode_0(self):
+
+    def new_tree_generator(self):
 
         speciation, extinction = self.RM.mode_0()
 
-        total_probability_of_event = (speciation + extinction) * TIME_INCREASE
+        total_probability_of_event = speciation + extinction
 
-        for time_counter in range(int(TOTAL_TIME / TIME_INCREASE)):
+        if total_probability_of_event >1:
+            print("Have a look at your rates, they are too high")
+            print("The probability of an event in each step is higher than one")
+
+        stopping_rule = int(self.parameters["STOPPING_RULE"])
+        n_lineages = int(self.parameters["N_LINEAGES"])
+        total_time = int(self.parameters["TOTAL_TIME"])
+
+        time_counter = 0
+
+        while True:
+
+            time_counter += 1
 
             lineages_alive = [x for x in self.whole_species_tree.get_leaves() if x.is_alive == True]
+            all_lineages = len(self.whole_species_tree.get_leaves())
+            dead_lineages = all_lineages - len(lineages_alive)
 
-            if len(lineages_alive) >= self.max_lineages:
-                print("Reached maximum number of species")
+            if stopping_rule == 0:
+                if time_counter == total_time:
+                    break
+            elif stopping_rule == 1:
+                if all_lineages >= n_lineages:
+                    break
+            elif stopping_rule == 2:
+                if dead_lineages >= n_lineages:
+                    break
+            elif stopping_rule == 3:
+                if len(lineages_alive) >= n_lineages:
+                    break
+
+            if len(lineages_alive) == 0:
+                print("Simulation interrupted at time %s" % time_counter)
+                print("All lineages are dead")
                 break
-
-            if time_counter % 10 == 0:
-                print("Time: %s\tNumber of lineages alive: %s  \t" % (
-                str(round(time_counter * TIME_INCREASE, 2)), str(len(lineages_alive))))
 
             self.lineages_in_time[time_counter] = [x.name for x in lineages_alive]
 
             for lineage in lineages_alive:
-                lineage.dist += TIME_INCREASE
+                lineage.dist += 1
 
                 if numpy.random.uniform(0, 1) <= total_probability_of_event:
 
@@ -92,6 +117,7 @@ class TreeGenerator():
                         self._get_speciated(lineage, time_counter)
                     elif event == "EX":
                         self._get_extinct(lineage, time_counter)
+
 
 
     def generate_tree_mode_1(self):
@@ -340,11 +366,6 @@ class TreeGenerator():
         wholetreefile = os.path.join(logfolder, "WholeTree")
 
         with open(logfile, "w") as f:
-
-            f.write("### Global Parameters ###\n")
-            f.write("TIME_INCREASE\t" + str(TIME_INCREASE) + "\n")
-            f.write("TOTAL_TIME\t" + str(TOTAL_TIME) + "\n")
-            f.write("###\n")
 
             for k, v in self.parameters.items():
                 line = k + "\t" + str(v) + "\n"

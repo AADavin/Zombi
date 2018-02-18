@@ -28,7 +28,7 @@ class SimuLYON():
         tg = TreeGenerator(parameters_file)
 
         if self.tree_parameters["SPECIES_EVOLUTION_MODE"] == '0':
-            tg.generate_tree_mode_0()
+            tg.new_tree_generator()
         elif self.tree_parameters["SPECIES_EVOLUTION_MODE"] == '1':
             tg.generate_tree_mode_1()
         elif self.tree_parameters["SPECIES_EVOLUTION_MODE"] == '2':
