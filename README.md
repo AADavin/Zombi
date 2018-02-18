@@ -1,5 +1,5 @@
 ﻿
-## SimuLyon  (working name) 
+## ZomPhy (working name) 
 ##### A new tool to simulate genome evolution accounting for dead lineages
 
 ----------
@@ -198,21 +198,6 @@ time 0.6 and time 0.7.
      python simuLyon.py T example1_SpeciesTreeParameters.tsv EXAMPLE_2 
      
  
- 
- 
- 
- 
- 
- 
- 
- 
-
-
- 
- 
-
-
-
 
 ### Parameters ###
 
@@ -244,6 +229,22 @@ The seed used, to make reproducible the results.
  - 3: Lineage-specific rates (uncorrelated)
  - 4: User defined rates
 
+**STOPPING_RULE**
+
+ - 0: Time stops arriving at 1
+ - 1: Tree evolves until a total of species = SPECIES_NUMBER (extinct and alive) have been generated
+ - 2: Tree evolves until a total of species = SPECIES_NUMBER (extinct) have been generated
+ - 3: Tree evolves until a total of species = SPECIES_NUMBER (alive) have been generated
+ 
+**REESCALE**
+
+- 0: No reescale is performed in the whole tree
+- 1: A reescale to 1 is performed in the whole tree. Used in combination with the stopping rules 1,2 and 3
+
+**SPECIES_NUMBER**
+
+To use in combination with the stopping rules 1,2 or 3
+
 **SPECIATION_RATE**
  Speciation rate, measured in mean number of speciation per unit of time  
 
@@ -256,16 +257,20 @@ The format is (separated by tabs)
 time_start	time_end	spec_mult	ext_mult	
 See example 1 for more information
 
-**MAX_SLEAVES**
-The maximum number of leaves of the species trees at any instant. If you need to simulate very large trees you can modify this number. If you reach this number before the total age of the tree is TOTAL_TIME, the simulation is killed and another run starts. 
-
-
 #### Genome evolution ####
 
 **GENOME_EVOLUTION_MODE**
 
+- 0: Families are simulated independently of each other
+- 1: Families evolve simultaneously
+
+**STOPPING_RULE**
+
+Both stopping rules only apply to GENOME_EVOLUTION_MODE = 0
+For GENOME_EVOLUTION_MODE = 1 you have to input an origination rate and an initial number of families
+
  - 0: A fixed number of gene families will be simulated == N_FAMILIES. Notice that gene families introduced by STEM_FAMILIES are not accounted for in the above computation
- - 1: Families will be simulated until the mean size of genomes >=  MEAN_SIZE_GENOME 
+ - 1: Families will be simulated until the mean size of genomes >=  MEAN_SIZE_GENOME. 
  
 **GENE_EVOLUTION_MODE**
 

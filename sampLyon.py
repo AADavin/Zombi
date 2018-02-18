@@ -4,8 +4,6 @@ import sys
 import os
 from globals import *
 
-
-
 def prune_species_tree(infolder, outfolder, N):
 
     treefile = os.path.join(infolder, "WholeTree")
@@ -37,16 +35,19 @@ def prune_gene_trees(infolder, outfolder):
 
     for fam in fams:
 
-        print("Pruning gene family" % fam)
+
+        print("Pruning gene family %s" % fam)
 
         with open(os.path.join(os.path.join(infolder, "RawGeneFamilies"), fam)) as f:
             gf_tree = ete3.Tree(f.readline(), format=1)
-
 
         geneleaves_sampled = [x.name for x in gf_tree.get_leaves() if
                               x.name.split("_")[0] in leaves_sampled and x.name.split("_")[1] == "A"]
 
         if len(geneleaves_sampled) == 0:
+            continue
+
+        if len(geneleaves_sampled) < 3: # Ignoring small families
             continue
 
         else:

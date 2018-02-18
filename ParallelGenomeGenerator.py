@@ -157,43 +157,6 @@ class GeneFamilySimulator():
 
             self.evolve_gene_family(duplication, transfer, loss, time_counter)
 
-    def run_mode_1(self):
-
-        # Rates are family wise. This is control by the rate manager
-        # I must keep track of the rates computed with a new type of file
-
-        duplication, transfer, loss = self.RM.mode_0()
-
-        origin_time = self.gene_family["Origin_time"]
-
-        for time_counter in range(origin_time, int(TOTAL_TIME / TIME_INCREASE)):
-
-            self.increase_distances()
-
-            active_branches = {x.current_branch for x in self.gene_family["Gene_tree"].get_leaves()}
-
-            if time_counter in self.tree_events:
-
-                for event, snode, children in self.tree_events[time_counter]:
-
-                    if snode in active_branches:
-
-                        if event == "EX":
-                            self.get_extinct(snode)
-
-                        elif event == "SP":
-                            sc1, sc2 = children.split("+")
-                            self.gene_tree_speciation(snode, sc1, sc2)
-
-            self.evolve_gene_family(duplication, transfer, loss, time_counter)
-
-    def run_mode_3(self):
-
-        # Rates are lineage wise. This is control by the rate manager
-        pass
-
-
-
     def increase_distances(self):
 
         active_lineages_gt = [x for x in self.gene_family["Gene_tree"].get_leaves() if
