@@ -58,10 +58,10 @@ class SimuLYON():
         lineages_file = os.path.join(experiment_folder, "LineagesInTime.tsv")
 
         profiles_file = os.path.join(experiment_folder, "Profiles.tsv")
-        duplications_file = os.path.join(experiment_folder, "Duplications.tsv")
-        leaving_transfers_file = os.path.join(experiment_folder, "LeavingTransfers.tsv")
-        arriving_transfers_file = os.path.join(experiment_folder, "ArrivingTransfers.tsv")
-        losses_file = os.path.join(experiment_folder, "Losses.tsv")
+        transfers_file = os.path.join(experiment_folder, "Transfers.tsv")
+
+        with open(transfers_file, "w") as f:
+            f.write("Family\tDonor\tRecipient\n")
 
         raw_gene_families_folder = os.path.join(experiment_folder, "RawGeneFamilies")
 
@@ -74,10 +74,6 @@ class SimuLYON():
             tree = ete3.Tree(f.readline().strip(),format=1)
 
         self._prepare_profile_file(tree, profiles_file)
-        self._prepare_profile_file(tree, duplications_file)
-        self._prepare_profile_file(tree, leaving_transfers_file)
-        self._prepare_profile_file(tree, arriving_transfers_file)
-        self._prepare_profile_file(tree, losses_file)
 
         fo = FamilyOriginator(whole_tree_file, events_file)
         gfs = GeneFamilySimulator(parameters_file, events_file, lineages_file)
@@ -98,13 +94,10 @@ class SimuLYON():
                     f.write(tree)
 
                 gfs.output_profile(profiles_file, "Profile")
-                gfs.output_profile(duplications_file, "Duplications")
-                gfs.output_profile(leaving_transfers_file, "LeavingTransfers")
-                gfs.output_profile(arriving_transfers_file, "ArrivingTransfers")
-                gfs.output_profile(losses_file, "Losses")
+                gfs.write_transfers(transfers_file)
+                gfs.write_log(os.path.join(raw_gene_families_folder, family_name + "_events.tsv"))
 
             for j in range(i+1, n_families + i + 1):
-
 
                 family_name = prefix + str(j)
 
@@ -121,10 +114,8 @@ class SimuLYON():
                     f.write(tree)
 
                 gfs.output_profile(profiles_file, "Profile")
-                gfs.output_profile(duplications_file, "Duplications")
-                gfs.output_profile(leaving_transfers_file, "LeavingTransfers")
-                gfs.output_profile(arriving_transfers_file, "ArrivingTransfers")
-                gfs.output_profile(losses_file, "Losses")
+                gfs.write_transfers(transfers_file)
+                gfs.write_log(os.path.join(raw_gene_families_folder, family_name + "_events.tsv"))
 
         elif stopping_rule == 1:
 

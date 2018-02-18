@@ -35,8 +35,6 @@ class FamilyOriginator():
         self.vector_names = [x for x in self.branch_length.keys()]
         self.vector_lengths = [self.branch_length[x] for x in self.vector_names]
 
-
-
     def create_families(self, stem_length =  0, families_in_stem = 0):
 
         # We select first a branch
@@ -69,7 +67,6 @@ class GeneFamilySimulator():
         self.tree_events = dict()
         self.rates = self.RM.mode_0()
 
-
         with open(events_file) as f:
             f.readline()
             for line in f:
@@ -87,6 +84,7 @@ class GeneFamilySimulator():
                 self.lineages_in_time[int(k)] = v.split(";")
 
     def choose_event(self, duplication, transfer, loss):
+
         draw = numpy.random.choice(["D","T","L"], 1, p=af.normalize([duplication, transfer, loss]))
         return draw
 
@@ -179,11 +177,11 @@ class GeneFamilySimulator():
                     if snode in active_branches:
 
                         if event == "EX":
-                            self.get_extinct(snode)
+                            self.get_extinct(snode, time_counter)
 
                         elif event == "SP":
                             sc1, sc2 = children.split("+")
-                            self.gene_tree_speciation(snode, sc1, sc2)
+                            self.gene_tree_speciation(snode, sc1, sc2, time_counter)
 
             self.evolve_gene_family(duplication, transfer, loss, time_counter)
 
@@ -208,6 +206,7 @@ class GeneFamilySimulator():
         self.gene_family["Name"] = name
         self.gene_family["Origin_time"] = time_counter
         self.gene_family["Events"] = list()
+        self.gene_family["Transfers"] = list()
         self.gene_family["Gene_tree"] = ete3.Tree()
         self.gene_family["Gene_tree"].add_feature("is_alive", True)
         self.gene_family["Gene_tree"].add_feature("current_branch", branch)
@@ -269,6 +268,8 @@ class GeneFamilySimulator():
         self.gene_family["Events"].append(
             ("ArrivingTransfer", time_counter * TIME_INCREASE, recipient))
 
+        self.gene_family["Transfers"].append((leaf.current_branch, recipient))
+
         if leaf.current_branch not in self.gene_family["LeavingTransfers"]:
             self.gene_family["LeavingTransfers"][leaf.current_branch] = 0
 
@@ -300,9 +301,17 @@ class GeneFamilySimulator():
             replaced_lineage = random.choice(other_copies)
             replaced_lineage.is_alive = False
 
+            # I need to add the gene lost by replacement
+
+            self.gene_family["Events"].append(
+                ("LossByReplacement", time_counter * TIME_INCREASE, recipient))
+
     def get_extinct(self, sp_branch):
 
         g_leaves = self.gene_family["Gene_tree"].get_leaves()
+
+        #self.gene_family["Events"].append(
+        #    ("Extinction", time_counter * TIME_INCREASE, sp_branch))
 
         self.gene_family["Profile"][sp_branch] = 0
 
@@ -315,6 +324,9 @@ class GeneFamilySimulator():
                 g_leaf.is_alive = False
 
     def gene_tree_speciation(self, sp, c1, c2):
+
+        #self.gene_family["Events"].append(
+        #    ("Speciation", time_counter * TIME_INCREASE, sp + "->" + c1 + ";" + c2))
 
         g_leaves = self.gene_family["Gene_tree"].get_leaves()
 
@@ -390,3 +402,24 @@ class GeneFamilySimulator():
 
             myline = "\t".join(myline) +"\n"
             f.write(myline)
+
+    def write_transfers(self, transfers_file):
+
+        with open(transfers_file, "a") as f:
+            for dn, rc in self.gene_family["Transfers"]:
+                line = self.gene_family["Name"] + "\t" + dn + "\t" + rc + "\n"
+                f.write(line)
+
+    def write_log(self, events_logfile):
+
+        with open(events_logfile, "w") as f:
+
+            f.write("Time\tEvent\tNode\n")
+
+            for event, time, node in self.gene_family["Events"]:
+
+                myline = "\t".join(map(str,[event,time,node])) + "\n"
+                f.write(myline)
+
+
+

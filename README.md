@@ -96,18 +96,12 @@ Then, the sequences are simulated on the gene trees. *This is not written yet!*
 
 #### Mode G
 
-*Duplications.tsv*: Tsv including all the duplication taken place in each node of the whole tree
-
-*Losses.tsv*: Tsv including all the losses taken place in each node of the whole tree
-
-*LeavingTransfers.tsv*: Tsv including all the transfers leaving a given branch of the whole tree
-
-*ArrivingTransfers.tsv*: Tsv including all the transfers arriving to a given branch of the whole tree
-
 *Profiles.tsv*: Tsv including the number of copies present of each family for each node of the whole tree
 
-*RawGeneFamilies*: Folder including all the gene trees of evolving inside the species tree
+*RawGeneFamilies*: Folder including all the gene trees of evolving inside the species tree. Each gene family has an
+events.tsv associated with the detailed list of events taking place in that family
 
+*Transfers.tsv*: A complete list of the transfer events, with donor and recipients
 
 #### Mode S 
 
