@@ -528,7 +528,7 @@ class GenomeSimulator():
                     new_segment = list()
 
                     for i in a:
-                        sense, gf, cp = genome.genes[i].split("_")
+                        cb, sense, gf, cp = genome.genes[i].split("_")
                         self.homologous[gf]["Copies"] += 1
                         name1  = sense + "_" + gf + "_" + str(self.homologous[gf]["Copies"])
                         old_segment.append(name1)
@@ -536,7 +536,7 @@ class GenomeSimulator():
                         name2 = sense + "_" + gf + "_" + str(self.homologous[gf]["Copies"])
                         new_segment.append(name2)
                         self.homologous[gf]["Events"].append(
-                            ("T", str(time_counter), cp + "_" + name1.split("_")[2] + "_" + name2.split("_")[2]))
+                            ("T", str(time_counter), snode + "_" + cp + "_" + name1.split("_")[3] + "_" + name2.split("_")[3]))
 
                     # Now I have prepared the two segments. First I am going to update de donor segment
 
@@ -563,7 +563,6 @@ class GenomeSimulator():
 
                     if len(genome.genes) <= int(self.parameters["MIN_GENOME_SIZE"]):
                         continue
-
                     a = genome.obtain_affected_genes()
                     genome.loss_segment(snode, self.homologous, time_counter, a)
 
@@ -581,7 +580,7 @@ class GenomeSimulator():
 
     def run(self, genome_folder):
 
-        duplication, transfer, loss, inversion, translocation, origination = (0.001, 0.000, 0.0001, 0.00, 0.000, 0.00)
+        duplication, transfer, loss, inversion, translocation, origination = (0.04, 0.000, 0.01, 0.1, 0.03, 0.00)
 
         for time_counter in range(int(self.total_time + 1)):
 
@@ -614,8 +613,6 @@ class GenomeSimulator():
             n.Genome.write_genome(os.path.join(genome_folder, n.name + "_GENOME.tsv"))
 
 
-
-
     def increase_distances(self):
 
         active_lineages = [x for x in self.species_tree.get_leaves() if x.is_alive == True]
@@ -630,7 +627,7 @@ class GenomeSimulator():
         parent_genome = sp.Genome
 
         for i, gene in enumerate(parent_genome.genes):
-            sense, gf, hml = gene.split("_")
+            cb, sense, gf, hml = gene.split("_")
             self.homologous[gf]["Events"].append(("E", time, hml))
 
     def get_speciated(self, time, sp, c1, c2):
@@ -642,18 +639,20 @@ class GenomeSimulator():
         sc1.name = c1
         sc1.add_feature("is_alive", True)
         sc1.add_feature("Genome", copy.deepcopy(parent_genome))
-        genes_affected_1 = sc1.Genome.update_homologous(self.homologous)
+        genes_affected_1 = sc1.Genome.update_homologous(sc1.name, self.homologous)
 
         sc2 = sp.add_child(dist=0)
         sc2.name = c2
         sc2.add_feature("is_alive", True)
         sc2.add_feature("Genome", copy.deepcopy(parent_genome))
-        genes_affected_2 = sc2.Genome.update_homologous(self.homologous)
+        genes_affected_2 = sc2.Genome.update_homologous(sc2.name, self.homologous)
+
 
         for i, gene in enumerate(parent_genome.genes):
 
-            sense, gf, hml = gene.split("_")
-            speciation_event = "_".join((sp.name, hml, genes_affected_1[i].split("_")[2], genes_affected_2[i].split("_")[2]))
+            cb, sense, gf, id = gene.split("_")
+            speciation_event = "_".join(
+                (sp.name, id, sc1.name, genes_affected_1[i].split("_")[3], sc2.name, genes_affected_2[i].split("_")[3]))
             self.homologous[gf]["Events"].append(("S", time, speciation_event))
 
         sp.is_alive = False
@@ -755,7 +754,7 @@ class GenomeSimulator():
         root = gene_tree.get_tree_root()
         root.name = "1"
         root.add_feature("is_alive", True)
-        root.add_feature("current_branch", "")
+        root.add_feature("current_branch", "Root")
 
         for time in range(self.total_time):
 
@@ -765,7 +764,7 @@ class GenomeSimulator():
 
                     if event == "S":
 
-                        sp,parent,c1,c2 = nodes.split("_")
+                        sp,parent,spc1,c1,spc2,c2 = nodes.split("_")
 
                         n = gene_tree&parent
                         n.is_alive = False
@@ -774,10 +773,12 @@ class GenomeSimulator():
                         gc1 = n.add_child()
                         gc1.name = c1
                         gc1.add_feature("is_alive", True)
+                        gc1.add_feature("current_branch", spc1)
 
                         gc2 = n.add_child()
                         gc2.name = c2
                         gc2.add_feature("is_alive", True)
+                        gc2.add_feature("current_branch", spc2)
 
                     elif event == "E":
 
@@ -794,10 +795,12 @@ class GenomeSimulator():
                         gc1 = n.add_child()
                         gc1.name = c1
                         gc1.add_feature("is_alive", True)
+                        gc1.add_feature("current_branch", sp)
 
                         gc2 = n.add_child()
                         gc2.name = c2
                         gc2.add_feature("is_alive", True)
+                        gc2.add_feature("current_branch", sp)
 
                     elif event == "T":
 
@@ -809,23 +812,33 @@ class GenomeSimulator():
                         gc1 = n.add_child()
                         gc1.name = c1
                         gc1.add_feature("is_alive", True)
+                        gc1.add_feature("current_branch", sp)
 
                         gc2 = n.add_child()
                         gc2.name = c2
                         gc2.add_feature("is_alive", True)
 
+                        #### CORRECT THISS!!!! VERY IMPORTANT!!!! YOU HAVE TO ADD THE SP OF THE RECIPIENT BRANCH
+                        gc2.add_feature("current_branch", sp)
+                        ######
+
+
                     elif event == "L":
 
-                        sp, mynode = nodes.split("_")
+                        mynode = nodes.split("_")[-1]
+
                         n = gene_tree&mynode
                         n.is_alive = False
-
-
 
             active_lineages = [x for x in gene_tree.get_leaves() if x.is_alive == True]
 
             for node in active_lineages:
                 node.dist+=1
+
+        # Now we add the leaves name
+
+        for n in gene_tree.get_leaves():
+            n.name = n.current_branch + "_" + n.name
 
         with open(genetree_file, "w") as f:
             f.write(gene_tree.write(format=1))

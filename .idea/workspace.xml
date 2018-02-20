@@ -4,7 +4,6 @@
     <list default="true" id="59ba90f0-ee1f-4701-b72e-68f3e4c50e55" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/Genome.py" afterPath="$PROJECT_DIR$/Genome.py" />
       <change beforePath="$PROJECT_DIR$/GenomeGenerator.py" afterPath="$PROJECT_DIR$/GenomeGenerator.py" />
-      <change beforePath="$PROJECT_DIR$/simuLyon.py" afterPath="$PROJECT_DIR$/simuLyon.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -30,11 +29,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="simuLyon.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="simuLyon.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/simuLyon.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="362">
-              <caret line="160" column="8" lean-forward="false" selection-start-line="160" selection-start-column="8" selection-end-line="160" selection-end-column="8" />
+            <state relative-caret-position="540">
+              <caret line="40" column="0" lean-forward="false" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
               <folding>
                 <element signature="e#0#82#0" expanded="true" />
                 <element signature="e#276#387#0" expanded="false" />
@@ -56,8 +55,8 @@
       <file leaf-file-name="Genome.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Genome.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="638">
-              <caret line="146" column="78" lean-forward="false" selection-start-line="146" selection-start-column="78" selection-end-line="146" selection-end-column="78" />
+            <state relative-caret-position="329">
+              <caret line="102" column="37" lean-forward="false" selection-start-line="102" selection-start-column="37" selection-end-line="102" selection-end-column="37" />
               <folding>
                 <element signature="e#0#30#0" expanded="true" />
               </folding>
@@ -65,17 +64,17 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GenomeGenerator.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="GenomeGenerator.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GenomeGenerator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="727" column="0" lean-forward="true" selection-start-line="727" selection-start-column="0" selection-end-line="727" selection-end-column="0" />
+            <state relative-caret-position="133">
+              <caret line="582" column="106" lean-forward="false" selection-start-line="582" selection-start-column="106" selection-end-line="582" selection-end-column="106" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
                 <element signature="e#215#1562#0" expanded="false" />
                 <element signature="e#1652#14336#0" expanded="false" />
-                <element signature="e#22902#24006#0" expanded="false" />
-                <element signature="e#24205#24560#0" expanded="false" />
+                <element signature="e#22976#24080#0" expanded="false" />
+                <element signature="e#24279#24634#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -125,8 +124,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>event</find>
-      <find>SpeciesT</find>
       <find>eventsfile</find>
       <find>self.events</find>
       <find>self.gene_family[&quot;Profile&quot;]</find>
@@ -155,6 +152,8 @@
       <find>_pre</find>
       <find>af</find>
       <find>self.e</find>
+      <find>genes</find>
+      <find>split</find>
     </findStrings>
     <replaceStrings>
       <replace>transfer</replace>
@@ -192,9 +191,9 @@
         <option value="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/Parameters/SpeciesTreeParameters.tsv" />
+        <option value="$PROJECT_DIR$/simuLyon.py" />
         <option value="$PROJECT_DIR$/Genome.py" />
         <option value="$PROJECT_DIR$/GenomeGenerator.py" />
-        <option value="$PROJECT_DIR$/simuLyon.py" />
       </list>
     </option>
   </component>
@@ -553,8 +552,8 @@
             <element signature="e#0#11#0" expanded="true" />
             <element signature="e#215#1562#0" expanded="false" />
             <element signature="e#1652#14336#0" expanded="false" />
-            <element signature="e#22902#24006#0" expanded="false" />
-            <element signature="e#24205#24560#0" expanded="false" />
+            <element signature="e#22976#24080#0" expanded="false" />
+            <element signature="e#24279#24634#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -616,8 +615,8 @@
             <element signature="e#0#11#0" expanded="true" />
             <element signature="e#215#1562#0" expanded="false" />
             <element signature="e#1652#14336#0" expanded="false" />
-            <element signature="e#22902#24006#0" expanded="false" />
-            <element signature="e#24205#24560#0" expanded="false" />
+            <element signature="e#22976#24080#0" expanded="false" />
+            <element signature="e#24279#24634#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -701,8 +700,8 @@
             <element signature="e#0#11#0" expanded="true" />
             <element signature="e#215#1562#0" expanded="false" />
             <element signature="e#1652#14336#0" expanded="false" />
-            <element signature="e#22902#24006#0" expanded="false" />
-            <element signature="e#24205#24560#0" expanded="false" />
+            <element signature="e#22976#24080#0" expanded="false" />
+            <element signature="e#24279#24634#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -860,16 +859,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Genome.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="638">
-          <caret line="146" column="78" lean-forward="false" selection-start-line="146" selection-start-column="78" selection-end-line="146" selection-end-column="78" />
-          <folding>
-            <element signature="e#0#30#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/TreeGenerator.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1335">
@@ -878,27 +867,37 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GenomeGenerator.py">
+    <entry file="file://$PROJECT_DIR$/simuLyon.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="727" column="0" lean-forward="true" selection-start-line="727" selection-start-column="0" selection-end-line="727" selection-end-column="0" />
+        <state relative-caret-position="540">
+          <caret line="40" column="0" lean-forward="false" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
           <folding>
-            <element signature="e#0#11#0" expanded="true" />
-            <element signature="e#215#1562#0" expanded="false" />
-            <element signature="e#1652#14336#0" expanded="false" />
-            <element signature="e#22902#24006#0" expanded="false" />
-            <element signature="e#24205#24560#0" expanded="false" />
+            <element signature="e#0#82#0" expanded="true" />
+            <element signature="e#276#387#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/simuLyon.py">
+    <entry file="file://$PROJECT_DIR$/Genome.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="362">
-          <caret line="160" column="8" lean-forward="false" selection-start-line="160" selection-start-column="8" selection-end-line="160" selection-end-column="8" />
+        <state relative-caret-position="329">
+          <caret line="102" column="37" lean-forward="false" selection-start-line="102" selection-start-column="37" selection-end-line="102" selection-end-column="37" />
           <folding>
-            <element signature="e#0#82#0" expanded="true" />
-            <element signature="e#276#387#0" expanded="false" />
+            <element signature="e#0#30#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GenomeGenerator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="582" column="106" lean-forward="false" selection-start-line="582" selection-start-column="106" selection-end-line="582" selection-end-column="106" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#215#1562#0" expanded="false" />
+            <element signature="e#1652#14336#0" expanded="false" />
+            <element signature="e#22976#24080#0" expanded="false" />
+            <element signature="e#24279#24634#0" expanded="false" />
           </folding>
         </state>
       </provider>

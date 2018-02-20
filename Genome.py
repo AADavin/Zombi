@@ -17,8 +17,9 @@ class Genome():
             else:
                 sense = "-"
 
-            name = "_".join([sense,str(i),"1"])
+            name = "_".join(["Root",sense,str(i),"1"])
             self.genes.append(name)
+
 
     def select_random_position(self):
 
@@ -62,20 +63,20 @@ class Genome():
 
         for i in affected_genes:
 
-            sense, gf, cp = self.genes[i].split("_")
+            cb, sense, gf, cp = self.genes[i].split("_")
 
             homologous[gf]["Copies"] += 1
-            name1 = sense + "_" + gf + "_" + str(homologous[gf]["Copies"])
+            name1 = cb + "_" + sense + "_" + gf + "_" + str(homologous[gf]["Copies"])
 
             new_segment1.append(name1)
 
             homologous[gf]["Copies"] += 1
-            name2 = sense + "_" + gf + "_" + str(homologous[gf]["Copies"])
+            name2 = cb + "_" + sense + "_" + gf + "_" + str(homologous[gf]["Copies"])
 
             new_segment2.append(name2)
 
             homologous[gf]["Events"].append(
-                ("D", time, species_node + "_" + cp + "_" + name1.split("_")[2] + "_" + name2.split("_")[2]))
+                ("D", time, species_node + "_" + cp + "_" + name1.split("_")[3] + "_" + name2.split("_")[3]))
 
         # Now we have to delete the ancient segment that has been duplicated and insert in the new position
         # both segments
@@ -99,10 +100,8 @@ class Genome():
 
         for element in elements_to_remove:
 
-            gf = element.split("_")[1]
-
+            gf = element.split("_")[2]
             self.genes.remove(element)
-
             homologous[gf]["Events"].append(("L", time,  species_node + "_" + element))
 
     def insert_segment(self, position, segment):
@@ -126,7 +125,7 @@ class Genome():
 
         for i,x in enumerate(new_segment):
            self.genes[affected_genes[i]] = x
-           gf,element = x.split("_")[1:]
+           gf,element = x.split("_")[2:]
            homologous[gf]["Events"].append(("I", time, species_node + "_" +  element))
 
     def translocate_segment(self, species_node, homologous, time, affected_genes): # Watch out, verify that it is outside
@@ -143,17 +142,16 @@ class Genome():
 
         for i, x in enumerate(segment):
             self.genes.insert(position + i + 1, x)
-            gf, element = x.split("_")[1:]
+            gf, element = x.split("_")[2:]
             homologous[gf]["Events"].append(("C", time, species_node + "_" +  element))
 
-    def update_homologous(self, homologous):
+    def update_homologous(self, species_node, homologous):
 
         for i,gene in enumerate(self.genes):
-            sense,gf,hml = gene.split("_")
+            cb,sense,gf,id = gene.split("_")
             homologous[gf]["Copies"] += 1
-
-            new_hml = homologous[gf]["Copies"]
-            self.genes[i] = "_".join((sense,gf,str(new_hml)))
+            new_id = homologous[gf]["Copies"]
+            self.genes[i] = "_".join((species_node,sense,gf,str(new_id)))
 
         return self.genes
 
@@ -162,12 +160,12 @@ class Genome():
 
         with open(genome_file, "w") as f:
 
-            f.write("\t".join(("Position","Gene_family","Orientation","Id"))+"\n")
+            f.write("\t".join(("Position", "Gene_family","Orientation","Id"))+"\n")
 
             for i,gene in enumerate(self.genes):
 
-                sense, gf, id = gene.split("_")
-                line = "\t".join((str(i),gf,sense,id)) + "\n"
+                cb, sense, gf, id = gene.split("_")
+                line = "\t".join((str(i), gf,sense,id)) + "\n"
                 f.write(line)
 
 
