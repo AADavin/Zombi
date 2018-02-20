@@ -517,26 +517,28 @@ class GenomeSimulator():
 
                 elif event == "T":
                     recipient = self.choose_recipient(time_counter, node.name, 0)
-
                     if recipient == None:
                         continue
 
                     a = genome.obtain_affected_genes()
-                    segment = genome.obtain_segment(a)
 
                     old_segment = list()
                     new_segment = list()
 
                     for i in a:
-                        cb, sense, gf, cp = genome.genes[i].split("_")
+
+                        cb, sense, gf, id = genome.genes[i].split("_")
+
                         self.homologous[gf]["Copies"] += 1
-                        name1  = sense + "_" + gf + "_" + str(self.homologous[gf]["Copies"])
+                        name1  = snode + "_" + sense + "_" + gf + "_" + str(self.homologous[gf]["Copies"])
                         old_segment.append(name1)
+
                         self.homologous[gf]["Copies"] += 1
-                        name2 = sense + "_" + gf + "_" + str(self.homologous[gf]["Copies"])
+                        name2 = recipient + "_" + sense + "_" + gf + "_" + str(self.homologous[gf]["Copies"])
                         new_segment.append(name2)
+
                         self.homologous[gf]["Events"].append(
-                            ("T", str(time_counter), snode + "_" + cp + "_" + name1.split("_")[3] + "_" + name2.split("_")[3]))
+                            ("T", str(time_counter), snode + ";" + id + ";" + name1.split("_")[3] + ";" + recipient + ";" + name2.split("_")[3]))
 
                     # Now I have prepared the two segments. First I am going to update de donor segment
 
@@ -580,9 +582,9 @@ class GenomeSimulator():
 
     def run(self, genome_folder):
 
-        duplication, transfer, loss, inversion, translocation, origination = (0.04, 0.000, 0.01, 0.1, 0.03, 0.00)
+        duplication, transfer, loss, inversion, translocation, origination = (0.001, 0.001, 0.001, 0.001, 0.001, 0.00)
 
-        for time_counter in range(int(self.total_time + 1)):
+        for time_counter in range(int(self.total_time)):
 
             if time_counter in self.tree_events:
 
@@ -627,8 +629,8 @@ class GenomeSimulator():
         parent_genome = sp.Genome
 
         for i, gene in enumerate(parent_genome.genes):
-            cb, sense, gf, hml = gene.split("_")
-            self.homologous[gf]["Events"].append(("E", time, hml))
+            cb, sense, gf, id = gene.split("_")
+            self.homologous[gf]["Events"].append(("E", time, id))
 
     def get_speciated(self, time, sp, c1, c2):
 
@@ -651,7 +653,7 @@ class GenomeSimulator():
         for i, gene in enumerate(parent_genome.genes):
 
             cb, sense, gf, id = gene.split("_")
-            speciation_event = "_".join(
+            speciation_event = ";".join(
                 (sp.name, id, sc1.name, genes_affected_1[i].split("_")[3], sc2.name, genes_affected_2[i].split("_")[3]))
             self.homologous[gf]["Events"].append(("S", time, speciation_event))
 
@@ -727,7 +729,7 @@ class GenomeSimulator():
 
             with open(os.path.join(events_logfolder, self.parameters["PREFIX"] + str(gf)) + "_events.tsv", "w") as f:
 
-                f.write("Time\tEvent\tNode\n")
+                f.write("Event\tTime\tNode\n")
 
                 for time,event,node in self.homologous[gf]["Events"]:
 
@@ -735,6 +737,51 @@ class GenomeSimulator():
                     f.write(line)
 
             self.generate_gene_tree(events_file, genetree_file)
+
+    def write_events_per_branch(self, events_logfolder):
+
+        fam_events = [os.path.join(events_logfolder,x) for x in os.listdir(events_logfolder) if "_events.tsv" in x]
+
+        all_events = dict()
+
+        for fam_event in fam_events:
+
+            fam_name = fam_event.split("/")[-1].split("_")[0].replace(self.parameters["PREFIX"],"")
+
+            with open(fam_event) as f:
+                f.readline()
+                for line in f:
+                    event, time, nodes = line.strip().split("\t")
+
+                    if event == "S" or event == "E":
+                        continue
+
+                    else:
+
+                        branch = nodes.split(";")[0]
+
+                        if branch not in all_events:
+                            all_events[branch] = dict()
+
+                        if int(time) not in all_events[branch]:
+                            all_events[branch][int(time)] = list()
+
+                        all_events[branch][int(time)].append((event, nodes, fam_name))
+
+        for node in all_events:
+
+            with open(os.path.join(events_logfolder, node + "_branchevents.tsv"), "w") as f:
+
+                f.write("\t".join(("Time","Event","Nodes", "Gene_family")) + "\n")
+
+                for i in range(self.total_time + 1):
+
+                    if i in all_events[branch]:
+
+                        for event, nodes, fam_name in all_events[branch][i]:
+                            mynodes = ";".join(nodes.split(";")[1:])
+                            f.write("\t".join((str(i), event, mynodes, fam_name))+"\n")
+
 
     def generate_gene_tree(self, events_file, genetree_file):
 
@@ -764,7 +811,7 @@ class GenomeSimulator():
 
                     if event == "S":
 
-                        sp,parent,spc1,c1,spc2,c2 = nodes.split("_")
+                        sp,parent,spc1,c1,spc2,c2 = nodes.split(";")
 
                         n = gene_tree&parent
                         n.is_alive = False
@@ -787,7 +834,7 @@ class GenomeSimulator():
 
                     elif event == "D":
 
-                        sp, parent, c1, c2 = nodes.split("_")
+                        sp, parent, c1, c2 = nodes.split(";")
 
                         n = gene_tree & parent
                         n.is_alive = False
@@ -804,7 +851,7 @@ class GenomeSimulator():
 
                     elif event == "T":
 
-                        sp, parent, c1, c2 = nodes.split("_")
+                        sp, parent, c1, recipient, c2 = nodes.split(";")
 
                         n = gene_tree & parent
                         n.is_alive = False
@@ -817,16 +864,11 @@ class GenomeSimulator():
                         gc2 = n.add_child()
                         gc2.name = c2
                         gc2.add_feature("is_alive", True)
-
-                        #### CORRECT THISS!!!! VERY IMPORTANT!!!! YOU HAVE TO ADD THE SP OF THE RECIPIENT BRANCH
-                        gc2.add_feature("current_branch", sp)
-                        ######
-
+                        gc2.add_feature("current_branch", recipient)
 
                     elif event == "L":
 
-                        mynode = nodes.split("_")[-1]
-
+                        mynode = nodes.split(";")[1]
                         n = gene_tree&mynode
                         n.is_alive = False
 

@@ -158,7 +158,7 @@ class SimuLYON():
 
         gfs.run(raw_gene_families_folder)
         gfs.write_log(raw_gene_families_folder)
-        
+        gfs.write_events_per_branch(raw_gene_families_folder)
 
     def obtain_sequences(self, parameters_file, experiment_folder):
         pass

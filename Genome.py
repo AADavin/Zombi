@@ -76,7 +76,7 @@ class Genome():
             new_segment2.append(name2)
 
             homologous[gf]["Events"].append(
-                ("D", time, species_node + "_" + cp + "_" + name1.split("_")[3] + "_" + name2.split("_")[3]))
+                ("D", time, species_node + ";" + cp + ";" + name1.split("_")[3] + ";" + name2.split("_")[3]))
 
         # Now we have to delete the ancient segment that has been duplicated and insert in the new position
         # both segments
@@ -102,7 +102,7 @@ class Genome():
 
             gf = element.split("_")[2]
             self.genes.remove(element)
-            homologous[gf]["Events"].append(("L", time,  species_node + "_" + element))
+            homologous[gf]["Events"].append(("L", time,  species_node + ";" + element.split("_")[3]))
 
     def insert_segment(self, position, segment):
 
@@ -126,7 +126,7 @@ class Genome():
         for i,x in enumerate(new_segment):
            self.genes[affected_genes[i]] = x
            gf,element = x.split("_")[2:]
-           homologous[gf]["Events"].append(("I", time, species_node + "_" +  element))
+           homologous[gf]["Events"].append(("I", time, species_node + ";" +  element))
 
     def translocate_segment(self, species_node, homologous, time, affected_genes): # Watch out, verify that it is outside
 
@@ -143,7 +143,7 @@ class Genome():
         for i, x in enumerate(segment):
             self.genes.insert(position + i + 1, x)
             gf, element = x.split("_")[2:]
-            homologous[gf]["Events"].append(("C", time, species_node + "_" +  element))
+            homologous[gf]["Events"].append(("C", time, species_node + ";" +  element))
 
     def update_homologous(self, species_node, homologous):
 
