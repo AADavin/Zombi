@@ -838,11 +838,13 @@ class GenomeSimulator():
                         gc1.name = c1
                         gc1.add_feature("is_alive", True)
                         gc1.add_feature("current_branch", spc1)
+                        gc1.dist = 0
 
                         gc2 = n.add_child()
                         gc2.name = c2
                         gc2.add_feature("is_alive", True)
                         gc2.add_feature("current_branch", spc2)
+                        gc2.dist = 0
 
                     elif event == "E":
 

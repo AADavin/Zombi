@@ -198,7 +198,7 @@ class SimuLYON():
 #SL = SimuLYON()
 #SL.obtain_genomes("/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/RESTART/GenomeParameters.tsv", "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/RESTART/THEO2")
 
-'''
+
 
 if __name__ == "__main__":
 
@@ -227,4 +227,3 @@ if __name__ == "__main__":
 
         else:
             print("Incorrect usage. Please select a mode: T or G")
-'''
