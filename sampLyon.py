@@ -2,7 +2,7 @@ import ete3
 import random
 import sys
 import os
-from globals import *
+
 
 def prune_species_tree(infolder, outfolder, N):
 

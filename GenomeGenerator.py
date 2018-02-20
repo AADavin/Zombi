@@ -1,10 +1,9 @@
 import ete3
 import os
-import AuxiliarFunctions as af
-from RatesManager import GeneEvolutionRates
 import numpy
 import random
-from globals import *
+import AuxiliarFunctions as af
+from RatesManager import GeneEvolutionRates
 from Genome import Genome
 import copy
 class FamilyOriginator():
@@ -50,9 +49,7 @@ class FamilyOriginator():
 
         return branch, time_in_branch + self.branch_origin[branch]
 
-SEED = 237
-random.seed(SEED)
-numpy.random.seed(SEED)
+
 
 class GeneFamilySimulator():
 
@@ -64,6 +61,11 @@ class GeneFamilySimulator():
             for line in f:
                 parameter, value = line.strip().split("\t")
                 self.parameters[parameter] = value
+
+        if self.parameters["SEED"] != "0":
+            SEED = int(self.parameters["SEED"])
+            random.seed(SEED)
+            numpy.random.seed(SEED)
 
         self.RM = GeneEvolutionRates(self.parameters)
         self.tree_events = dict()
@@ -161,6 +163,7 @@ class GeneFamilySimulator():
                             self.gene_tree_speciation(snode, sc1, sc2)
 
             self.evolve_gene_family(duplication, transfer, loss, time_counter)
+        self.increase_distances()
 
 
     def run_mode_1(self):
@@ -193,12 +196,14 @@ class GeneFamilySimulator():
 
             self.evolve_gene_family(duplication, transfer, loss, time_counter)
 
+
+
+
+
     def run_mode_3(self):
 
         # Rates are lineage wise. This is control by the rate manager
         pass
-
-
 
     def increase_distances(self):
 
@@ -582,7 +587,7 @@ class GenomeSimulator():
 
     def run(self, genome_folder):
 
-        duplication, transfer, loss, inversion, translocation, origination = (0.001, 0.001, 0.001, 0.001, 0.001, 0.00)
+        duplication, transfer, loss, inversion, translocation, origination = (0.0005, 0.0003, 0.001, 0.001, 0.001, 0.00)
 
         for time_counter in range(int(self.total_time)):
 

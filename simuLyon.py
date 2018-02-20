@@ -101,7 +101,7 @@ class SimuLYON():
 
                 family_name = prefix + str(j)
 
-                node, time = fo.create_families(stem_length = my_stem)
+                node, time = fo.create_families()
 
                 print("Simulating family %s appearing in node %s and in time %s" % (family_name, node, str(time)))
 

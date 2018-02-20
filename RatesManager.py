@@ -1,4 +1,3 @@
-from globals import *
 import ete3
 import argparse
 import numpy

@@ -1,12 +1,11 @@
-from globals import *
 from RatesManager import SpeciesEvolutionRates
-from functools import wraps
 import ete3
 import numpy
 import os
 import random
 import math
 import sys
+
 
 class TreeGenerator():
 
@@ -40,6 +39,11 @@ class TreeGenerator():
                 parameter, value = line.strip().split("\t")
                 self.parameters[parameter] = value
 
+        if self.parameters["SEED"] != "0":
+            SEED = int(self.parameters["SEED"])
+            random.seed(SEED)
+            numpy.random.seed(SEED)
+
     def _start_tree(self, tree):
 
         tree.name = "Root"
@@ -61,7 +65,6 @@ class TreeGenerator():
         tree.is_alive = False
         self.events[0] = []
         self.events[0].append(("SP", "Root", "n1+n2"))
-
 
     def new_tree_generator(self):
 
@@ -93,18 +96,21 @@ class TreeGenerator():
                         self.events[time_counter] = []
                     self.events[time_counter].append(("END", None, None))
                     break
+
             elif stopping_rule == 1:
                 if all_lineages >= n_lineages:
                     if time_counter not in self.events:
                         self.events[time_counter] = []
                     self.events[time_counter].append(("END", None, None))
                     break
+
             elif stopping_rule == 2:
                 if dead_lineages >= n_lineages:
                     if time_counter not in self.events:
                         self.events[time_counter] = []
                     self.events[time_counter].append(("END", None, None))
                     break
+
             elif stopping_rule == 3:
                 if len(lineages_alive) >= n_lineages:
                     if time_counter not in self.events:
@@ -130,6 +136,18 @@ class TreeGenerator():
                         self._get_speciated(lineage, time_counter)
                     elif event == "EX":
                         self._get_extinct(lineage, time_counter)
+
+        # We add one more unit of time to avoide branches with length == 0
+
+        self.lineages_in_time[time_counter] = [x.name for x in lineages_alive]
+
+        lineages_alive = [x for x in self.whole_species_tree.get_leaves() if x.is_alive == True]
+        for lineage in lineages_alive:
+            lineage.dist += 1
+
+
+
+
 
 
 

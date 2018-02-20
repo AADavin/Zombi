@@ -4,7 +4,7 @@ import AuxiliarFunctions as af
 from RatesManager import GeneEvolutionRates
 import numpy
 import random
-from globals import *
+
 
 class SequenceSimulator():
     def __init__(self):
