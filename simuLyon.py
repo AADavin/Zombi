@@ -42,7 +42,6 @@ class SimuLYON():
             else:
                 tg.store_log(experiment_folder)
 
-
         # You have to work in the next lines!
 
         elif self.tree_parameters["SPECIES_EVOLUTION_MODE"] == '1':

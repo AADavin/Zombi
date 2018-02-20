@@ -460,6 +460,8 @@ class GenomeSimulator():
                 parameter, value = line.strip().split("\t")
                 self.parameters[parameter] = value
 
+        self.gf_number = int(self.parameters["STEM_FAMILIES"])
+
         self.tree_events = dict()
         self._start_tree()
 
@@ -495,10 +497,12 @@ class GenomeSimulator():
             self.homologous[str(i)] = dict()
             self.homologous[str(i)]["Copies"] = 1
             self.homologous[str(i)]["Events"] = list()
+            self.homologous[str(i)]["Events"].append(("O", str(0), "Root" + ";" + "1"))
 
     def choose_event(self, duplication, transfer, loss, inversion, translocation, origination):
 
         draw = numpy.random.choice(["D", "T", "L", "I", "C", "O"], 1, p=af.normalize([duplication, transfer, loss, inversion, translocation, origination]))
+
         return draw
 
     def choose_recipient(self, time_counter, donor, strategy):
@@ -512,7 +516,7 @@ class GenomeSimulator():
 
     def evolve_genomes(self, duplication, transfer, loss, inversion, translocation, origination, time_counter):
 
-        total_probability_of_event = duplication + transfer + loss + inversion + translocation
+        total_probability_of_event = duplication + transfer + loss + inversion + translocation + origination
 
         active_genomes = [x for x in self.species_tree.get_leaves() if x.is_alive == True]
         random.shuffle(active_genomes)
@@ -522,9 +526,11 @@ class GenomeSimulator():
             genome = node.Genome
             snode = node.name
 
+
             if numpy.random.uniform(0, 1) <= total_probability_of_event:  # An event takes place
 
                 event = self.choose_event(duplication, transfer, loss, inversion, translocation, origination)
+
 
                 if event == "D":
                     a = genome.obtain_affected_genes()
@@ -592,12 +598,28 @@ class GenomeSimulator():
                     genome.translocate_segment(snode, self.homologous, time_counter, a)
 
                 elif event == "O":
-                    a = genome.obtain_affected_genes()
-                    genome.invert_segment(self.homologous, time_counter, a)
+
+                    self.gf_number += 1
+
+                    if numpy.random.randint(2) == 0:
+                        sense = "+"
+                    else:
+                        sense = "-"
+
+                    mygf = str(self.gf_number)
+                    self.homologous[mygf] = dict()
+                    self.homologous[mygf]["Copies"] = 1
+                    self.homologous[mygf]["Events"] = list()
+                    self.homologous[mygf]["Events"].append(("O", str(time_counter),  snode + ";" + "1"))
+
+                    segment = ["_".join((snode,sense,mygf,"1"))]
+
+                    p = genome.select_random_position()
+                    genome.insert_segment(p, segment)
 
     def run(self, genome_folder):
 
-        duplication, transfer, loss, inversion, translocation, origination = (0.0005, 0.0003, 0.001, 0.001, 0.001, 0.00)
+        duplication, transfer, loss, inversion, translocation, origination = (0.01, 0.01, 0.01, 0.01, 0.01, 0.01)
 
         for time_counter in range(int(self.total_time)):
 
@@ -767,34 +789,24 @@ class GenomeSimulator():
 
             with open(fam_event) as f:
                 f.readline()
+
                 for line in f:
                     event, time, nodes = line.strip().split("\t")
-
                     if event == "S" or event == "E":
                         continue
-
                     else:
-
                         branch = nodes.split(";")[0]
-
                         if branch not in all_events:
                             all_events[branch] = dict()
-
                         if int(time) not in all_events[branch]:
                             all_events[branch][int(time)] = list()
-
                         all_events[branch][int(time)].append((event, nodes, fam_name))
 
         for node in all_events:
-
             with open(os.path.join(events_logfolder, node + "_branchevents.tsv"), "w") as f:
-
                 f.write("\t".join(("Time","Event","Nodes", "Gene_family")) + "\n")
-
                 for i in range(self.total_time + 1):
-
                     if i in all_events[branch]:
-
                         for event, nodes, fam_name in all_events[branch][i]:
                             mynodes = ";".join(nodes.split(";")[1:])
                             f.write("\t".join((str(i), event, mynodes, fam_name))+"\n")
@@ -814,13 +826,17 @@ class GenomeSimulator():
                     events[time] = list()
                 events[time].append((event, nodes))
 
+                if event == "O":
+                    origin_time = time
+                    origin_node = nodes.split(";")[0]
+
         gene_tree = ete3.Tree()
         root = gene_tree.get_tree_root()
         root.name = "1"
         root.add_feature("is_alive", True)
-        root.add_feature("current_branch", "Root")
+        root.add_feature("current_branch", origin_node)
 
-        for time in range(self.total_time):
+        for time in range(origin_time, self.total_time):
 
             if time in events:
 
