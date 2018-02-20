@@ -195,8 +195,8 @@ class SimuLYON():
             f.write(myline)
 
 
-SL = SimuLYON()
-SL.obtain_genomes("/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/RESTART/GenomeParameters.tsv", "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/RESTART/THEO2")
+#SL = SimuLYON()
+#SL.obtain_genomes("/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/RESTART/GenomeParameters.tsv", "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/RESTART/THEO2")
 
 '''
 

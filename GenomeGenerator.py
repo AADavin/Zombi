@@ -413,7 +413,7 @@ class GeneFamilySimulator():
             myline.append(str(self.gene_family["Name"]))
 
         with open(profile,"a") as f:
-            
+
             for name in header:
 
                 if name not in self.gene_family[which]:
@@ -901,45 +901,4 @@ class GenomeSimulator():
 
         with open(genetree_file, "w") as f:
             f.write(gene_tree.write(format=1))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
