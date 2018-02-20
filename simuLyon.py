@@ -25,10 +25,26 @@ class SimuLYON():
 
         self.read_parameters(parameters_file, self.tree_parameters)
 
-        tg = TreeGenerator(parameters_file)
-
         if self.tree_parameters["SPECIES_EVOLUTION_MODE"] == '0':
-            tg.new_tree_generator()
+
+            success = False
+            trials = 0
+
+            while success == False and trials <= 100:
+
+                tg = TreeGenerator(parameters_file)
+                success = tg.new_tree_generator()
+                trials += 1
+
+            if success == False:
+                print("Aborting. Maximum number of trials attained. Not possible to compute the tree")
+
+            else:
+                tg.store_log(experiment_folder)
+
+
+        # You have to work in the next lines!
+
         elif self.tree_parameters["SPECIES_EVOLUTION_MODE"] == '1':
             tg.generate_tree_mode_1()
         elif self.tree_parameters["SPECIES_EVOLUTION_MODE"] == '2':
@@ -39,7 +55,7 @@ class SimuLYON():
             tg.generate_tree_mode_4()
 
         #tg.get_extant_tree()
-        tg.store_log(experiment_folder)
+
 
     def obtain_genomes(self, parameters_file, experiment_folder):
 
@@ -88,10 +104,11 @@ class SimuLYON():
                 gfs.origination("Root", 0, family_name)
                 gfs.run_mode_0()
                 gfs.complete_gene_family_information()
-                tree = gfs.get_gene_family_tree()
 
-                with open(os.path.join(raw_gene_families_folder, family_name), "w") as f:
-                    f.write(tree)
+                tree = gfs.get_gene_family_tree()
+                if tree != "None":
+                    with open(os.path.join(raw_gene_families_folder, family_name), "w") as f:
+                        f.write(tree)
 
                 gfs.output_profile(profiles_file, "Profile")
                 gfs.write_transfers(transfers_file)
@@ -108,10 +125,12 @@ class SimuLYON():
                 gfs.origination(node, time, family_name)
                 gfs.run_mode_0()
                 gfs.complete_gene_family_information()
+
                 tree = gfs.get_gene_family_tree()
 
-                with open(os.path.join(raw_gene_families_folder, family_name), "w") as f:
-                    f.write(tree)
+                if tree != "None":
+                    with open(os.path.join(raw_gene_families_folder, family_name), "w") as f:
+                        f.write(tree)
 
                 gfs.output_profile(profiles_file, "Profile")
                 gfs.write_transfers(transfers_file)
@@ -176,6 +195,11 @@ class SimuLYON():
             f.write(myline)
 
 
+SL = SimuLYON()
+SL.obtain_genomes("/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/RESTART/GenomeParameters.tsv", "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/RESTART/THEO2")
+
+'''
+
 if __name__ == "__main__":
 
     args = sys.argv[1:]
@@ -203,3 +227,4 @@ if __name__ == "__main__":
 
         else:
             print("Incorrect usage. Please select a mode: T or G")
+'''

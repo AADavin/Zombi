@@ -80,7 +80,12 @@ class TreeGenerator():
         n_lineages = int(self.parameters["N_LINEAGES"])
         total_time = int(self.parameters["TOTAL_TIME"])
 
+        #min_lineages = int(self.parameters["MIN_LINEAGES"])
+        #max_lineages = int(self.parameters["MAX_LINEAGES"])
+
         time_counter = 0
+
+        success = False
 
         while True:
 
@@ -95,6 +100,7 @@ class TreeGenerator():
                     if time_counter not in self.events:
                         self.events[time_counter] = []
                     self.events[time_counter].append(("END", None, None))
+                    success = True
                     break
 
             elif stopping_rule == 1:
@@ -102,6 +108,7 @@ class TreeGenerator():
                     if time_counter not in self.events:
                         self.events[time_counter] = []
                     self.events[time_counter].append(("END", None, None))
+                    success = True
                     break
 
             elif stopping_rule == 2:
@@ -109,6 +116,7 @@ class TreeGenerator():
                     if time_counter not in self.events:
                         self.events[time_counter] = []
                     self.events[time_counter].append(("END", None, None))
+                    success = True
                     break
 
             elif stopping_rule == 3:
@@ -116,12 +124,17 @@ class TreeGenerator():
                     if time_counter not in self.events:
                         self.events[time_counter] = []
                     self.events[time_counter].append(("END", None, None))
+                    success = True
                     break
 
             if len(lineages_alive) == 0:
                 print("Simulation interrupted at time %s" % time_counter)
                 print("All lineages are dead")
+                if time_counter not in self.events:
+                    self.events[time_counter] = []
                 self.events[time_counter].append(("END", None, None))
+                success = False
+                return success
                 break
 
             self.lineages_in_time[time_counter] = [x.name for x in lineages_alive]
@@ -146,7 +159,7 @@ class TreeGenerator():
             lineage.dist += 1
 
 
-
+        return success
 
 
 

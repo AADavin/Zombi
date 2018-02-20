@@ -399,22 +399,32 @@ class GeneFamilySimulator():
 
     def get_gene_family_tree(self):
 
-        return self.gene_family["Gene_tree"].write(format=1)
+        if len(self.gene_family["Gene_tree"].get_leaves()) < 3:
+            return "None"
+        else:
+            return self.gene_family["Gene_tree"].write(format=1)
 
     def output_profile(self, profile, which):
 
-        with open(profile, "r+") as f:
+        with open(profile) as f:
+
             header = f.readline().strip().split("\t")[1:]
             myline = list()
             myline.append(str(self.gene_family["Name"]))
 
+        with open(profile,"a") as f:
+            
             for name in header:
 
-                try: myline.append(str(self.gene_family[which][name]))
-                except: myline.append(str(0))
+                if name not in self.gene_family[which]:
+                    myline.append("0")
+                else:
+                    myline.append(str(self.gene_family[which][name]))
 
-            myline = "\t".join(myline) +"\n"
+            myline = "\t".join(myline) + "\n"
+
             f.write(myline)
+
 
     def write_transfers(self, transfers_file):
 
@@ -701,7 +711,10 @@ class GenomeSimulator():
 
     def get_gene_family_tree(self):
 
-        return self.gene_family["Gene_tree"].write(format=1)
+        if len(self.gene_family["Gene_tree"].get_leaves()) < 3:
+            return "None"
+        else:
+            return self.gene_family["Gene_tree"].write(format=1)
 
     def output_profile(self, profile, which):
 
@@ -712,8 +725,7 @@ class GenomeSimulator():
 
             for name in header:
 
-                try: myline.append(str(self.gene_family[which][name]))
-                except: myline.append(str(0))
+                myline.append(str(self.gene_family[which][name]))
 
             myline = "\t".join(myline) +"\n"
             f.write(myline)
