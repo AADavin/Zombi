@@ -1,5 +1,5 @@
 ﻿
-## ZomPhy (working name) 
+## SimuLyon (working name) 
 ##### A new tool to simulate genome evolution accounting for dead lineages
 
 ----------

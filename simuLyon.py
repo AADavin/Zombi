@@ -1,4 +1,4 @@
-from GenomeGenerator import FamilyOriginator, GeneFamilySimulator
+from GenomeGenerator import FamilyOriginator, GeneFamilySimulator, GenomeSimulator
 from TreeGenerator import TreeGenerator
 from RatesManager import GeneEvolutionRates, SpeciesEvolutionRates
 import ete3
@@ -124,6 +124,43 @@ class SimuLYON():
             while current_genome_size <= mean_genome_size:
                 pass
 
+    def obtain_genomes_in_parallel(self, parameters_file, experiment_folder):
+
+        self.read_parameters(parameters_file, self.genome_parameters)
+
+        prefix = self.genome_parameters["PREFIX"]
+        my_stem = float(self.genome_parameters["STEM_LENGTH"])
+        families_in_stem = int(self.genome_parameters["STEM_FAMILIES"])
+        n_families = int(self.genome_parameters["N_FAMILIES"])
+        whole_tree_file = os.path.join(experiment_folder, "WholeTree")
+        events_file = os.path.join(experiment_folder, "SpeciesTreeEvents.tsv")
+        lineages_file = os.path.join(experiment_folder, "LineagesInTime.tsv")
+        profiles_file = os.path.join(experiment_folder, "Profiles.tsv")
+        transfers_file = os.path.join(experiment_folder, "Transfers.tsv")
+
+        with open(transfers_file, "w") as f:
+            f.write("Family\tDonor\tRecipient\n")
+
+        raw_gene_families_folder = os.path.join(experiment_folder, "ParallelGeneFamilies")
+
+        if os.path.isdir(raw_gene_families_folder):
+            pass
+        else:
+           os.mkdir(raw_gene_families_folder)
+
+        with open(whole_tree_file) as f:
+            tree = ete3.Tree(f.readline().strip(),format=1)
+
+        self._prepare_profile_file(tree, profiles_file)
+
+        fo = FamilyOriginator(whole_tree_file, events_file)
+        gfs = GenomeSimulator(parameters_file, events_file, lineages_file)
+
+        gfs.run()
+        gfs.write_log(raw_gene_families_folder)
+        gfs.generate_gene_tree()
+
+
     def obtain_sequences(self, parameters_file, experiment_folder):
         pass
 
@@ -161,6 +198,9 @@ if __name__ == "__main__":
 
         elif mode == "G":
             SL.obtain_genomes(parameters_file, experiment_folder)
+
+        elif mode == "P":
+            SL.obtain_genomes_in_parallel(parameters_file, experiment_folder)
 
         else:
             print("Incorrect usage. Please select a mode: T or G")
