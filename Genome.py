@@ -53,7 +53,7 @@ class Genome():
         return segment
 
 
-    def duplicate_segment(self, homologous, time, affected_genes, adjacent = True):
+    def duplicate_segment(self, species_node, homologous, time, affected_genes, adjacent = True):
 
         old_segment = [self.genes[x] for x in affected_genes]
 
@@ -74,7 +74,8 @@ class Genome():
 
             new_segment2.append(name2)
 
-            homologous[gf]["Events"].append(("D", time, cp + "_" + name1.split("_")[2] + "_" + name2.split("_")[2]))
+            homologous[gf]["Events"].append(
+                ("D", time, species_node + "_" + cp + "_" + name1.split("_")[2] + "_" + name2.split("_")[2]))
 
         # Now we have to delete the ancient segment that has been duplicated and insert in the new position
         # both segments
@@ -92,7 +93,7 @@ class Genome():
             self.genes.insert(position + i + 1, x)
 
 
-    def loss_segment(self, homologous, time, affected_genes):
+    def loss_segment(self, species_node, homologous, time, affected_genes):
 
         elements_to_remove = [self.genes[x] for x in affected_genes]
 
@@ -102,14 +103,14 @@ class Genome():
 
             self.genes.remove(element)
 
-            homologous[gf]["Events"].append(("L", time, element))
+            homologous[gf]["Events"].append(("L", time,  species_node + "_" + element))
 
     def insert_segment(self, position, segment):
 
         for i, x in enumerate(segment):
             self.genes.insert(position + i + 1, x)
 
-    def invert_segment(self, homologous,time, affected_genes):
+    def invert_segment(self, species_node, homologous,time, affected_genes):
 
         segment = [self.genes[x] for x in affected_genes]
         new_segment = list()
@@ -126,9 +127,9 @@ class Genome():
         for i,x in enumerate(new_segment):
            self.genes[affected_genes[i]] = x
            gf,element = x.split("_")[1:]
-           homologous[gf]["Events"].append(("I", time, element))
+           homologous[gf]["Events"].append(("I", time, species_node + "_" +  element))
 
-    def translocate_segment(self, homologous, time, affected_genes): # Watch out, verify that it is outside
+    def translocate_segment(self, species_node, homologous, time, affected_genes): # Watch out, verify that it is outside
 
         # first we remove
 
@@ -143,7 +144,7 @@ class Genome():
         for i, x in enumerate(segment):
             self.genes.insert(position + i + 1, x)
             gf, element = x.split("_")[1:]
-            homologous[gf]["Events"].append(("C", time, element))
+            homologous[gf]["Events"].append(("C", time, species_node + "_" +  element))
 
     def update_homologous(self, homologous):
 
@@ -159,9 +160,9 @@ class Genome():
 
     def write_genome(self, genome_file):
 
-        with open(genome_file) as f:
+        with open(genome_file, "w") as f:
 
-            f.write("\t".join(("Position","Gene_family","Orientation","Id"))+"\t")
+            f.write("\t".join(("Position","Gene_family","Orientation","Id"))+"\n")
 
             for i,gene in enumerate(self.genes):
 

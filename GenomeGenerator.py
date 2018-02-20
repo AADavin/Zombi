@@ -505,6 +505,7 @@ class GenomeSimulator():
         for node in active_genomes:
 
             genome = node.Genome
+            snode = node.name
 
             if numpy.random.uniform(0, 1) <= total_probability_of_event:  # An event takes place
 
@@ -512,7 +513,7 @@ class GenomeSimulator():
 
                 if event == "D":
                     a = genome.obtain_affected_genes()
-                    genome.duplicate_segment(self.homologous, time_counter, a)
+                    genome.duplicate_segment(snode, self.homologous, time_counter, a)
 
                 elif event == "T":
                     recipient = self.choose_recipient(time_counter, node.name, 0)
@@ -564,21 +565,21 @@ class GenomeSimulator():
                         continue
 
                     a = genome.obtain_affected_genes()
-                    genome.loss_segment(self.homologous, time_counter, a)
+                    genome.loss_segment(snode, self.homologous, time_counter, a)
 
                 elif event == "I":
                     a = genome.obtain_affected_genes()
-                    genome.invert_segment(self.homologous,time_counter, a)
+                    genome.invert_segment(snode, self.homologous,time_counter, a)
 
                 elif event == "C":
                     a = genome.obtain_affected_genes()
-                    genome.translocate_segment(self.homologous, time_counter, a)
+                    genome.translocate_segment(snode, self.homologous, time_counter, a)
 
                 elif event == "O":
                     a = genome.obtain_affected_genes()
                     genome.invert_segment(self.homologous, time_counter, a)
 
-    def run(self):
+    def run(self, genome_folder):
 
         duplication, transfer, loss, inversion, translocation, origination = (0.001, 0.000, 0.0001, 0.00, 0.000, 0.00)
 
@@ -595,7 +596,8 @@ class GenomeSimulator():
 
                         # First we write the ancestral genome
 
-                        snode.Genome.write_genome()
+                        mynode = self.species_tree&snode
+                        mynode.Genome.write_genome(os.path.join(genome_folder, snode + "_GENOME.tsv"))
 
                         sc1, sc2 = children.split("+")
                         self.get_speciated(time_counter, snode, sc1, sc2)
@@ -603,12 +605,16 @@ class GenomeSimulator():
             self.evolve_genomes(duplication, transfer, loss, inversion, translocation, origination, time_counter)
             self.increase_distances()
 
-        print(time_counter)
-        print(self.species_tree.write(format=1))
 
-        survivors = [x for x in self.species_tree.get_leaves() if x.is_alive == True]
-        for n in survivors:
-            print(n.Genome.genes)
+        #survivors = [x for x in self.species_tree.get_leaves() if x.is_alive == True]
+        #for n in survivors:
+        #    print(n.Genome.genes)
+
+        for n in self.species_tree.get_leaves():
+            n.Genome.write_genome(os.path.join(genome_folder, n.name + "_GENOME.tsv"))
+
+
+
 
     def increase_distances(self):
 
@@ -616,7 +622,6 @@ class GenomeSimulator():
 
         for node in active_lineages:
             node.dist += 1
-
 
     def get_extinct(self, time, sp):
 
@@ -718,6 +723,9 @@ class GenomeSimulator():
 
         for gf in self.homologous:
 
+            events_file = os.path.join(events_logfolder, self.parameters["PREFIX"] + str(gf) + "_events.tsv")
+            genetree_file = os.path.join(events_logfolder, self.parameters["PREFIX"] + str(gf) + "_genetree.txt")
+
             with open(os.path.join(events_logfolder, self.parameters["PREFIX"] + str(gf)) + "_events.tsv", "w") as f:
 
                 f.write("Time\tEvent\tNode\n")
@@ -727,13 +735,13 @@ class GenomeSimulator():
                     line = "\t".join(map(str,[time, event, node])) + "\n"
                     f.write(line)
 
-    def generate_gene_tree(self):
+            self.generate_gene_tree(events_file, genetree_file)
 
-        path = "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/RESTART/TEST2/ParallelGeneFamilies/FAM2_events.tsv"
+    def generate_gene_tree(self, events_file, genetree_file):
 
         events = dict()
 
-        with open(path) as f:
+        with open(events_file) as f:
             f.readline()
 
             for line in f:
@@ -778,7 +786,7 @@ class GenomeSimulator():
 
                     elif event == "D":
 
-                        parent, c1, c2 = nodes.split("_")
+                        sp, parent, c1, c2 = nodes.split("_")
 
                         n = gene_tree & parent
                         n.is_alive = False
@@ -793,7 +801,7 @@ class GenomeSimulator():
 
                     elif event == "T":
 
-                        parent, c1, c2 = nodes.split("_")
+                        sp, parent, c1, c2 = nodes.split("_")
 
                         n = gene_tree & parent
                         n.is_alive = False
@@ -808,7 +816,8 @@ class GenomeSimulator():
 
                     elif event == "L":
 
-                        n = gene_tree&nodes
+                        sp, mynode = nodes.split("_")
+                        n = gene_tree&mynode
                         n.is_alive = False
 
 
@@ -818,7 +827,8 @@ class GenomeSimulator():
             for node in active_lineages:
                 node.dist+=1
 
-        print(gene_tree.write(format=1))
+        with open(genetree_file, "w") as f:
+            f.write(gene_tree.write(format=1))
 
 
 

@@ -156,10 +156,9 @@ class SimuLYON():
         fo = FamilyOriginator(whole_tree_file, events_file)
         gfs = GenomeSimulator(parameters_file, events_file, lineages_file)
 
-        gfs.run()
+        gfs.run(raw_gene_families_folder)
         gfs.write_log(raw_gene_families_folder)
-        gfs.generate_gene_tree()
-
+        
 
     def obtain_sequences(self, parameters_file, experiment_folder):
         pass
