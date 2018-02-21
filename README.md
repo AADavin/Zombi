@@ -128,12 +128,13 @@ n4: The branch in the species tree where that gene is found
  
 A genome is an ordered collection of genes. So if we begin with a genome that has 5 genes, what we see is something like
 
-Position    Gene_family Orientation Id
-0           1           +           1
-1           2           -           1
-2           3           -           1
-3           4           +           1
-4           5           -           1
+| Position | Gene_family | Orientation | Id |
+|----------|-------------|-------------|----|
+| 0        | 1           | +           | 1  |
+| 1        | 2           | -           | 1  |
+| 2        | 3           | +           | 1  |
+| 3        | 4           | +           | 1  |
+| 4        | 5           | -           | 1  |
 
 The genome is circular, so the position 4 is adjacent to the position 3 and 0
 
