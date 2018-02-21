@@ -17,7 +17,8 @@ class SimuLYON():
 
         with open(parameters_file) as f:
             for line in f:
-
+                if line[0] == "#":
+                    continue
                 parameter, value = line.strip().split("\t")
                 parameters[parameter] = value
 

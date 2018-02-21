@@ -7,7 +7,6 @@ class Genome():
 
         self.genes = list()
 
-
     def start_genome(self, n):
 
         for i in range(1, n+1):
@@ -19,7 +18,6 @@ class Genome():
 
             name = "_".join(["Root",sense,str(i),"1"])
             self.genes.append(name)
-
 
     def select_random_position(self):
 
@@ -33,18 +31,23 @@ class Genome():
 
         position = self.select_random_position()
         length = self.select_random_length()
-
         total_length = len(self.genes)
 
         affected_genes = list()
 
-        for i in range(position, position + length):
-            if i >= total_length:
-                affected_genes.append(i - total_length)
-            else:
-                affected_genes.append(i)
+        if length >= total_length:
+            affected_genes = [x for x in range(total_length)]
+            return affected_genes
 
-        return affected_genes
+        else:
+
+            for i in range(position, position + length):
+                if i >= total_length:
+                    affected_genes.append(i - total_length)
+                else:
+                    affected_genes.append(i)
+
+            return affected_genes
 
     def obtain_segment(self, affected_genes):
 
@@ -138,7 +141,10 @@ class Genome():
 
         # second we insert
 
-        position = self.select_random_position()
+        if len(self.genes) == 0:
+            position = 0
+        else:
+            position = self.select_random_position()
 
         for i, x in enumerate(segment):
             self.genes.insert(position + i + 1, x)

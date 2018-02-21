@@ -4,8 +4,6 @@ import numpy
 import os
 import random
 import math
-import sys
-
 
 class TreeGenerator():
 
@@ -36,6 +34,8 @@ class TreeGenerator():
 
         with open(parameters_file) as f:
             for line in f:
+                if line["0"] == "#":
+                    continue
                 parameter, value = line.strip().split("\t")
                 self.parameters[parameter] = value
 

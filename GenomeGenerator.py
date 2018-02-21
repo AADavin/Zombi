@@ -50,17 +50,13 @@ class FamilyOriginator():
         return branch, time_in_branch + self.branch_origin[branch]
 
 
-
 class GeneFamilySimulator():
 
     def __init__(self, parameters_file, events_file, lineages_in_time_file):
 
         self.parameters = dict()
 
-        with open(parameters_file) as f:
-            for line in f:
-                parameter, value = line.strip().split("\t")
-                self.parameters[parameter] = value
+        self.read_parameters(parameters_file)
 
         if self.parameters["SEED"] != "0":
             SEED = int(self.parameters["SEED"])
@@ -91,6 +87,15 @@ class GeneFamilySimulator():
             for line in f:
                 k,v = line.strip().split("\t")
                 self.lineages_in_time[int(k)] = v.split(";")
+
+    def read_parameters(self, parameters_file):
+
+        with open(parameters_file) as f:
+            for line in f:
+                if line[0] == "#":
+                    continue
+                parameter, value = line.strip().split("\t")
+                self.parameters[parameter] = value
 
     def choose_event(self, duplication, transfer, loss):
 
@@ -445,20 +450,20 @@ class GeneFamilySimulator():
                 f.write(myline)
 
 
-
 class GenomeSimulator():
 
     def __init__(self, parameters_file, events_file, lineages_in_time_file):
 
         self.homologous = dict()
-
         self.parameters = dict()
         self.species_tree = ete3.Tree()
 
-        with open(parameters_file) as f:
-            for line in f:
-                parameter, value = line.strip().split("\t")
-                self.parameters[parameter] = value
+        self.read_parameters(parameters_file)
+
+        if self.parameters["SEED"] != "0":
+            SEED = int(self.parameters["SEED"])
+            random.seed(SEED)
+            numpy.random.seed(SEED)
 
         self.gf_number = int(self.parameters["STEM_FAMILIES"])
 
@@ -483,6 +488,16 @@ class GenomeSimulator():
             for line in f:
                 k,v = line.strip().split("\t")
                 self.lineages_in_time[int(k)] = v.split(";")
+
+
+    def read_parameters(self, parameters_file):
+
+        with open(parameters_file) as f:
+            for line in f:
+                if line[0] == "#":
+                    continue
+                parameter, value = line.strip().split("\t")
+                self.parameters[parameter] = value
 
     def _start_tree(self):
 
@@ -526,13 +541,12 @@ class GenomeSimulator():
             genome = node.Genome
             snode = node.name
 
-
             if numpy.random.uniform(0, 1) <= total_probability_of_event:  # An event takes place
 
                 event = self.choose_event(duplication, transfer, loss, inversion, translocation, origination)
 
-
                 if event == "D":
+
                     a = genome.obtain_affected_genes()
                     genome.duplicate_segment(snode, self.homologous, time_counter, a)
 
@@ -582,12 +596,14 @@ class GenomeSimulator():
 
                 elif event == "L":
 
+                    a = genome.obtain_affected_genes()
+
                     # We have to check that the minimal size has not been attained
 
-                    if len(genome.genes) <= int(self.parameters["MIN_GENOME_SIZE"]):
-                        continue
-                    a = genome.obtain_affected_genes()
-                    genome.loss_segment(snode, self.homologous, time_counter, a)
+                    if (len(genome.genes) - len(a)) <= int(self.parameters["MIN_GENOME_SIZE"]):
+                        pass
+                    else:
+                        genome.loss_segment(snode, self.homologous, time_counter, a)
 
                 elif event == "I":
                     a = genome.obtain_affected_genes()
@@ -622,6 +638,9 @@ class GenomeSimulator():
         duplication, transfer, loss, inversion, translocation, origination = (0.01, 0.01, 0.01, 0.01, 0.01, 0.01)
 
         for time_counter in range(int(self.total_time)):
+
+            if time_counter % 100 == 0:
+                print("Simulating genome evolution, step %s" % str(time_counter))
 
             if time_counter in self.tree_events:
 
@@ -791,9 +810,30 @@ class GenomeSimulator():
                 f.readline()
 
                 for line in f:
+
                     event, time, nodes = line.strip().split("\t")
+
                     if event == "S" or event == "E":
                         continue
+
+                    elif event == "T":
+
+                        leaving_branch, node_gt, remaining_node_gt, arriving_branch, arriving_gt = nodes.split(";")
+
+                        if leaving_branch not in all_events:
+                            all_events[leaving_branch] = dict()
+                        if int(time) not in all_events[leaving_branch]:
+                            all_events[leaving_branch][int(time)] = list()
+
+                        all_events[leaving_branch][int(time)].append(("LT", nodes, fam_name))
+
+                        if arriving_branch not in all_events:
+                            all_events[arriving_branch] = dict()
+                        if int(time) not in all_events[arriving_branch]:
+                            all_events[arriving_branch][int(time)] = list()
+
+                        all_events[arriving_branch][int(time)].append(("AT", nodes, fam_name))
+
                     else:
                         branch = nodes.split(";")[0]
                         if branch not in all_events:
@@ -808,7 +848,11 @@ class GenomeSimulator():
                 for i in range(self.total_time + 1):
                     if i in all_events[branch]:
                         for event, nodes, fam_name in all_events[branch][i]:
-                            mynodes = ";".join(nodes.split(";")[1:])
+                            if event == "LT" or event == "AT":
+                                mynodes = nodes
+
+                            else:
+                                mynodes = ";".join(nodes.split(";")[1:])
                             f.write("\t".join((str(i), event, mynodes, fam_name))+"\n")
 
 
