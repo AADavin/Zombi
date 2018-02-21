@@ -31,7 +31,7 @@ class Genome():
 
         position = self.select_random_position()
         length = self.select_random_length(p_extension)
-        
+
         total_length = len(self.genes)
 
         affected_genes = list()
@@ -174,62 +174,3 @@ class Genome():
                 cb, sense, gf, id = gene.split("_")
                 line = "\t".join((str(i), gf,sense,id)) + "\n"
                 f.write(line)
-
-
-
-
-
-
-
-
-
-'''
-
-gnm = Genome()
-gnm.start_genome(10)
-
-duplication = 5
-loss = 2
-inversion = 5
-traslocation = 3
-transfer = 0
-
-def choose_event(duplication, transfer, loss, inversion, traslocation):
-
-    draw = numpy.random.choice(["D", "T", "L", "I", "C"], 1, p=af.normalize([duplication, transfer, loss, inversion, traslocation]))
-    return draw
-
-segment = ["+_100_1"]
-
-for i in range(10):
-
-    event = choose_event(duplication, transfer, loss, inversion, traslocation)
-    a = gnm.obtain_affected_genes()
-
-    if event == "D":
-        gnm.duplicate_segment(i, a)
-
-    elif event == "T":
-        position = gnm.select_random_position()
-        gnm.insert_segment(position, segment)
-
-    elif event == "L":
-        gnm.loss_segment(i, a)
-
-    elif event == "I":
-        gnm.invert_segment(a)
-
-    elif event == "C":
-        gnm.traslocate_segment(a)
-
-    print(event, gnm.genes)
-
-'''
-
-
-
-
-
-
-
-
