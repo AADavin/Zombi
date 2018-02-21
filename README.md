@@ -121,10 +121,10 @@ For example:
 n4_+_5_12
 
 The meaning of this is:
-n4: The branch in the species tree where that gene is found
-+: The orientation of the gene (it can be + or -). This is determined randomly with a bernouilli distribution p=0.5
-5: The gene family identifier (in this case, gene family 5)
-12: An unique identifier for that gene. 
+* n4: The branch in the species tree where that gene is found
+* +: The orientation of the gene (it can be + or -). This is determined randomly with a bernouilli distribution p=0.5
+* 5: The gene family identifier (in this case, gene family 5)
+* 12: An unique identifier for that gene. 
  
 A genome is an ordered collection of genes. So if we begin with a genome that has 5 genes, what we see is something like
 
@@ -140,12 +140,12 @@ The genome is circular, so the position 4 is adjacent to the position 3 and 0
 
 The events of evolution in this mode are:
 
-D: Duplications. A segment of the genome is duplicated. The new copy is inserted next to the old one
-L: Losses. A segment of the genome is lost
-T: Transfers. A segment of the genome is transferred to a contemporary species. The segment is inserted in a random position
-C: Translocations. A segment of the genome changes its position within the genome
-I: Inversions. A segment of the genome inverts its position
-O: Originations. A new gene family appears and it is inserted in a random position
+* D: Duplications. A segment of the genome is duplicated. The new copy is inserted next to the old one
+* L: Losses. A segment of the genome is lost
+* T: Transfers. A segment of the genome is transferred to a contemporary species. The segment is inserted in a random position
+* C: Translocations. A segment of the genome changes its position within the genome
+* I: Inversions. A segment of the genome inverts its position
+* O: Originations. A new gene family appears and it is inserted in a random position
 
 The rates in this case are **genome-wise**.
 There is also an additional rate for each event. This is called the **extension_rate**. This number (between 0 and 1) is
