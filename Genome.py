@@ -23,14 +23,15 @@ class Genome():
 
         return numpy.random.randint(len(self.genes))
 
-    def select_random_length(self):
+    def select_random_length(self, p):
 
-        return numpy.random.geometric(0.5)
+        return numpy.random.geometric(p)
 
-    def obtain_affected_genes(self):
+    def obtain_affected_genes(self, p_extension):
 
         position = self.select_random_position()
-        length = self.select_random_length()
+        length = self.select_random_length(p_extension)
+        
         total_length = len(self.genes)
 
         affected_genes = list()

@@ -3,6 +3,44 @@ import argparse
 import numpy
 
 
+class GenomeEvolutionRates():
+
+    def __init__(self, params):
+
+        self.params = params
+
+        if self.params["MODE"] == "0":
+            self.mode_0() # Global rates
+
+    def get_value(self, distribution, p0, p1):
+
+        # Verify that the rates are >= 0
+
+        r = 0.0
+
+        if distribution == "fixed":
+            r = p0
+        elif distribution == "uniform":
+            r = numpy.random.uniform(p0,p1)
+        elif distribution == "normal":
+            r = numpy.random.normal(p0,p1)
+
+        return r
+
+    def mode_0(self):
+
+        # Global rates
+
+        dr = self.get_value(self.params["DUPLICATION_D"], float(self.params["DUPLICATION_P0"]), float(self.params["DUPLICATION_P1"]))
+        tr = self.get_value(self.params["TRANSFER_D"], float(self.params["TRANSFER_P0"]), float(self.params["TRANSFER_P1"]))
+        lr = self.get_value(self.params["LOSS_D"], float(self.params["LOSS_P0"]), float(self.params["LOSS_P1"]))
+
+        ir = self.get_value(self.params["INVERSION_D"], float(self.params["INVERSION_P0"]), float(self.params["INVERSION_P1"]))
+        cr = self.get_value(self.params["TRANSLOCATION_D"], float(self.params["TRANSLOCATION_P0"]), float(self.params["TRANSLOCATION_P1"]))
+        orir = self.get_value(self.params["ORIGINATION_D"], float(self.params["ORIGINATION_P0"]), float(self.params["ORIGINATION_P1"]))
+
+        return dr, tr, lr, ir, cr, orir
+
 class GeneEvolutionRates():
 
     def __init__(self, params):
@@ -203,23 +241,4 @@ class SpeciesEvolutionRates():
 
 
 
-
-#lvl0parser = argparse.ArgumentParser(add_help=False)
-#lvl0parser.add_argument('file', type=open, action=LoadFromFile)
-'''
-lvl0parser.add_argument("--mode", type=int, default=0, help="Choose the mode of gene family evolution. Check up the manual for more information")
-lvl0parser.add_argument("--duplication_d", type=str,  choices=["fixed", "uniform", "normal"], help="Duplication rate distribution")
-lvl0parser.add_argument("--transfer_d", type=str, choices=["fixed", "uniform", "normal"], help="Transfer rate distribution")
-lvl0parser.add_argument("--loss_d", type=str, choices=["fixed", "uniform", "normal"], help="Loss rate distribution")
-lvl0parser.add_argument("--replacement_d", type=str, choices=["fixed", "uniform"], help="Replacement rate distribution")
-lvl0parser.add_argument("--duplication_p0", type=float, help="Duplication rate parameter 0")
-lvl0parser.add_argument("--duplication_p1", type=float, help="Duplication rate parameter 1")
-lvl0parser.add_argument("--transfer_p0", type=float, help="Transfer rate parameter 0")
-lvl0parser.add_argument("--transfer_p1", type=float, help="Transfer rate parameter 1")
-lvl0parser.add_argument("--loss_p0", type=float, help="Loss rate parameter 0")
-lvl0parser.add_argument("--loss_p1", type=float, help="Loss rate parameter 1")
-lvl0parser.add_argument("--replacement_r", type=float, help="Replacement rate")
-'''
-#args = lvl0parser.parse_args()
-#rm = GeneEvolutionRates(args)
 

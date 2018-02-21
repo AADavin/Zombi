@@ -3,7 +3,7 @@ import os
 import numpy
 import random
 import AuxiliarFunctions as af
-from RatesManager import GeneEvolutionRates
+from RatesManager import GeneEvolutionRates, GenomeEvolutionRates
 from Genome import Genome
 import copy
 class FamilyOriginator():
@@ -460,12 +460,16 @@ class GenomeSimulator():
 
         self.read_parameters(parameters_file)
 
+
         if self.parameters["SEED"] != "0":
             SEED = int(self.parameters["SEED"])
             random.seed(SEED)
             numpy.random.seed(SEED)
 
         self.gf_number = int(self.parameters["STEM_FAMILIES"])
+
+        self.rm = GenomeEvolutionRates(self.parameters)
+
 
         self.tree_events = dict()
         self._start_tree()
@@ -533,6 +537,12 @@ class GenomeSimulator():
 
         total_probability_of_event = duplication + transfer + loss + inversion + translocation + origination
 
+        d_e = float(self.parameters["DUPLICATION_E"])
+        t_e = float(self.parameters["TRANSFER_E"])
+        l_e = float(self.parameters["LOSS_E"])
+        i_e = float(self.parameters["INVERSION_E"])
+        c_e = float(self.parameters["TRANSLOCATION_E"])
+
         active_genomes = [x for x in self.species_tree.get_leaves() if x.is_alive == True]
         random.shuffle(active_genomes)
 
@@ -547,7 +557,7 @@ class GenomeSimulator():
 
                 if event == "D":
 
-                    a = genome.obtain_affected_genes()
+                    a = genome.obtain_affected_genes(d_e)
                     genome.duplicate_segment(snode, self.homologous, time_counter, a)
 
                 elif event == "T":
@@ -555,7 +565,7 @@ class GenomeSimulator():
                     if recipient == None:
                         continue
 
-                    a = genome.obtain_affected_genes()
+                    a = genome.obtain_affected_genes(t_e)
 
                     old_segment = list()
                     new_segment = list()
@@ -596,7 +606,7 @@ class GenomeSimulator():
 
                 elif event == "L":
 
-                    a = genome.obtain_affected_genes()
+                    a = genome.obtain_affected_genes(l_e)
 
                     # We have to check that the minimal size has not been attained
 
@@ -606,11 +616,13 @@ class GenomeSimulator():
                         genome.loss_segment(snode, self.homologous, time_counter, a)
 
                 elif event == "I":
-                    a = genome.obtain_affected_genes()
+
+
+                    a = genome.obtain_affected_genes(i_e)
                     genome.invert_segment(snode, self.homologous,time_counter, a)
 
                 elif event == "C":
-                    a = genome.obtain_affected_genes()
+                    a = genome.obtain_affected_genes(c_e)
                     genome.translocate_segment(snode, self.homologous, time_counter, a)
 
                 elif event == "O":
@@ -635,7 +647,7 @@ class GenomeSimulator():
 
     def run(self, genome_folder):
 
-        duplication, transfer, loss, inversion, translocation, origination = (0.01, 0.01, 0.01, 0.01, 0.01, 0.01)
+        duplication, transfer, loss, inversion, translocation, origination = self.rm.mode_0()
 
         for time_counter in range(int(self.total_time)):
 
@@ -704,7 +716,6 @@ class GenomeSimulator():
         sc2.add_feature("is_alive", True)
         sc2.add_feature("Genome", copy.deepcopy(parent_genome))
         genes_affected_2 = sc2.Genome.update_homologous(sc2.name, self.homologous)
-
 
         for i, gene in enumerate(parent_genome.genes):
 
