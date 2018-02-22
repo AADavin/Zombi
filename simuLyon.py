@@ -147,10 +147,6 @@ class SimuLYON():
 
         self.read_parameters(parameters_file, self.genome_parameters)
 
-        prefix = self.genome_parameters["PREFIX"]
-        my_stem = float(self.genome_parameters["STEM_LENGTH"])
-        families_in_stem = int(self.genome_parameters["STEM_FAMILIES"])
-        n_families = int(self.genome_parameters["N_FAMILIES"])
         whole_tree_file = os.path.join(experiment_folder, "WholeTree")
         events_file = os.path.join(experiment_folder, "SpeciesTreeEvents.tsv")
         lineages_file = os.path.join(experiment_folder, "LineagesInTime.tsv")
@@ -160,12 +156,22 @@ class SimuLYON():
         with open(transfers_file, "w") as f:
             f.write("Family\tDonor\tRecipient\n")
 
-        raw_gene_families_folder = os.path.join(experiment_folder, "Genomes")
+        genome_folder = os.path.join(experiment_folder, "Genomes")
+        events_per_branch_folder = os.path.join(genome_folder, "EventsPerBranch")
+        gene_trees_folder = os.path.join(genome_folder, "GeneTrees")
+        events_per_family_folder = os.path.join(genome_folder, "EventsPerFamily")
+        complete_genomes_folder = os.path.join(genome_folder, "CompleteGenomes")
 
-        if os.path.isdir(raw_gene_families_folder):
-            pass
-        else:
-           os.mkdir(raw_gene_families_folder)
+        if not os.path.isdir(genome_folder):
+            os.mkdir(genome_folder)
+        if not os.path.isdir(events_per_branch_folder):
+            os.mkdir(events_per_branch_folder)
+        if not os.path.isdir(events_per_family_folder):
+            os.mkdir(events_per_family_folder)
+        if not os.path.isdir(gene_trees_folder):
+            os.mkdir(gene_trees_folder)
+        if not os.path.isdir(complete_genomes_folder):
+            os.mkdir(complete_genomes_folder)
 
         with open(whole_tree_file) as f:
             tree = ete3.Tree(f.readline().strip(),format=1)
@@ -175,9 +181,15 @@ class SimuLYON():
         fo = FamilyOriginator(whole_tree_file, events_file)
         gfs = GenomeSimulator(parameters_file, events_file, lineages_file)
 
-        gfs.run(raw_gene_families_folder)
-        gfs.write_log(raw_gene_families_folder)
-        gfs.write_events_per_branch(raw_gene_families_folder)
+        gfs.run(complete_genomes_folder )
+
+        print("Writing logs")
+
+        gfs.write_log(gene_trees_folder, events_per_family_folder, complete_genomes_folder, events_per_branch_folder)
+
+
+
+
 
     def obtain_sequences(self, parameters_file, experiment_folder):
         pass
@@ -215,11 +227,11 @@ if __name__ == "__main__":
 
         elif mode == "G":
 
-            SL.obtain_gene_families(parameters_file, experiment_folder)
+            SL.obtain_genomes(parameters_file, experiment_folder)
 
         elif mode == "F":
 
-            SL.obtain_genomes(parameters_file, experiment_folder)
+            SL.obtain_gene_families(parameters_file, experiment_folder)
 
         elif mode == "S":
 

@@ -72,7 +72,7 @@ Once a species tree is generated some other files are generated along. Those fil
 
 ### **Generating a genome (G)** ###
 
-To generate a genome it is first necessary to simulate a Species Tree using simuLyon. And no, it is not possible to input an externally computed tree, ** but it will be in future versions**
+To generate a genome it is first necessary to simulate a Species Tree using simuLyon. And no, it is not possible to input an externally computed tree, **but it will be in future versions**
 
 To simulate genomes, simuLyon starts with an ancestral genome at the root, with a given number of genes. For now in the current version, all genes families present in this 
 genome have a single copy (so in this ancestral genome there are no duplicated genes). In the current version, genes have 4 fields, separated by underscored.
@@ -168,7 +168,8 @@ For that we make SPECIATION_P0 = 0.0003 and EXTINCTION_P0 = 0.0001. Once we have
  
  #### Example 2 - Simulating the evolution of genomes ####
   
- Then we want to simulate the evolution of genes inside the species tree.
+ Then we want to simulate the evolution of genes inside the species tree. For that we will use the species tree
+ we obtained in the previous example
  
  We will change the default parameters. We will use as rates 0.1 for duplications, 0.2 for transfers and 0.3 for losses.
  For that we do:

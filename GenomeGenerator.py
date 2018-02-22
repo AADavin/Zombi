@@ -206,7 +206,7 @@ class GenomeSimulator():
         for time_counter in range(int(self.total_time)):
 
             if time_counter % 100 == 0:
-                print("Simulating genome evolution, step %s" % str(time_counter))
+                print("Simulating genome evolution %s".format() % str('{:.1%}'.format(time_counter/int(self.total_time))))
 
             if time_counter in self.tree_events:
 
@@ -227,14 +227,6 @@ class GenomeSimulator():
 
             self.evolve_genomes(duplication, transfer, loss, inversion, translocation, origination, time_counter)
             self.increase_distances()
-
-
-        #survivors = [x for x in self.species_tree.get_leaves() if x.is_alive == True]
-        #for n in survivors:
-        #    print(n.Genome.genes)
-
-        for n in self.species_tree.get_leaves():
-            n.Genome.write_genome(os.path.join(genome_folder, n.name + "_GENOME.tsv"))
 
 
     def increase_distances(self):
@@ -343,14 +335,21 @@ class GenomeSimulator():
                 line = self.gene_family["Name"] + "\t" + dn + "\t" + rc + "\n"
                 f.write(line)
 
-    def write_log(self, events_logfolder):
+    def write_log(self, gene_trees_folder, events_per_family_folder, complete_genomes_folder, events_per_branch_folder):
+
+        # First we write the genomes
+
+        for n in self.species_tree.get_leaves():
+            print("Writing %s genome" % n.name)
+            n.Genome.write_genome(os.path.join(complete_genomes_folder, n.name + "_GENOME.tsv"))
+
+        # Second, we write the events per gene family
 
         for gf in self.homologous:
 
-            events_file = os.path.join(events_logfolder, self.parameters["PREFIX"] + str(gf) + "_events.tsv")
-            genetree_file = os.path.join(events_logfolder, self.parameters["PREFIX"] + str(gf) + "_genetree.txt")
+            events_file = os.path.join(events_per_family_folder, self.parameters["PREFIX"] + str(gf) + "_events.tsv")
 
-            with open(os.path.join(events_logfolder, self.parameters["PREFIX"] + str(gf)) + "_events.tsv", "w") as f:
+            with open(events_file, "w") as f:
 
                 f.write("Event\tTime\tNode\n")
 
@@ -359,11 +358,24 @@ class GenomeSimulator():
                     line = "\t".join(map(str,[time, event, node])) + "\n"
                     f.write(line)
 
-            self.generate_gene_tree(events_file, genetree_file)
+        # Thirds, we write the gene trees
 
-    def write_events_per_branch(self, events_logfolder):
+        if self.parameters["OUTPUT_GENETREES"] == "1":
 
-        fam_events = [os.path.join(events_logfolder,x) for x in os.listdir(events_logfolder) if "_events.tsv" in x]
+            events_files = os.listdir(events_per_family_folder)
+
+            for event_file in events_files:
+                genetree_file = os.path.join(gene_trees_folder, self.parameters["PREFIX"] + str(gf) + "_genetree.txt")
+                self.write_gene_tree(events_file, genetree_file)
+
+        # Fourth, we write the events per branch
+
+        self.write_events_per_branch(events_per_family_folder, events_per_branch_folder)
+
+    def write_events_per_branch(self, events_per_family_folder, events_per_branch_folder):
+
+        fam_events = [os.path.join(events_per_family_folder, x) for x in os.listdir(events_per_family_folder) if
+                      "_events.tsv" in x]
 
         all_events = dict()
 
@@ -408,20 +420,22 @@ class GenomeSimulator():
                         all_events[branch][int(time)].append((event, nodes, fam_name))
 
         for node in all_events:
-            with open(os.path.join(events_logfolder, node + "_branchevents.tsv"), "w") as f:
+            print("Writing events per branch %s" % node)
+            with open(os.path.join(events_per_branch_folder, node + "_branchevents.tsv"), "w") as f:
                 f.write("\t".join(("Time","Event","Nodes", "Gene_family")) + "\n")
                 for i in range(self.total_time + 1):
                     if i in all_events[branch]:
                         for event, nodes, fam_name in all_events[branch][i]:
                             if event == "LT" or event == "AT":
                                 mynodes = nodes
-
                             else:
                                 mynodes = ";".join(nodes.split(";")[1:])
                             f.write("\t".join((str(i), event, mynodes, fam_name))+"\n")
 
 
-    def generate_gene_tree(self, events_file, genetree_file):
+    def write_gene_tree(self, events_file, genetree_file):
+
+        print("Computing gene tree %s" % genetree_file.split("/")[-1])
 
         events = dict()
 
@@ -526,6 +540,16 @@ class GenomeSimulator():
         for n in gene_tree.get_leaves():
             n.name = n.current_branch + "_" + n.name
 
-        with open(genetree_file, "w") as f:
+        with open(genetree_file.replace("_genetree","_wholegenetree"), "w") as f:
             f.write(gene_tree.write(format=1))
+
+        if self.parameters["PRUNE_GENETREES"] == "1":
+            print("Pruning %s" % genetree_file.split("/")[-1])
+            active_lineages = [x for x in gene_tree.get_leaves() if x.is_alive == True]
+
+            if len(active_lineages) >= 3:
+
+                gene_tree.prune(active_lineages, preserve_branch_length=True)
+                with open(genetree_file.replace("_genetree", "_extantgenetree"), "w") as f:
+                    f.write(gene_tree.write(format=1))
 
