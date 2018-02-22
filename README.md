@@ -6,7 +6,12 @@
 
 ### **Introduction** ###
 
- SimuLyon can be of great interest to those who want to test different evolutionary hypothesis under simulations and need to use a fast and easy to use tool to generate species trees, gene trees and sequences.
+SimuLyon is a simulator of species tree and genome evolution that accounts for extinct lineages. 
+This feature makes it especially interesting for those studying organisms in which there exists Lateral Gene Transfers, since transfer events can take place between lineages that have left no surviving descendants.
+SimuLyon uses a Birth-death model to generate a species tree. Different functions are included to generate species tree with non-constant rates of speciation and extinction. 
+Then it simulates the evolution of genomes along this species tree. Genomes evolve undergoing events of duplication, transfer, loss, translocation and inversion. 
+
+SimuLyon can be of great interest to those who want to test different evolutionary hypothesis under simulations and need to use a fast and easy to use tool to generate species trees, gene trees and sequences.
 
 Please read the manual before using it. I know you are in a hurry but it only takes around 15 minutes of your time. If you are really in a hurry
 then just follow the **Examples 1 and 2**.
@@ -26,17 +31,12 @@ Watch out! simuLyon is **unfinished**. The current version can undergo big chang
 
 You need **python 3.6** installed with **ETE3** and **numpy**
 
-There are **three** modes to run simuLyon. **T** (species Tree) and **G** (Genomes) 
+There are **four** modes to run simuLyon: **T** (species Tree), **G** (Genomes), **F** (gene Families)" and  **S** (Sequences) 
 
-(and we will write a third one for sequences, **S**) 
+Computing **genomes** or **gene families** requires having computed previously a species tree computed with the mode T
+Computing **sequences** requires having computed previously either **genomes** or **gene families**
 
-The order to obtain a complete dataset is 
-
- 1. Species Tree
- 2. Genomes
- 3. Sequences
-
-This means that if you want to get to the last point you must first compute the 2 first points. So, the very first thing you have to do is running simuLyon to create a species tree using simply
+To start using simuLyon right away you can use:
 
     python simuLyon.py T SpeciesTreeParameters.tsv /Output_folder
 
@@ -65,10 +65,9 @@ Once you have done that, if you are interested in using the gene trees you *have
 This will cut the gene trees removing extinct species and other species that were not including in the sample
 
 Go through the examples for more details    
-     
-Then, the sequences are simulated on the gene trees. *This is not written yet!*
+   
 
-### **Generating a species tree** ###
+### **Generating a species tree (T)** ###
 
 SimuLyon uses a Birth-death model to generate a species tree. In each step of time, lineages can speciate given rise to two new lineages
 or go extinct. Different functions are included to generate trees with variable rates, namely:
@@ -81,16 +80,13 @@ or go extinct. Different functions are included to generate trees with variable 
 
 Once a species tree is generated some other files are generated along. Those files are used by simuLyon when computing genomes
 
-### **Generating a genome** ###
+### **Generating a genome (G)** ###
 
-To generate a genome it is first necessary to simulate a Species Tree using simuLyon. And no, it is not possible to input a tree to simuLyon
-to use a species tree obtained somewhere else. **This is not written yet, but it will be**
+To generate a genome it is first necessary to simulate a Species Tree using simuLyon. And no, it is not possible to input an externally computed tree, ** but it will be in future versions**
 
-There are two methods to simulate the evolution of genomes
-
-The first method starts with an ancestral genome at the root, with a given number of genes. For now in the current version, all genes families present in this 
+To simulate genomes, simuLyon starts with an ancestral genome at the root, with a given number of genes. For now in the current version, all genes families present in this 
 genome have a single copy (so in this ancestral genome there are no duplicated genes). In the current version, genes have 4 fields, separated by underscored.
-For example:
+For example, a given gene can be:
 
 n4_+_5_12
 
@@ -137,12 +133,14 @@ Origination of new gene families are always of size 1, meaning that it is not po
 Once that the full evolution of genomes has been simulated, simuLyon prints also the gene trees associated to the different gene families, all the events taking place
 in each gene family, the events taking place in each branch and the genomes of each node in the species tree.
 
-The second method is simulating the evolution of gene families independently, one by one. Genes families evolve inside the species tree undergoing events 
-of duplications, transfers and losses. By simulating the evolution of many gene families one can simulate the evolution of genomes. 
-This method however, does not provide any information regarding the position of the different genes within the genomes. Genomes are simply a bunch
-of genes that are found in no particular order in a given point of the species tree. This method however, has the advantage of using **gene-wise** rates (easier to estimate) and that it is possible as many gene families until attained any given number
+### **Generating gene families (F) ** ###
 
-### **Generating sequences** ###
+With this method is possible to simulate genes that evolve inside the species tree independent from other genes. Genes families evolve inside the species tree undergoing events 
+of duplications, transfers and losses. This method however, does not provide any information regarding the position of the different genes within the genomes, but technically simulating
+a large number of independent gene families it is possible to study the presence or absence of different genes in different positions of the species tree to recover genomes. In this case genomes are simply a bunch
+of genes that are found in no particular order in a given point of the species tree. This method uses **gene-wise** rates and it is to simulate as many gene families as wanted.
+
+### **Generating sequences (S) ** ###
 
 **This is not written yet**
 
@@ -172,7 +170,7 @@ We are going to change also the speciation rate to a fixed number of 10 and the 
  This will sample randomly 20% of the living species and will write the pruned tree
  on the folder SAMPLE20, inside the folder EXAMPLE_1
  
- #### Example 2 - Simulating the evolution of independent gene families ####
+ #### Example 2 - Simulating the evolution of genomes ####
   
  Then we want to simulate the evolution of genes inside the species tree.
  
@@ -199,7 +197,7 @@ We are going to change also the speciation rate to a fixed number of 10 and the 
  This will prune the species tree of the gene families. The end result can be found
  in the folder SAMPLE20
  
-#### Example 3 - Simulating the evolution of genomes #### 
+#### Example 3 - Simulating the evolution of gene families #### 
        
   
 
