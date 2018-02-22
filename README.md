@@ -45,28 +45,14 @@ To start using simuLyon right away you can use:
     python simuLyon.py T SpeciesTreeParameters.tsv /Output_folder
 
 The Species Tree will be created in the /Output folder, along some other useful files (this is explained in the Output section of this manual)
-Very frequently you will be interested in having a Species Tree that contains only extant species and potentially, only a fraction of all the surviving lineages.
-
-For doing that, we resort to the script **sampLyon.py**. This script is going to prune and sample the different trees generated. For running it you can use:
-
-    python sampLyon.py T /previous_Output_folder Sample_name N
-    
-T indicates the mode (prune and sample species Tree), then we input the folder we created before, we give a name to this sample and finally we introduce the fraction (N)
-of species that will be sampled.
 
 Then, you can simulate the evolution of genomes in that species tree using:
 
     python simuLyon.py G GenomeParameters.tsv /previous_Output_folder
 
 Make sure that the Output_folder is the same that you were using when you generated the Species Tree! 
-simuLyon will simulate the evolution of gene inside the whole species tree and it will print a very detailed
-information about the evolution of those genes.
-
-Once you have done that, if you are interested in using the gene trees you *have to* run sampLyon this way: 
-
-    python sampLyon.py G /previous_Output_folder /previous_Sample_name
-
-This will cut the gene trees removing extinct species and other species that were not including in the sample
+simuLyon will simulate the evolution of genomes inside the whole species tree and it will print a very detailed
+information about them
 
 Go through the examples for more details    
    
@@ -177,14 +163,8 @@ For that we make SPECIATION_P0 = 0.0003 and EXTINCTION_P0 = 0.0001. Once we have
  Then we can go to the folder /EXAMPLE_1 and inspect the files that have been created there.
  
  The resulting tree has 6 extant lineages and it can be found in the file /EXAMPLE_1/WholeTree
- 
- Once we have done that, let us prune the tree to one containing only the surviving lineages.
- For that we run:
- 
-      python sampLyon.py T EXAMPLE_1 /Extant 1       
-     
- This will sample randomly 20% of the living species and will write the pruned tree
- on the folder SAMPLE20, inside the folder EXAMPLE_1
+ The surviving species can be found in /EXAMPLE1/ExtantTree 
+
  
  #### Example 2 - Simulating the evolution of genomes ####
   
@@ -367,3 +347,21 @@ If True (1), transfers take place preferentially between closely related species
  - 2: Lineage-specific heterogeneity (lineage autocorrelated)
  - 3: Lineage-specific heterogeneity (uncorrelated)
  - 4: User defined heterogeneity
+
+
+### FROM NOW ON, OLD TEXT. PLEASE JUST IGNORE
+
+Very frequently you will be interested in having a Species Tree that contains only extant species and potentially, only a fraction of all the surviving lineages.
+
+For doing that, we resort to the script **sampLyon.py**. This script is going to prune and sample the different trees generated. For running it you can use:
+
+    python sampLyon.py T /previous_Output_folder Sample_name N
+    
+T indicates the mode (prune and sample species Tree), then we input the folder we created before, we give a name to this sample and finally we introduce the fraction (N)
+of species that will be sampled.
+
+Once you have done that, if you are interested in using the gene trees you *have to* run sampLyon this way: 
+
+    python sampLyon.py G /previous_Output_folder /previous_Sample_name
+
+This will cut the gene trees removing extinct species and other species that were not including in the sample

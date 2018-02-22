@@ -411,6 +411,8 @@ class TreeGenerator():
         eventsfile = os.path.join(logfolder, "SpeciesTreeEvents.tsv")
         lineagesintime = os.path.join(logfolder, "LineagesInTime.tsv")
         wholetreefile = os.path.join(logfolder, "WholeTree")
+        extanttreefile = os.path.join(logfolder, "ExtantTree")
+
 
         with open(logfile, "w") as f:
 
@@ -420,6 +422,11 @@ class TreeGenerator():
 
         with open(wholetreefile,"w") as f:
             f.write(self.whole_species_tree.write(format=1))
+
+        if self.parameters["PRUNING"] == "1":
+            self.get_extant_tree()
+            with open(extanttreefile, "w") as f:
+                f.write(self.extant_species_tree.write(format=1))
 
         with open(eventsfile, "w") as f:
 

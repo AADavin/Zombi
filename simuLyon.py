@@ -41,7 +41,7 @@ class SimuLYON():
                 print("Aborting. Maximum number of trials attained. Not possible to compute the tree")
 
             else:
-                print("Correctly computed tree with %s leaves" % str(len(tg.whole_species_tree)))
+                print("Correctly computed tree")
                 tg.store_log(experiment_folder)
 
         # You have to work in the next lines!
