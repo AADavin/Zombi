@@ -17,7 +17,6 @@ class GenomeSimulator():
 
         self.read_parameters(parameters_file)
 
-
         if self.parameters["SEED"] != "0":
             SEED = int(self.parameters["SEED"])
             random.seed(SEED)
@@ -26,8 +25,6 @@ class GenomeSimulator():
         self.gf_number = int(self.parameters["STEM_FAMILIES"])
 
         self.rm = GenomeEvolutionRates(self.parameters)
-
-
         self.tree_events = dict()
         self._start_tree()
 

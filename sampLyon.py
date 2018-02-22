@@ -74,6 +74,10 @@ if __name__ == "__main__":
 
     elif args[0] == "G":
 
+        print("Still to write")
+
+    elif args[0] == "F":
+
         infolder, outfolder = args[1:]
         prune_gene_trees(infolder, os.path.join(infolder, outfolder))
 

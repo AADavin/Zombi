@@ -32,7 +32,7 @@ class SimuLYON():
             trials = 0
 
             while success == False and trials <= 100:
-
+                print("Computing Species Tree, %s trial" % str(trials))
                 tg = TreeGenerator(parameters_file)
                 success = tg.new_tree_generator()
                 trials += 1
@@ -41,6 +41,7 @@ class SimuLYON():
                 print("Aborting. Maximum number of trials attained. Not possible to compute the tree")
 
             else:
+                print("Correctly computed tree with %s leaves" % str(len(tg.whole_species_tree)))
                 tg.store_log(experiment_folder)
 
         # You have to work in the next lines!

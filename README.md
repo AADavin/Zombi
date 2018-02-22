@@ -16,6 +16,8 @@ SimuLyon can be of great interest to those who want to test different evolutiona
 Please read the manual before using it. I know you are in a hurry but it only takes around 15 minutes of your time. If you are really in a hurry
 then just follow the **Examples 1 and 2**.
 
+**The current version of simuLyon runs in discrete time. A newer version in continous time will come soon**
+
 Writen by Adrián A. Davín 
 Using ideas, suggestions and comments coming from: (still to fill) 
 
@@ -31,10 +33,12 @@ Watch out! simuLyon is **unfinished**. The current version can undergo big chang
 
 You need **python 3.6** installed with **ETE3** and **numpy**
 
-There are **four** modes to run simuLyon: **T** (species Tree), **G** (Genomes), **F** (gene Families)" and  **S** (Sequences) 
+There are **four** modes to run simuLyon: **T** (species Tree), **G** (Genomes), **F** (gene Families) and  **S** (Sequences) 
 
 Computing **genomes** or **gene families** requires having computed previously a species tree computed with the mode T
 Computing **sequences** requires having computed previously either **genomes** or **gene families**
+
+The parameters are read from a tsv file that it can be modified with any text editor. 
 
 To start using simuLyon right away you can use:
 
@@ -152,20 +156,32 @@ First thing we do is we are going to change the parameters of the Species Tree.
  For that we create a new file using:
  
      cp SpeciesTreeParameters.tsv   example1_SpeciesTreeParameters.tsv
-        
-We are going to change also the speciation rate to a fixed number of 10 and the extinction rate to 3.
- For that we make SPECIATION_P0 = 10 and EXTINCTION_P0 = 3. Once we have changed that, we can run the command
+     
+By default (STOPPING_RULE = 0), the tree evolves until time reaches TOTAL_TIME
+Let us change this to obtain a tree with 6 living lineages. We open the file and we modify:
+ 
+ * STOPPING_RULE = 3
+ * N_LINEAGES = 6
+ 
+To make the example reproducible, let us also change the seed.
+
+* SEED = 237
+
+Let us also use change the default and extinction rates. For that, we will use as the speciation rate: 3 * 10^4
+and as extinction rate 1 * 10^-4
+
+For that we make SPECIATION_P0 = 0.0003 and EXTINCTION_P0 = 0.0001. Once we have changed that, we can run the command
         
      python simuLyon.py T example1_SpeciesTreeParameters.tsv EXAMPLE_1
    
  Then we can go to the folder /EXAMPLE_1 and inspect the files that have been created there.
  
- The resulting tree has 793 extant lineages and it can be found in the file /EXAMPLE_1/WholeTree
+ The resulting tree has 6 extant lineages and it can be found in the file /EXAMPLE_1/WholeTree
  
- Once we have done that, let us prune the tree to one containing 20% of the surviving lineages.
+ Once we have done that, let us prune the tree to one containing only the surviving lineages.
  For that we run:
  
-      python sampLyon.py T EXAMPLE_1 /SAMPLE20 0.2       
+      python sampLyon.py T EXAMPLE_1 /Extant 1       
      
  This will sample randomly 20% of the living species and will write the pruned tree
  on the folder SAMPLE20, inside the folder EXAMPLE_1

@@ -34,7 +34,9 @@ class TreeGenerator():
 
         with open(parameters_file) as f:
             for line in f:
-                if line["0"] == "#":
+                if line[0] == "#":
+                    continue
+                if line[0] == "\n":
                     continue
                 parameter, value = line.strip().split("\t")
                 self.parameters[parameter] = value
@@ -133,6 +135,7 @@ class TreeGenerator():
                 if time_counter not in self.events:
                     self.events[time_counter] = []
                 self.events[time_counter].append(("END", None, None))
+
                 success = False
                 return success
                 break
