@@ -225,23 +225,26 @@ genome composition.
 
 *EventsPerBranch*: A folder with one file per branch of the species tree. Each file contains information about the
 events taking place in that branch. There are 4 fields. 
+
 1. Time: The time at which the event takes place
 2. Event: The type of event that takes place in a given time (Duplication D, Losses L, ArrivingTransfer AT, LeavingTransfer LT, Inversions I, Translocations C and Originations O)
 3. Nodes: Some more information about the kind of event:
+
 * D: Three numbers separated by semicolons, e.g. 14;15;16. Correspond to the identifier of the gene that duplicates, and the identifiers of the new two genes generated
 * L: One number. Corresponds to the identifier of the gene that is lost
 * AT: Five numbers. In order: The branch of the species tree where the transfer leaves, the identifier of the gene that is transferred, the identifier of the gene that remains in the donor genome, the branch of the recipient genome and the identifier of the gene that is inserted in the recipient genome
 * LT: Exactly as AT
 * I: One number. Identifier of the gene affected
 * C: One number. Identifier of the gene affected
-* O: One number. Identifier of the gene appearing
+* O: One number. Identifier of the gene appearing (always 1)
+
+4. Gene_family. Identifier of the gene family affected by the event
 
 Please notice that in the case of events that affect to several genes, this will be reflected in the first column (several events taking place at the same unit of time)
  
  *EventsPerBranch*: A folder containing the gene trees corresponding to the evolution of the different families and the gene trees pruned so that only surviving genes are represented.
  Please notice that gene trees with fewer than 2 copies are simply not output
- 
- 
+  
 
 #### Mode F
 
@@ -262,11 +265,7 @@ You can change the parameters directly in the tsv files. Watch out, it is a tabu
 
 **SPECIES_EVOLUTION_MODE**
 
- - 0: Global rates of speciation and extinction 
- - 1: Lineage-specific rates (time and lineage autocorrelated)  - Not ready yet
- - 2: Lineage-specific rates (lineage autocorrelated) - Not ready yet
- - 3: Lineage-specific rates (uncorrelated) - Not ready yet
- - 4: User defined rates
+ - 0: Global rates of speciation and extinction (only working mode so far)
 
 **STOPPING_RULE**
 
@@ -275,30 +274,29 @@ You can change the parameters directly in the tsv files. Watch out, it is a tabu
  - 2: Tree evolves until a total of species = N_LINEAGES (extinct) have been generated
  - 3: Tree evolves until a total of species = N_LINEAGES (alive) have been generated
 
+**TOTAL_TIME**
+
+To use with the stopping rule 0
+
 **SPECIES_NUMBER**
 
 To use in combination with the stopping rules 1,2 or 3
 
-**SPECIATION_RATE**
+**SPECIATION_D, EXTINCTION_D**
 
- Speciation rate, measured in mean number of speciation per unit of time  
+Distribution probability for each type of event
 
-**EXTINCTION_RATE**
-
- Extinction rate, measured in mean number of speciation per unit of time   
-
-**USER_DEFINED_RATES**
-
-File containing the multipliers on the speciation and the extinction rate per unit of time, to be used when the species tree is simulated in mode 4
-The format is (separated by tabs)
-time_start	time_end	spec_mult	ext_mult	
-See example 3 for more information
+ - **fixed**: In this case, the value of the corresponding parameter 0 will be use as the rate. For example, if you are planning to use a constant rate of 0.005 for speciations you must use: speciation_d = fixed ; speciation_p0 = 0.005
+ - **uniform**: The value will be sampled from an uniform distribution between the corresponding values of p0 and p1. For example, if you want the speciation rate to be randomly sampled from an uniform distribution U(0.003,0.007) you should use speciation_d = uniform; speciation_p0 = 0.003; speciation_p1 = 0.007.
+ - **normal**: The value will be sampled from a normal distribution between the corresponding values of p0 and p1. For example, if you want the speciation rate to be randomly sampled from a normal distribution N(0.003,0.007) you should use speciation_d = normal; speciation_p0 = 0.003; speciation_p1 = 0.007.
 
 #### Genome evolution (G) ####
 
 
 
+
 #### Gene family evolution (F) ####
+
 
 **STOPPING_RULE**
 
@@ -308,11 +306,6 @@ See example 3 for more information
 **GENE_EVOLUTION_MODE**
 
  - 0: Global rates 
- - 1: Family-wise rates
- - 2: Lineage-specific rates (time and lineage autocorrelated)
- - 3: Lineage-specific rates (lineage autocorrelated)
- - 4: Lineage-specific rates (uncorrelated)
- - 5: User defined rates
 
 **DUPLICATION_D, TRANSFER_D, LOSS_D, INVERSION_D, TRANSLOCATION_D**
 
@@ -336,7 +329,10 @@ If True (1), transfers take place preferentially between closely related species
 
 #### Sequence evolution ####
 
-# This is not written yet
+This is not written yet
+
+
+### FROM NOW ON, OLD TEXT AND UNFINISHED PIECES. PLEASE JUST IGNORE
 
 **SEQUENCE_EVOLUTION_MODE**
 
@@ -345,9 +341,6 @@ If True (1), transfers take place preferentially between closely related species
  - 2: Lineage-specific heterogeneity (lineage autocorrelated)
  - 3: Lineage-specific heterogeneity (uncorrelated)
  - 4: User defined heterogeneity
-
-
-### FROM NOW ON, OLD TEXT. PLEASE JUST IGNORE
 
 Very frequently you will be interested in having a Species Tree that contains only extant species and potentially, only a fraction of all the surviving lineages.
 
@@ -396,3 +389,27 @@ time 0.6 and time 0.7.
 
      python simuLyon.py T example1_SpeciesTreeParameters.tsv EXAMPLE_2 
 
+
+### To do
+
+Species tree
+
+ - 1: Lineage-specific rates (time and lineage autocorrelated)  - Not ready yet
+ - 2: Lineage-specific rates (lineage autocorrelated) - Not ready yet
+ - 3: Lineage-specific rates (uncorrelated) - Not ready yet
+ - 4: User defined rates
+ 
+ Gene families
+ 
+  - 1: Family-wise rates
+ - 2: Lineage-specific rates (time and lineage autocorrelated)
+ - 3: Lineage-specific rates (lineage autocorrelated)
+ - 4: Lineage-specific rates (uncorrelated)
+ - 5: User defined rates
+ 
+ 
+ **USER_DEFINED_RATES**
+
+File containing the multipliers on the speciation and the extinction rate per unit of time, to be used when the species tree is simulated in mode 4
+The format is (separated by tabs)
+time_start	time_end	spec_mult	ext_mult
