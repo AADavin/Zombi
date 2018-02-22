@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="59ba90f0-ee1f-4701-b72e-68f3e4c50e55" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/GenomeGenerator.py" afterPath="$PROJECT_DIR$/GenomeGenerator.py" />
-      <change beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change beforePath="$PROJECT_DIR$/simuLyon.py" afterPath="$PROJECT_DIR$/simuLyon.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -86,8 +85,8 @@
       <file leaf-file-name="GenomeGenerator.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GenomeGenerator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="172">
-              <caret line="372" column="63" lean-forward="false" selection-start-line="372" selection-start-column="63" selection-end-line="372" selection-end-column="63" />
+            <state relative-caret-position="358">
+              <caret line="368" column="113" lean-forward="false" selection-start-line="368" selection-start-column="113" selection-end-line="368" selection-end-column="113" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
                 <element signature="e#10064#11168#0" expanded="false" />
@@ -902,8 +901,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/GenomeGenerator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="172">
-          <caret line="372" column="63" lean-forward="false" selection-start-line="372" selection-start-column="63" selection-end-line="372" selection-end-column="63" />
+        <state relative-caret-position="358">
+          <caret line="368" column="113" lean-forward="false" selection-start-line="368" selection-start-column="113" selection-end-line="368" selection-end-column="113" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
             <element signature="e#10064#11168#0" expanded="false" />

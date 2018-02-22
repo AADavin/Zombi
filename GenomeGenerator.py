@@ -365,8 +365,10 @@ class GenomeSimulator():
             events_files = os.listdir(events_per_family_folder)
 
             for event_file in events_files:
-                genetree_file = os.path.join(gene_trees_folder, self.parameters["PREFIX"] + str(gf) + "_genetree.txt")
-                self.write_gene_tree(events_file, genetree_file)
+
+                genetree_file = os.path.join(gene_trees_folder, event_file.replace("_events.tsv","_genetree.txt"))
+
+                self.write_gene_tree(os.path.join(events_per_family_folder, event_file), genetree_file)
 
         # Fourth, we write the events per branch
 
