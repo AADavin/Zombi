@@ -386,6 +386,7 @@ class GenomeSimulator():
             fam_name = fam_event.split("/")[-1].split("_")[0].replace(self.parameters["PREFIX"],"")
 
             with open(fam_event) as f:
+
                 f.readline()
 
                 for line in f:
@@ -421,15 +422,23 @@ class GenomeSimulator():
                             all_events[branch][int(time)] = list()
                         all_events[branch][int(time)].append((event, nodes, fam_name))
 
-        for node in all_events:
-            print("Writing events per branch %s" % node)
-            with open(os.path.join(events_per_branch_folder, node + "_branchevents.tsv"), "w") as f:
+        for branch in all_events:
+
+            print("Writing events per branch %s" % branch)
+
+            with open(os.path.join(events_per_branch_folder, branch + "_branchevents.tsv"), "w") as f:
+
                 f.write("\t".join(("Time","Event","Nodes", "Gene_family")) + "\n")
+
                 for i in range(self.total_time + 1):
+
                     if i in all_events[branch]:
+
                         for event, nodes, fam_name in all_events[branch][i]:
+
                             if event == "LT" or event == "AT":
                                 mynodes = nodes
+
                             else:
                                 mynodes = ";".join(nodes.split(";")[1:])
                             f.write("\t".join((str(i), event, mynodes, fam_name))+"\n")

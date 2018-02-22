@@ -217,8 +217,31 @@ Then we want to simulate the evolution of genomes inside the species tree. For t
 
 #### Mode G
 
+*Complete genomes*: A folder with one file per node of the species tree. Each file contains information about the
+genome composition.
 
+*CompleteGenomes*: A folder with one file per node of the species tree. Each file contains information about the
+genome composition.  
 
+*EventsPerBranch*: A folder with one file per branch of the species tree. Each file contains information about the
+events taking place in that branch. There are 4 fields. 
+1. Time: The time at which the event takes place
+2. Event: The type of event that takes place in a given time (Duplication D, Losses L, ArrivingTransfer AT, LeavingTransfer LT, Inversions I, Translocations C and Originations O)
+3. Nodes: Some more information about the kind of event:
+* D: Three numbers separated by semicolons, e.g. 14;15;16. Correspond to the identifier of the gene that duplicates, and the identifiers of the new two genes generated
+* L: One number. Corresponds to the identifier of the gene that is lost
+* AT: Five numbers. In order: The branch of the species tree where the transfer leaves, the identifier of the gene that is transferred, the identifier of the gene that remains in the donor genome, the branch of the recipient genome and the identifier of the gene that is inserted in the recipient genome
+* LT: Exactly as AT
+* I: One number. Identifier of the gene affected
+* C: One number. Identifier of the gene affected
+* O: One number. Identifier of the gene appearing
+
+Please notice that in the case of events that affect to several genes, this will be reflected in the first column (several events taking place at the same unit of time)
+ 
+ *EventsPerBranch*: A folder containing the gene trees corresponding to the evolution of the different families and the gene trees pruned so that only surviving genes are represented.
+ Please notice that gene trees with fewer than 2 copies are simply not output
+ 
+ 
 
 #### Mode F
 

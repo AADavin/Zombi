@@ -162,7 +162,6 @@ class Genome():
 
         return self.genes
 
-
     def write_genome(self, genome_file):
 
         with open(genome_file, "w") as f:
