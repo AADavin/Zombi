@@ -1,6 +1,6 @@
-from GenomeGenerator import FamilyOriginator, GeneFamilySimulator, GenomeSimulator
+from GeneFamilyGenerator import FamilyOriginator, GeneFamilySimulator
+from GenomeGenerator import GenomeSimulator
 from TreeGenerator import TreeGenerator
-from RatesManager import GeneEvolutionRates, SpeciesEvolutionRates
 import ete3
 import sys
 import os
@@ -56,8 +56,7 @@ class SimuLYON():
 
         #tg.get_extant_tree()
 
-
-    def obtain_genomes(self, parameters_file, experiment_folder):
+    def obtain_gene_families(self, parameters_file, experiment_folder):
 
         self.read_parameters(parameters_file, self.genome_parameters)
 
@@ -79,7 +78,7 @@ class SimuLYON():
         with open(transfers_file, "w") as f:
             f.write("Family\tDonor\tRecipient\n")
 
-        raw_gene_families_folder = os.path.join(experiment_folder, "RawGeneFamilies")
+        raw_gene_families_folder = os.path.join(experiment_folder, "GeneFamilies")
 
         if os.path.isdir(raw_gene_families_folder):
             pass
@@ -143,7 +142,7 @@ class SimuLYON():
             while current_genome_size <= mean_genome_size:
                 pass
 
-    def obtain_genomes_in_parallel(self, parameters_file, experiment_folder):
+    def obtain_genomes(self, parameters_file, experiment_folder):
 
         self.read_parameters(parameters_file, self.genome_parameters)
 
@@ -160,7 +159,7 @@ class SimuLYON():
         with open(transfers_file, "w") as f:
             f.write("Family\tDonor\tRecipient\n")
 
-        raw_gene_families_folder = os.path.join(experiment_folder, "ParallelGeneFamilies")
+        raw_gene_families_folder = os.path.join(experiment_folder, "Genomes")
 
         if os.path.isdir(raw_gene_families_folder):
             pass
@@ -194,12 +193,6 @@ class SimuLYON():
             myline = "\t".join(line) + "\n"
             f.write(myline)
 
-
-#SL = SimuLYON()
-#SL.obtain_genomes("/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/RESTART/GenomeParameters.tsv", "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/RESTART/THEO2")
-
-
-
 if __name__ == "__main__":
 
     args = sys.argv[1:]
@@ -220,10 +213,16 @@ if __name__ == "__main__":
             SL.obtain_species_trees(parameters_file, experiment_folder)
 
         elif mode == "G":
+
+            SL.obtain_gene_families(parameters_file, experiment_folder)
+
+        elif mode == "F":
+
             SL.obtain_genomes(parameters_file, experiment_folder)
 
-        elif mode == "P":
-            SL.obtain_genomes_in_parallel(parameters_file, experiment_folder)
+        elif mode == "S":
+
+            print("This mode is not ready to be used yet")
 
         else:
-            print("Incorrect usage. Please select a mode: T or G")
+            print("Incorrect usage. Please select a mode: T, G, F or S")

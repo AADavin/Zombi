@@ -57,9 +57,6 @@ def complete_test():
 
 #complete_test()
 
-import numpy
-
-print(numpy.random.randint(1))
 
 
 
