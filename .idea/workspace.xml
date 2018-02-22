@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="59ba90f0-ee1f-4701-b72e-68f3e4c50e55" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/GenomeGenerator.py" afterPath="$PROJECT_DIR$/GenomeGenerator.py" />
+      <change beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -82,7 +81,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GenomeGenerator.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="GenomeGenerator.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GenomeGenerator.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="358">
@@ -105,12 +104,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
+      <file leaf-file-name="README.md" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="232">
-                <caret line="74" column="186" lean-forward="true" selection-start-line="74" selection-start-column="186" selection-end-line="74" selection-end-column="186" />
+              <first_editor relative-caret-position="-204">
+                <caret line="198" column="23" lean-forward="false" selection-start-line="198" selection-start-column="23" selection-end-line="198" selection-end-column="23" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -141,7 +140,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Duplication</find>
       <find>self.gene_tree</find>
       <find>self.</find>
       <find>get_extinct</find>
@@ -171,6 +169,7 @@
       <find>obtain_affected_genes</find>
       <find>prun</find>
       <find>genome_families</find>
+      <find>generate</find>
     </findStrings>
     <replaceStrings>
       <replace>transfer</replace>
@@ -212,9 +211,9 @@
         <option value="$PROJECT_DIR$/Tests.py" />
         <option value="$PROJECT_DIR$/sampLyon.py" />
         <option value="$PROJECT_DIR$/TreeGenerator.py" />
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/simuLyon.py" />
         <option value="$PROJECT_DIR$/GenomeGenerator.py" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -877,17 +876,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="232">
-            <caret line="74" column="186" lean-forward="true" selection-start-line="74" selection-start-column="186" selection-end-line="74" selection-end-column="186" />
-            <folding />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/simuLyon.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="143">
@@ -907,6 +895,17 @@
             <element signature="e#0#11#0" expanded="true" />
             <element signature="e#10064#11168#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="-204">
+            <caret line="198" column="23" lean-forward="false" selection-start-line="198" selection-start-column="23" selection-end-line="198" selection-end-column="23" />
+            <folding />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>

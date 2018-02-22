@@ -123,14 +123,14 @@ Origination of new gene families are always of size 1, meaning that it is not po
 Once that the full evolution of genomes has been simulated, simuLyon prints also the gene trees associated to the different gene families, all the events taking place
 in each gene family, the events taking place in each branch and the genomes of each node in the species tree.
 
-### **Generating gene families (F) ** ###
+### **Generating gene families (F)** ###
 
 With this method is possible to simulate genes that evolve inside the species tree independent from other genes. Genes families evolve inside the species tree undergoing events 
 of duplications, transfers and losses. This method however, does not provide any information regarding the position of the different genes within the genomes, but technically simulating
 a large number of independent gene families it is possible to study the presence or absence of different genes in different positions of the species tree to recover genomes. In this case genomes are simply a bunch
 of genes that are found in no particular order in a given point of the species tree. This method uses **gene-wise** rates and it is to simulate as many gene families as wanted.
 
-### **Generating sequences (S) ** ###
+### **Generating sequences (S)** ###
 
 **This is not written yet**
 
@@ -168,7 +168,11 @@ For that we make SPECIATION_P0 = 0.0003 and EXTINCTION_P0 = 0.0001. Once we have
  
  #### Example 2 - Simulating the evolution of genomes ####
   
- Then we want to simulate the evolution of genes inside the species tree. For that we will use the species tree
+ 
+ 
+#### Example 3 - Simulating the evolution of gene families #### 
+
+Then we want to simulate the evolution of genomes inside the species tree. For that we will use the species tree
  we obtained in the previous example
  
  We will change the default parameters. We will use as rates 0.1 for duplications, 0.2 for transfers and 0.3 for losses.
@@ -193,42 +197,9 @@ For that we make SPECIATION_P0 = 0.0003 and EXTINCTION_P0 = 0.0001. Once we have
      
  This will prune the species tree of the gene families. The end result can be found
  in the folder SAMPLE20
- 
-#### Example 3 - Simulating the evolution of gene families #### 
-       
-  
 
-#### Example 4 - Simulating a dataset with a massive extinction event NOT FINISHED YET####
 
-In this example we will simulate a dataset in which a massive extinction event takes between
-time 0.6 and time 0.7.
 
- First thing we do is we are going to change the parameters of the Species Tree.
- For that we create a new file using:
- 
-     cp SpeciesTreeParameters.tsv   example2_SpeciesTreeParameters.tsv
-     
- Then we are going to open example1_SpeciesTreeParameters.tsv in any text editor and modify
- SPECIES_EVOLUTION_MODE to 4 (user defined rates).
- 
- We are going to change also the speciation rate to a fixed number of 10 and the extinction rate to 3.
- For that we make SPECIATION_P0 = 10 and EXTINCTION_P0 = 3  
- 
- Then we are going to use the file massive_extinction.tsv included in the folder SimuLYON/Example/1
- 
- If we open it we see a single line, that includes in this order:
- 
- The beginning of the rate change, the end of the rate change, the number by which the speciation rate is multiplied
- during that period and the number by which the extinction rate is multiplied during that period.
- 
- In plain words, the file says that during the time 0.6 and until time 0.7, the speciation rate is maintained the same (multiplied by 1)
- and the extinction rate is multiplied by 15.
- 
- We need to modify then the example1_SpeciesTreeParameters.tsv to include also USER_DEFINE_RATES = path_to_massive_extinction.tsv
- 
- Once we have done that, we can run simuLyon by using:
-
-     python simuLyon.py T example1_SpeciesTreeParameters.tsv EXAMPLE_2 
 
 ### **Output** ###
 
@@ -236,13 +207,20 @@ time 0.6 and time 0.7.
 
 *WholeTree:* The whole species tree including the dead lineages, in newick format
 
+*ExtantTree:* The surviving species tree, in newick format
+
 *ParametersLog.tsv*: Parameters used to run the simulation
 
 *SpeciesTreeEvents.tsv*: Events (speciation and extinction) taking place in the species tree
 
-*LineagesInTime.tsv*: Lineages alive in each unit of time (I have to change the format to make it more efficient)
+*LineagesInTime.tsv*: Lineages alive in each unit of time (**I have to change the format to make it more efficient**)
 
 #### Mode G
+
+
+
+
+#### Mode F
 
 *Profiles.tsv*: Tsv including the number of copies present of each family for each node of the whole tree
 
@@ -257,7 +235,7 @@ events.tsv associated with the detailed list of events taking place in that fami
 
 You can change the parameters directly in the tsv files. Watch out, it is a tabular separated values file, so you do not want mess spaces and tabs. In the case you do not understand what a parameter does, you do not want to touch it.
 
-#### Species evolution ####
+#### Species tree evolution (T) ####
 
 **SPECIES_EVOLUTION_MODE**
 
@@ -293,17 +271,13 @@ The format is (separated by tabs)
 time_start	time_end	spec_mult	ext_mult	
 See example 3 for more information
 
-#### Genome evolution ####
+#### Genome evolution (G) ####
 
-**GENOME_EVOLUTION_MODE**
 
-- 0: Families are simulated independently of each other
-- 1: Families evolve simultaneously
+
+#### Gene family evolution (F) ####
 
 **STOPPING_RULE**
-
-Both stopping rules only apply to GENOME_EVOLUTION_MODE = 0
-For GENOME_EVOLUTION_MODE = 1 you have to input an origination rate and an initial number of families
 
  - 0: A fixed number of gene families will be simulated == N_FAMILIES. Notice that gene families introduced by STEM_FAMILIES are not accounted for in the above computation
  - 1: Families will be simulated until the mean size of genomes >=  MEAN_SIZE_GENOME. 
@@ -366,3 +340,36 @@ Once you have done that, if you are interested in using the gene trees you *have
     python sampLyon.py G /previous_Output_folder /previous_Sample_name
 
 This will cut the gene trees removing extinct species and other species that were not including in the sample
+
+#### Example 4 - Simulating a dataset with a massive extinction event NOT FINISHED YET####
+
+In this example we will simulate a dataset in which a massive extinction event takes between
+time 0.6 and time 0.7.
+
+ First thing we do is we are going to change the parameters of the Species Tree.
+ For that we create a new file using:
+ 
+     cp SpeciesTreeParameters.tsv   example2_SpeciesTreeParameters.tsv
+     
+ Then we are going to open example1_SpeciesTreeParameters.tsv in any text editor and modify
+ SPECIES_EVOLUTION_MODE to 4 (user defined rates).
+ 
+ We are going to change also the speciation rate to a fixed number of 10 and the extinction rate to 3.
+ For that we make SPECIATION_P0 = 10 and EXTINCTION_P0 = 3  
+ 
+ Then we are going to use the file massive_extinction.tsv included in the folder SimuLYON/Example/1
+ 
+ If we open it we see a single line, that includes in this order:
+ 
+ The beginning of the rate change, the end of the rate change, the number by which the speciation rate is multiplied
+ during that period and the number by which the extinction rate is multiplied during that period.
+ 
+ In plain words, the file says that during the time 0.6 and until time 0.7, the speciation rate is maintained the same (multiplied by 1)
+ and the extinction rate is multiplied by 15.
+ 
+ We need to modify then the example1_SpeciesTreeParameters.tsv to include also USER_DEFINE_RATES = path_to_massive_extinction.tsv
+ 
+ Once we have done that, we can run simuLyon by using:
+
+     python simuLyon.py T example1_SpeciesTreeParameters.tsv EXAMPLE_2 
+
