@@ -128,6 +128,7 @@ With this method is possible to simulate genes that evolve inside the species tr
 of duplications, transfers and losses. This method however, does not provide any information regarding the position of the different genes within the genomes, but technically simulating
 a large number of independent gene families it is possible to study the presence or absence of different genes in different positions of the species tree to recover genomes. In this case genomes are simply a bunch
 of genes that are found in no particular order in a given point of the species tree. This method uses **gene-wise** rates.
+
 ### **Generating sequences (S)** ###
 
 **This is not written yet**
@@ -170,8 +171,7 @@ For that we make SPECIATION_P0 = 0.0003 and EXTINCTION_P0 = 0.0001. Once we have
  
 #### Example 3 - Simulating the evolution of gene families #### 
 
-Then we want to simulate the evolution of genomes inside the species tree. For that we will use the species tree
- we obtained in the previous example
+
  
  We will change the default parameters. We will use as rates 0.1 for duplications, 0.2 for transfers and 0.3 for losses.
  For that we do:
