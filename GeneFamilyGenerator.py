@@ -130,12 +130,15 @@ class GeneFamilySimulator():
                 event = self.choose_event(duplication, transfer, loss)
 
                 if event == "D":
+
                     self.get_duplicated(g_node, time_counter)
 
                 elif event == "T":
 
                     recipient = self.choose_recipient(time_counter, g_node.current_branch, 0)
+
                     if recipient != None:
+
                         self.get_transferred(g_node, recipient, time_counter)
 
                 elif event == "L":
@@ -202,8 +205,6 @@ class GeneFamilySimulator():
                             self.gene_tree_speciation(snode, sc1, sc2, time_counter)
 
             self.evolve_gene_family(duplication, transfer, loss, time_counter)
-
-
 
 
 
@@ -284,20 +285,20 @@ class GeneFamilySimulator():
         rt = float(self.parameters["REPLACEMENT_T"])
 
         self.gene_family["Events"].append(
-            ("LeavingTransfer", time_counter, leaf.current_branch))
+            ("LT", time_counter, leaf.current_branch))
         self.gene_family["Events"].append(
-            ("ArrivingTransfer", time_counter, recipient))
+            ("AT", time_counter, recipient))
 
-        self.gene_family["Transfers"].append((leaf.current_branch, recipient))
+        self.gene_family["T"].append((leaf.current_branch, recipient))
 
-        if leaf.current_branch not in self.gene_family["LeavingTransfers"]:
-            self.gene_family["LeavingTransfers"][leaf.current_branch] = 0
+        if leaf.current_branch not in self.gene_family["LT"]:
+            self.gene_family["LT"][leaf.current_branch] = 0
 
-        if leaf.current_branch not in self.gene_family["ArrivingTransfers"]:
-            self.gene_family["ArrivingTransfers"][leaf.current_branch] = 0
+        if leaf.current_branch not in self.gene_family["AT"]:
+            self.gene_family["AT"][leaf.current_branch] = 0
 
-        self.gene_family["LeavingTransfers"][leaf.current_branch] += 1
-        self.gene_family["ArrivingTransfers"][leaf.current_branch] += 1
+        self.gene_family["LT"][leaf.current_branch] += 1
+        self.gene_family["AT"][leaf.current_branch] += 1
 
         leaf.name = "TRANSFER"
 
@@ -324,7 +325,7 @@ class GeneFamilySimulator():
             # I need to add the gene lost by replacement
 
             self.gene_family["Events"].append(
-                ("LossByReplacement", time_counter, recipient))
+                ("LR", time_counter, recipient))
 
     def get_extinct(self, sp_branch):
 

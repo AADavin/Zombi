@@ -55,7 +55,6 @@ class SimuLYON():
         elif self.tree_parameters["SPECIES_EVOLUTION_MODE"] == '4':
             tg.generate_tree_mode_4()
 
-        #tg.get_extant_tree()
 
     def obtain_gene_families(self, parameters_file, experiment_folder):
 
@@ -64,30 +63,27 @@ class SimuLYON():
         prefix = self.genome_parameters["PREFIX"]
 
         stopping_rule = int(self.genome_parameters["STOPPING_RULE"])
-        my_stem = float(self.genome_parameters["STEM_LENGTH"])
         families_in_stem = int(self.genome_parameters["STEM_FAMILIES"])
         n_families = int(self.genome_parameters["N_FAMILIES"])
-        mean_genome_size = int(self.genome_parameters["MEAN_GENOME_SIZE"])
 
         whole_tree_file = os.path.join(experiment_folder, "WholeTree")
-        events_file = os.path.join(experiment_folder, "SpeciesTreeEvents.tsv")
-        lineages_file = os.path.join(experiment_folder, "LineagesInTime.tsv")
-
-        profiles_file = os.path.join(experiment_folder, "Profiles.tsv")
-        transfers_file = os.path.join(experiment_folder, "Transfers.tsv")
-
-        with open(transfers_file, "w") as f:
-            f.write("Family\tDonor\tRecipient\n")
-
-        raw_gene_families_folder = os.path.join(experiment_folder, "GeneFamilies")
-
-        if os.path.isdir(raw_gene_families_folder):
-            pass
-        else:
-           os.mkdir(raw_gene_families_folder)
 
         with open(whole_tree_file) as f:
             tree = ete3.Tree(f.readline().strip(),format=1)
+
+        events_file = os.path.join(experiment_folder, "SpeciesTreeEvents.tsv")
+        lineages_file = os.path.join(experiment_folder, "LineagesInTime.tsv")
+
+        gene_families_folder = os.path.join(experiment_folder, "GeneFamilies")
+
+        if not os.path.isdir(gene_families_folder):
+           os.mkdir(gene_families_folder)
+
+        profiles_file = os.path.join(gene_families_folder, "Profiles.tsv")
+        transfers_file = os.path.join(gene_families_folder, "Transfers.tsv")
+
+        with open(transfers_file, "w") as f:
+            f.write("Family\tDonor\tRecipient\n")
 
         self._prepare_profile_file(tree, profiles_file)
 
@@ -96,7 +92,7 @@ class SimuLYON():
 
         if stopping_rule == 0:
 
-            for i in range(families_in_stem):
+            for i in range(1, families_in_stem + 1):
 
                 family_name = prefix + str(i)
 
@@ -107,12 +103,12 @@ class SimuLYON():
 
                 tree = gfs.get_gene_family_tree()
                 if tree != "None":
-                    with open(os.path.join(raw_gene_families_folder, family_name), "w") as f:
+                    with open(os.path.join(gene_families_folder, family_name), "w") as f:
                         f.write(tree)
 
                 gfs.output_profile(profiles_file, "Profile")
                 gfs.write_transfers(transfers_file)
-                gfs.write_log(os.path.join(raw_gene_families_folder, family_name + "_events.tsv"))
+                gfs.write_log(os.path.join(gene_families_folder, family_name + "_events.tsv"))
 
             for j in range(i+1, n_families + i + 1):
 
@@ -129,19 +125,13 @@ class SimuLYON():
                 tree = gfs.get_gene_family_tree()
 
                 if tree != "None":
-                    with open(os.path.join(raw_gene_families_folder, family_name), "w") as f:
+                    with open(os.path.join(gene_families_folder, family_name), "w") as f:
                         f.write(tree)
 
                 gfs.output_profile(profiles_file, "Profile")
                 gfs.write_transfers(transfers_file)
-                gfs.write_log(os.path.join(raw_gene_families_folder, family_name + "_events.tsv"))
+                gfs.write_log(os.path.join(gene_families_folder, family_name + "_events.tsv"))
 
-        elif stopping_rule == 1:
-
-            current_genome_size = 0
-
-            while current_genome_size <= mean_genome_size:
-                pass
 
     def obtain_genomes(self, parameters_file, experiment_folder):
 

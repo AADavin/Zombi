@@ -56,7 +56,6 @@ information about them
 
 Go through the examples for more details    
    
-
 ### **Generating a species tree (T)** ###
 
 SimuLyon uses a Birth-death model to generate a species tree. In each step of time, lineages can speciate given rise to two new lineages
@@ -128,8 +127,7 @@ in each gene family, the events taking place in each branch and the genomes of e
 With this method is possible to simulate genes that evolve inside the species tree independent from other genes. Genes families evolve inside the species tree undergoing events 
 of duplications, transfers and losses. This method however, does not provide any information regarding the position of the different genes within the genomes, but technically simulating
 a large number of independent gene families it is possible to study the presence or absence of different genes in different positions of the species tree to recover genomes. In this case genomes are simply a bunch
-of genes that are found in no particular order in a given point of the species tree. This method uses **gene-wise** rates and it is to simulate as many gene families as wanted.
-
+of genes that are found in no particular order in a given point of the species tree. This method uses **gene-wise** rates.
 ### **Generating sequences (S)** ###
 
 **This is not written yet**
@@ -178,7 +176,7 @@ Then we want to simulate the evolution of genomes inside the species tree. For t
  We will change the default parameters. We will use as rates 0.1 for duplications, 0.2 for transfers and 0.3 for losses.
  For that we do:
  
-     cp GenomeParameters.tsv   example1_GenomeParameters.tsv
+     cp GenomeParameters.tsv  example1_GenomeParameters.tsv
     
  And then modify DUPLICATION_P0 = 0.1, TRANSFER_P0 = 0.2, LOSS_P0 = 0.3
  
@@ -187,19 +185,8 @@ Then we want to simulate the evolution of genomes inside the species tree. For t
  
  Finally, we launch simuLyon using the command
   
-     python simuLyon.py G example1_GenomeParameters.tsv EXAMPLE_1
-     
- This will produce the raw gene families in the folder EXAMPLE_1/RawGeneFamilies
- 
- To obtain the genes presented in the species we sampled before, we resort again to sampLyon
- 
-     python sampLyon.py G  EXAMPLE_1 SAMPLE20
-     
- This will prune the species tree of the gene families. The end result can be found
- in the folder SAMPLE20
-
-
-
+     python simuLyon.py F example1_GenomeParameters.tsv EXAMPLE_1
+      
 
 ### **Output** ###
 
@@ -245,13 +232,7 @@ Please notice that in the case of events that affect to several genes, this will
  *EventsPerBranch*: A folder containing the gene trees corresponding to the evolution of the different families and the gene trees pruned so that only surviving genes are represented.
  Please notice that gene trees with fewer than 2 copies are simply not output
   
-
 #### Mode F
-
-*Profiles.tsv*: Tsv including the number of copies present of each family for each node of the whole tree
-
-*RawGeneFamilies*: Folder including all the gene trees of evolving inside the species tree. Each gene family has an
-events.tsv associated with the detailed list of events taking place in that family
 
 *Transfers.tsv*: A complete list of the transfer events, with donor and recipients
 
@@ -267,6 +248,14 @@ You can change the parameters directly in the tsv files. Watch out, it is a tabu
 
  - 0: Global rates of speciation and extinction (only working mode so far)
 
+**SEED**
+
+If the SEED is 0, the seed is randomly computed for each run. Any other number will be used as the input seed
+
+**PRUNING**
+
+If PRUNING == 1, the file ExtantTree containing only surviving lineages is generated
+
 **STOPPING_RULE**
 
  - 0: Time stops arriving at TOTAL_TIME
@@ -278,7 +267,7 @@ You can change the parameters directly in the tsv files. Watch out, it is a tabu
 
 To use with the stopping rule 0
 
-**SPECIES_NUMBER**
+**N_LINEAGES**
 
 To use in combination with the stopping rules 1,2 or 3
 
@@ -292,7 +281,34 @@ Distribution probability for each type of event
 
 #### Genome evolution (G) ####
 
+**MODE**
 
+ - 0: Global rates (only working mode so far)
+ 
+**PREFIX**
+
+- Adds a prefix to the gene families
+
+**DUPLICATION_D, TRANSFER_D, LOSS_D, INVERSION_D, TRANSLOCATION_D, ORIGINATION_D**
+
+Distribution probability for each type of event (fixed, uniform or normal)
+
+**DUPLICATION_E, TRANSFER_E, LOSS_E, INVERSION_E, TRANSLOCATION_E**
+
+The value of the p parameter of a geometric distribution that determines the extension of the genome (measured in number of genes) 
+affected for event
+
+**REPLACEMENT_T**
+
+Not doing anything yet
+
+**STEM_FAMILIES**
+
+Number of gene families present in the ancestral genome at the root
+
+**MIN_GENOME_SIZE**
+
+The minimal size for a given genome. Smaller genomes will not be affected by losses events
 
 
 #### Gene family evolution (F) ####
@@ -301,8 +317,7 @@ Distribution probability for each type of event
 **STOPPING_RULE**
 
  - 0: A fixed number of gene families will be simulated == N_FAMILIES. Notice that gene families introduced by STEM_FAMILIES are not accounted for in the above computation
- - 1: Families will be simulated until the mean size of genomes >=  MEAN_SIZE_GENOME. 
- 
+   
 **GENE_EVOLUTION_MODE**
 
  - 0: Global rates 
@@ -319,18 +334,9 @@ Distribution probability for each type of event
 
 Number of gene families already in the stem clade
 
-**STEM_LENGTH**
-
-If different from 0, a stem of length STEM_LENGTH is added to the root. In this stem the origination of new gene families occur with a probability proportional to its length. NOT WRITTEN YET!!
-
-**TRANSFER_CLOSE_SPECIES**  
-
-If True (1), transfers take place preferentially between closely related species. When a transfer event occurs, the recipient is chosen randomly among all coexisting lineages with a probability inversely proportional to the logarithm of the evolutionary distance between the two clades.  NOT WRITTEN YET!!
-
 #### Sequence evolution ####
 
 This is not written yet
-
 
 ### FROM NOW ON, OLD TEXT AND UNFINISHED PIECES. PLEASE JUST IGNORE
 
@@ -388,7 +394,6 @@ time 0.6 and time 0.7.
  Once we have done that, we can run simuLyon by using:
 
      python simuLyon.py T example1_SpeciesTreeParameters.tsv EXAMPLE_2 
-
 
 ### To do
 
