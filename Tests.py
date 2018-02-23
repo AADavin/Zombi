@@ -1,6 +1,4 @@
-from TreeGenerator import TreeGenerator
-from GenomeGenerator import GeneFamilySimulator
-from GenomeGenerator import FamilyOriginator
+
 
 def test_TreeGenerator():
 
@@ -56,6 +54,20 @@ def complete_test():
     test_GenomeSimulator()
 
 #complete_test()
+
+
+mylist = ["a","b","c"]
+
+bla = list(mylist)
+
+for i in bla:
+    if i == "b":
+        mylist.append("d")
+    print(i)
+
+
+
+
 
 
 

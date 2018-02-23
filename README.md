@@ -14,7 +14,7 @@ Then it simulates the evolution of genomes along this species tree. Genomes evol
 SimuLyon can be of great interest to those who want to test different evolutionary hypothesis under simulations and need to use a fast and easy to use tool to generate species trees, gene trees and sequences.
 
 Please read the manual before using it. I know you are in a hurry but it only takes around 15 minutes of your time. If you are really in a hurry
-then just follow the **Examples 1 and 2**.
+then just follow the **Example 1**.
 
 **The current version of simuLyon runs in discrete time. A newer version in continous time will come soon**
 
@@ -135,7 +135,7 @@ of genes that are found in no particular order in a given point of the species t
 
 ### Examples 
 
-#### Example 1 - Simulating a species tree ####
+#### Example 1 - Simulating a species tree and the genomes ####
 
 First thing we do is we are going to change the parameters of the Species Tree.
  For that we create a new file using:
@@ -163,29 +163,24 @@ For that we make SPECIATION_P0 = 0.0003 and EXTINCTION_P0 = 0.0001. Once we have
  
  The resulting tree has 6 extant lineages and it can be found in the file /EXAMPLE_1/WholeTree
  The surviving species can be found in /EXAMPLE1/ExtantTree 
+ 
+Once that we have computed a species tree, we can simulate **the evolution of genomes** inside this species tree. We will change the default parameters.
 
- 
- #### Example 2 - Simulating the evolution of genomes ####
-  
- 
- 
-#### Example 3 - Simulating the evolution of gene families #### 
-
-
- 
- We will change the default parameters. We will use as rates 0.1 for duplications, 0.2 for transfers and 0.3 for losses.
- For that we do:
- 
      cp GenomeParameters.tsv  example1_GenomeParameters.tsv
-    
- And then modify DUPLICATION_P0 = 0.1, TRANSFER_P0 = 0.2, LOSS_P0 = 0.3
+       
  
- We will simulate 10 families already present in the root and 500 more families. For that we change STEM_FAMILIES = 10 and 
- N_FAMILIES = 500
- 
+First, we are going to use the SEED = 237 to have reproducible results.
+
+Second, we will make STEM_FAMILIES = 100. This makes the genome of the root to be composed of 100 gene families ordered in a circle 
+
+Third, we are going to make inversions and translocations to affect large sections of the genome. For that we will change:
+
+TRANSLOCATION_E = 0.05
+INVERSION_E = 0.05 
+
  Finally, we launch simuLyon using the command
   
-     python simuLyon.py F example1_GenomeParameters.tsv EXAMPLE_1
+     python simuLyon.py G example1_GenomeParameters.tsv EXAMPLE_1
       
 
 ### **Output** ###
@@ -234,9 +229,13 @@ Please notice that in the case of events that affect to several genes, this will
   
 #### Mode F
 
+**Not working yet**
+
 *Transfers.tsv*: A complete list of the transfer events, with donor and recipients
 
 #### Mode S 
+
+**Not written yet**
 
 ### Parameters ###
 

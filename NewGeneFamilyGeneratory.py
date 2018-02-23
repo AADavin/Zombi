@@ -70,7 +70,6 @@ class UnorderedGenome():
                 line = "\t".join((str(i), gf,sense,id)) + "\n"
                 f.write(line)
 
-
 class GeneFamilySimulator():
 
     def __init__(self, parameters_file, events_file, lineages_in_time_file):
@@ -154,68 +153,76 @@ class GeneFamilySimulator():
         total_probability_of_event = duplication + transfer + loss
 
         active_genomes = [x for x in self.species_tree.get_leaves() if x.is_alive == True]
+
         random.shuffle(active_genomes)
+
         for node in active_genomes:
+
             genome = node.Genome
             snode = node.name
-            if numpy.random.uniform(0, 1) <= total_probability_of_event:  # An event takes place
-                event = self.choose_event(duplication, transfer, loss)
 
-                if event == "D":
+            mygenes = list(genome.genes)
+            random.shuffle(mygenes)
 
-                    pass
+            for i,gene in mygenes:
 
-                elif event == "T":
-                    recipient = self.choose_recipient(time_counter, node.name, 0)
-                    if recipient == None:
+                if numpy.random.uniform(0, 1) <= total_probability_of_event:  # An event takes place
+
+                    event = self.choose_event(duplication, transfer, loss)
+
+                    if event == "D":
+
+                        genome.duplicate_gene(snode, homologous, time_counter, gene)
+
+                    elif event == "T":
+                        recipient = self.choose_recipient(time_counter, node.name, 0)
+                        if recipient == None:
+                            continue
+
+                        a = genome.select_random
+
+                        old_segment = list()
+                        new_segment = list()
+
+                        for i in a:
+
+                            cb, sense, gf, id = genome.genes[i].split("_")
+
+                            self.homologous[gf]["Copies"] += 1
+                            name1  = snode + "_" + sense + "_" + gf + "_" + str(self.homologous[gf]["Copies"])
+                            old_segment.append(name1)
+
+                            self.homologous[gf]["Copies"] += 1
+                            name2 = recipient + "_" + sense + "_" + gf + "_" + str(self.homologous[gf]["Copies"])
+                            new_segment.append(name2)
+
+                            self.homologous[gf]["Events"].append(
+                                ("T", str(time_counter), snode + ";" + id + ";" + name1.split("_")[3] + ";" + recipient + ";" + name2.split("_")[3]))
+
+                        # Now I have prepared the two segments. First I am going to update de donor segment
+
+                        elements_to_remove = [genome.genes[x] for x in a]
+
+                        for element in elements_to_remove:
+                            genome.genes.remove(element)
+
+                        position = a[0]
+
+                        for i, x in enumerate(old_segment):
+                            genome.genes.insert(position + i + 1, x)
+
+                        # Then I update the receptor segment
+
+                            my_recipient = self.species_tree&recipient
+                            recipient_genome = my_recipient.Genome
+                            p = recipient_genome.select_random_position()
+                            recipient_genome.insert_segment(p, new_segment)
+
+                    elif event == "L":
+
                         continue
 
-                    a = genome.select_random
-
-                    old_segment = list()
-                    new_segment = list()
-
-                    for i in a:
-
-                        cb, sense, gf, id = genome.genes[i].split("_")
-
-                        self.homologous[gf]["Copies"] += 1
-                        name1  = snode + "_" + sense + "_" + gf + "_" + str(self.homologous[gf]["Copies"])
-                        old_segment.append(name1)
-
-                        self.homologous[gf]["Copies"] += 1
-                        name2 = recipient + "_" + sense + "_" + gf + "_" + str(self.homologous[gf]["Copies"])
-                        new_segment.append(name2)
-
-                        self.homologous[gf]["Events"].append(
-                            ("T", str(time_counter), snode + ";" + id + ";" + name1.split("_")[3] + ";" + recipient + ";" + name2.split("_")[3]))
-
-                    # Now I have prepared the two segments. First I am going to update de donor segment
-
-                    elements_to_remove = [genome.genes[x] for x in a]
-
-                    for element in elements_to_remove:
-                        genome.genes.remove(element)
-
-                    position = a[0]
-
-                    for i, x in enumerate(old_segment):
-                        genome.genes.insert(position + i + 1, x)
-
-                    # Then I update the receptor segment
-
-                        my_recipient = self.species_tree&recipient
-                        recipient_genome = my_recipient.Genome
-                        p = recipient_genome.select_random_position()
-                        recipient_genome.insert_segment(p, new_segment)
-
-                elif event == "L":
-
-                    continue
-
-                    # We have to check that the minimal size has not been attained
-
-
+                        # We have to check that the minimal size has not been attained
 
     def run(self, genome_folder):
 
@@ -472,8 +479,6 @@ def testing():
     gfs = GeneFamilySimulator(params, events_file, lineages_intime)
     gfs.run("/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/TEST")
     gfs.write_log("/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/TEST", "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/TEST")
-
-
 
 
 testing()

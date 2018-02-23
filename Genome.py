@@ -173,3 +173,12 @@ class Genome():
                 cb, sense, gf, id = gene.split("_")
                 line = "\t".join((str(i), gf,sense,id)) + "\n"
                 f.write(line)
+
+
+
+
+
+
+
+
+

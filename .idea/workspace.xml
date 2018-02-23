@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="59ba90f0-ee1f-4701-b72e-68f3e4c50e55" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/NewGeneFamilyGeneratory.py" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/Parameters/NewGeneFamilyGeneratory.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/Genome.py" afterPath="$PROJECT_DIR$/Genome.py" />
+      <change beforePath="$PROJECT_DIR$/NewGeneFamilyGeneratory.py" afterPath="$PROJECT_DIR$/NewGeneFamilyGeneratory.py" />
       <change beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
+      <change beforePath="$PROJECT_DIR$/Tests.py" afterPath="$PROJECT_DIR$/Tests.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -35,8 +35,8 @@
       <file leaf-file-name="Genome.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Genome.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1478">
-              <caret line="108" column="9" lean-forward="false" selection-start-line="108" selection-start-column="9" selection-end-line="108" selection-end-column="101" />
+            <state relative-caret-position="1225">
+              <caret line="177" column="0" lean-forward="false" selection-start-line="177" selection-start-column="0" selection-end-line="177" selection-end-column="0" />
               <folding>
                 <element signature="e#0#30#0" expanded="true" />
               </folding>
@@ -49,26 +49,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1012">
               <caret line="76" column="31" lean-forward="false" selection-start-line="76" selection-start-column="31" selection-end-line="76" selection-end-column="31" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GenomeParameters.tsv" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Parameters/GenomeParameters.tsv">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="34" selection-end-column="19" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GeneFamilyParameters.tsv" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Parameters/GeneFamilyParameters.tsv">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="9" lean-forward="true" selection-start-line="0" selection-start-column="9" selection-end-line="0" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -97,12 +77,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
+      <file leaf-file-name="README.md" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="312">
-                <caret line="173" column="0" lean-forward="false" selection-start-line="173" selection-start-column="0" selection-end-line="173" selection-end-column="0" />
+              <first_editor relative-caret-position="1151">
+                <caret line="212" column="55" lean-forward="false" selection-start-line="212" selection-start-column="55" selection-end-line="212" selection-end-column="55" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -110,14 +90,27 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="NewGeneFamilyGeneratory.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="NewGeneFamilyGeneratory.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/NewGeneFamilyGeneratory.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="373">
-              <caret line="474" column="0" lean-forward="true" selection-start-line="474" selection-start-column="0" selection-end-line="474" selection-end-column="0" />
+            <state relative-caret-position="-417">
+              <caret line="311" column="0" lean-forward="true" selection-start-line="311" selection-start-column="0" selection-end-line="311" selection-end-column="0" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
+                <element signature="e#2190#3357#0" expanded="false" />
+                <element signature="e#3416#3650#0" expanded="false" />
+                <element signature="e#4272#4385#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Tests.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Tests.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="383">
+              <caret line="68" column="0" lean-forward="true" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -172,9 +165,9 @@
       <find>leaves</find>
       <find>generate</find>
       <find>prun</find>
+      <find>&quot;O&quot;</find>
       <find>genome_families</find>
       <find>obtain_affected_genes</find>
-      <find>&quot;O&quot;</find>
     </findStrings>
     <replaceStrings>
       <replace>transfer</replace>
@@ -211,16 +204,17 @@
         <option value="$PROJECT_DIR$/RatesManager.py" />
         <option value="$PROJECT_DIR$/NEWREADME.md" />
         <option value="$PROJECT_DIR$/Parameters/GeneFamilyParameters.tsv" />
-        <option value="$PROJECT_DIR$/Tests.py" />
         <option value="$PROJECT_DIR$/sampLyon.py" />
         <option value="$PROJECT_DIR$/TreeGenerator.py" />
-        <option value="$PROJECT_DIR$/Genome.py" />
         <option value="$PROJECT_DIR$/simuLyon.py" />
         <option value="$PROJECT_DIR$/GeneFamilyGenerator.py" />
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/Parameters/NewGeneFamilyGeneratory.py" />
         <option value="$PROJECT_DIR$/GenomeGenerator.py" />
+        <option value="$PROJECT_DIR$/Tests.py" />
         <option value="$PROJECT_DIR$/NewGeneFamilyGeneratory.py" />
+        <option value="$PROJECT_DIR$/Genome.py" />
+        <option value="$PROJECT_DIR$/deck.py" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -288,25 +282,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.NewGeneFamilyGeneratory">
-    <configuration name="Genome" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="SimuLYON" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Genome.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-    </configuration>
+  <component name="RunManager" selected="Python.deck">
     <configuration name="GenomeGenerator" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -361,6 +337,24 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
     </configuration>
+    <configuration name="deck" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="SimuLYON" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/deck.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
     <configuration name="simuLyon" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -380,19 +374,19 @@
       <option name="MODULE_MODE" value="false" />
     </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python.Genome" />
-      <item index="1" class="java.lang.String" itemvalue="Python.GenomeGenerator" />
-      <item index="2" class="java.lang.String" itemvalue="Python.simuLyon" />
-      <item index="3" class="java.lang.String" itemvalue="Python.Tests" />
-      <item index="4" class="java.lang.String" itemvalue="Python.NewGeneFamilyGeneratory" />
+      <item index="0" class="java.lang.String" itemvalue="Python.GenomeGenerator" />
+      <item index="1" class="java.lang.String" itemvalue="Python.simuLyon" />
+      <item index="2" class="java.lang.String" itemvalue="Python.Tests" />
+      <item index="3" class="java.lang.String" itemvalue="Python.NewGeneFamilyGeneratory" />
+      <item index="4" class="java.lang.String" itemvalue="Python.deck" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.NewGeneFamilyGeneratory" />
-        <item index="1" class="java.lang.String" itemvalue="Python.Tests" />
-        <item index="2" class="java.lang.String" itemvalue="Python.simuLyon" />
-        <item index="3" class="java.lang.String" itemvalue="Python.GenomeGenerator" />
-        <item index="4" class="java.lang.String" itemvalue="Python.Genome" />
+        <item index="0" class="java.lang.String" itemvalue="Python.deck" />
+        <item index="1" class="java.lang.String" itemvalue="Python.NewGeneFamilyGeneratory" />
+        <item index="2" class="java.lang.String" itemvalue="Python.Tests" />
+        <item index="3" class="java.lang.String" itemvalue="Python.simuLyon" />
+        <item index="4" class="java.lang.String" itemvalue="Python.GenomeGenerator" />
       </list>
     </recent_temporary>
   </component>
@@ -476,21 +470,11 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="17" />
+      <option name="time" value="18" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/sampLyon.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
-          <caret line="39" column="41" lean-forward="false" selection-start-line="39" selection-start-column="41" selection-end-line="39" selection-end-column="41" />
-          <folding>
-            <element signature="e#0#11#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda3/envs/Phylogenetics/lib/python3.6/site-packages/ete3/coretype/tree.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1620">
@@ -805,14 +789,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Tests.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="343">
-          <caret line="58" column="0" lean-forward="false" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/NEWREADME.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
@@ -866,17 +842,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="312">
-            <caret line="173" column="0" lean-forward="false" selection-start-line="173" selection-start-column="0" selection-end-line="173" selection-end-column="0" />
-            <folding />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/simuLyon.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-3">
@@ -884,16 +849,6 @@
           <folding>
             <element signature="e#0#69#0" expanded="true" />
             <element signature="e#240#351#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Genome.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1478">
-          <caret line="108" column="9" lean-forward="false" selection-start-line="108" selection-start-column="9" selection-end-line="108" selection-end-column="101" />
-          <folding>
-            <element signature="e#0#30#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -909,13 +864,53 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Tests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="383">
+          <caret line="68" column="0" lean-forward="true" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/NewGeneFamilyGeneratory.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="373">
-          <caret line="474" column="0" lean-forward="true" selection-start-line="474" selection-start-column="0" selection-end-line="474" selection-end-column="0" />
+        <state relative-caret-position="-417">
+          <caret line="311" column="0" lean-forward="true" selection-start-line="311" selection-start-column="0" selection-end-line="311" selection-end-column="0" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#2190#3357#0" expanded="false" />
+            <element signature="e#3416#3650#0" expanded="false" />
+            <element signature="e#4272#4385#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/deck.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="0" lean-forward="true" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Genome.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1225">
+          <caret line="177" column="0" lean-forward="false" selection-start-line="177" selection-start-column="0" selection-end-line="177" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#30#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="1151">
+            <caret line="212" column="55" lean-forward="false" selection-start-line="212" selection-start-column="55" selection-end-line="212" selection-end-column="55" />
+            <folding />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>
