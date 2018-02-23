@@ -124,6 +124,8 @@ in each gene family, the events taking place in each branch and the genomes of e
 
 ### **Generating gene families (F)** ###
 
+**Not working yet**
+
 With this method is possible to simulate genes that evolve inside the species tree independent from other genes. Genes families evolve inside the species tree undergoing events 
 of duplications, transfers and losses. This method however, does not provide any information regarding the position of the different genes within the genomes, but technically simulating
 a large number of independent gene families it is possible to study the presence or absence of different genes in different positions of the species tree to recover genomes. In this case genomes are simply a bunch
@@ -167,8 +169,7 @@ For that we make SPECIATION_P0 = 0.0003 and EXTINCTION_P0 = 0.0001. Once we have
 Once that we have computed a species tree, we can simulate **the evolution of genomes** inside this species tree. We will change the default parameters.
 
      cp GenomeParameters.tsv  example1_GenomeParameters.tsv
-       
- 
+        
 First, we are going to use the SEED = 237 to have reproducible results.
 
 Second, we will make STEM_FAMILIES = 100. This makes the genome of the root to be composed of 100 gene families ordered in a circle 

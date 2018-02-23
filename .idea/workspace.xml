@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="59ba90f0-ee1f-4701-b72e-68f3e4c50e55" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/Genome.py" afterPath="$PROJECT_DIR$/Genome.py" />
-      <change beforePath="$PROJECT_DIR$/NewGeneFamilyGeneratory.py" afterPath="$PROJECT_DIR$/NewGeneFamilyGeneratory.py" />
+      <change beforePath="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" afterPath="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" />
+      <change beforePath="$PROJECT_DIR$/Parameters/SpeciesTreeParameters.tsv" afterPath="$PROJECT_DIR$/Parameters/SpeciesTreeParameters.tsv" />
       <change beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change beforePath="$PROJECT_DIR$/Tests.py" afterPath="$PROJECT_DIR$/Tests.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -44,16 +43,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="sampLyon.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/sampLyon.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1012">
-              <caret line="76" column="31" lean-forward="false" selection-start-line="76" selection-start-column="31" selection-end-line="76" selection-end-column="31" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="GenomeGenerator.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GenomeGenerator.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -81,11 +70,31 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="1151">
-                <caret line="212" column="55" lean-forward="false" selection-start-line="212" selection-start-column="55" selection-end-line="212" selection-end-column="55" />
+              <first_editor relative-caret-position="283">
+                <caret line="302" column="22" lean-forward="true" selection-start-line="302" selection-start-column="22" selection-end-line="302" selection-end-column="22" />
                 <folding />
               </first_editor>
               <second_editor />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GenomeParameters.tsv" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Parameters/GenomeParameters.tsv">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="405">
+              <caret line="27" column="18" lean-forward="false" selection-start-line="27" selection-start-column="18" selection-end-line="27" selection-end-column="18" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SpeciesTreeParameters.tsv" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Parameters/SpeciesTreeParameters.tsv">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="225">
+              <caret line="15" column="17" lean-forward="true" selection-start-line="15" selection-start-column="17" selection-end-line="15" selection-end-column="17" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -199,8 +208,6 @@
         <option value="$PROJECT_DIR$/ParallelGenomeGenerator.py" />
         <option value="$PROJECT_DIR$/globals.py" />
         <option value="$PROJECT_DIR$/SequenceSimulator.py" />
-        <option value="$PROJECT_DIR$/Parameters/SpeciesTreeParameters.tsv" />
-        <option value="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" />
         <option value="$PROJECT_DIR$/RatesManager.py" />
         <option value="$PROJECT_DIR$/NEWREADME.md" />
         <option value="$PROJECT_DIR$/Parameters/GeneFamilyParameters.tsv" />
@@ -214,7 +221,9 @@
         <option value="$PROJECT_DIR$/NewGeneFamilyGeneratory.py" />
         <option value="$PROJECT_DIR$/Genome.py" />
         <option value="$PROJECT_DIR$/deck.py" />
+        <option value="$PROJECT_DIR$/Parameters/SpeciesTreeParameters.tsv" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" />
       </list>
     </option>
   </component>
@@ -747,14 +756,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Parameters/SpeciesTreeParameters.tsv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="17" lean-forward="false" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda3/envs/Phylogenetics/lib/python3.6/_bootlocale.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="358">
@@ -804,14 +805,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="9" lean-forward="true" selection-start-line="0" selection-start-column="9" selection-end-line="0" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Parameters/GenomeParameters.tsv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="34" selection-end-column="19" />
           <folding />
         </state>
       </provider>
@@ -903,11 +896,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Parameters/SpeciesTreeParameters.tsv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="17" lean-forward="true" selection-start-line="15" selection-start-column="17" selection-end-line="15" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Parameters/GenomeParameters.tsv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="27" column="18" lean-forward="false" selection-start-line="27" selection-start-column="18" selection-end-line="27" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="1151">
-            <caret line="212" column="55" lean-forward="false" selection-start-line="212" selection-start-column="55" selection-end-line="212" selection-end-column="55" />
+          <first_editor relative-caret-position="283">
+            <caret line="302" column="22" lean-forward="true" selection-start-line="302" selection-start-column="22" selection-end-line="302" selection-end-column="22" />
             <folding />
           </first_editor>
           <second_editor />
