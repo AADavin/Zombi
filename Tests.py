@@ -55,18 +55,9 @@ def complete_test():
 
 #complete_test()
 
+import numpy
 
-mylist = ["a","b","c"]
-
-bla = list(mylist)
-
-for i in bla:
-    if i == "b":
-        mylist.append("d")
-    print(i)
-
-
-
+print(numpy.random.exponential(100))
 
 
 

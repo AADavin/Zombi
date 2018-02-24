@@ -1,6 +1,7 @@
 from GeneFamilyGenerator import FamilyOriginator, GeneFamilySimulator
 from GenomeGenerator import GenomeSimulator
 from TreeGenerator import TreeGenerator
+from TreeGeneratorContinuousTime import TreeGeneratorContinuousTime
 import ete3
 import sys
 import os
@@ -54,6 +55,28 @@ class SimuLYON():
             tg.generate_tree_mode_3()
         elif self.tree_parameters["SPECIES_EVOLUTION_MODE"] == '4':
             tg.generate_tree_mode_4()
+
+    def obtain_species_trees_continuous_time(self, parameters_file, experiment_folder):
+
+        self.read_parameters(parameters_file, self.tree_parameters)
+
+        if self.tree_parameters["SPECIES_EVOLUTION_MODE"] == '0':
+
+            success = False
+            trials = 0
+
+            while success == False and trials <= 100:
+                print("Computing Species Tree, %s trial" % str(trials))
+                tg = TreeGeneratorContinuousTime(parameters_file)
+                success = tg.new_tree_generator()
+                trials += 1
+
+            if success == False:
+                print("Aborting. Maximum number of trials attained. Not possible to compute the tree")
+
+            else:
+                print("Correctly computed tree")
+                tg.store_log(experiment_folder)
 
 
     def obtain_gene_families(self, parameters_file, experiment_folder):
@@ -211,6 +234,14 @@ if __name__ == "__main__":
             else:
                 os.mkdir(experiment_folder)
             SL.obtain_species_trees(parameters_file, experiment_folder)
+
+        if mode == "TC":
+
+            if os.path.isdir(experiment_folder):
+                pass
+            else:
+                os.mkdir(experiment_folder)
+            SL.obtain_species_trees_continuous_time(parameters_file, experiment_folder)
 
         elif mode == "G":
 
