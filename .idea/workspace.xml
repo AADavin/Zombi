@@ -69,10 +69,11 @@
       <file leaf-file-name="NewGenome.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/NewGenome.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-107">
-              <caret line="481" column="23" lean-forward="false" selection-start-line="481" selection-start-column="23" selection-end-line="481" selection-end-column="23" />
+            <state relative-caret-position="-76">
+              <caret line="438" column="8" lean-forward="false" selection-start-line="438" selection-start-column="8" selection-end-line="438" selection-end-column="8" />
               <folding>
                 <element signature="e#0#30#0" expanded="true" />
+                <element signature="e#18463#23120#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -145,8 +146,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>TIME_INCREASE</find>
-      <find>get_total</find>
       <find>TIME_INCRE</find>
       <find>TIME_INC</find>
       <find>_pre</find>
@@ -175,6 +174,8 @@
       <find>make_spe</find>
       <find>def make_spe</find>
       <find>&quot;O&quot;</find>
+      <find>time_</find>
+      <find>def make_</find>
     </findStrings>
     <replaceStrings>
       <replace>transfer</replace>
@@ -930,10 +931,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/NewGenome.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-107">
-          <caret line="481" column="23" lean-forward="false" selection-start-line="481" selection-start-column="23" selection-end-line="481" selection-end-column="23" />
+        <state relative-caret-position="-76">
+          <caret line="438" column="8" lean-forward="false" selection-start-line="438" selection-start-column="8" selection-end-line="438" selection-end-column="8" />
           <folding>
             <element signature="e#0#30#0" expanded="true" />
+            <element signature="e#18463#23120#0" expanded="false" />
           </folding>
         </state>
       </provider>

@@ -180,7 +180,6 @@ class LinearChromosome(Chromosome):
 
     pass
 
-
 class Genome():
 
     def __init__(self):
@@ -201,8 +200,7 @@ class Genome():
 
         # I have to weight by the length of each chromosome
 
-        chromosome = numpy.random.choice([self.chromosomes], 1, p=af.normalize([len(x) for x in self.chromosomes]))
-
+        chromosome = numpy.random.choice(self.chromosomes, 1, p=af.normalize([len(x) for x in self.chromosomes]))
         return chromosome
 
     def __str__(self):
@@ -212,7 +210,6 @@ class Genome():
     def __iter__(self):
         for chromosome in self.chromosomes:
             yield chromosome
-
 
 def make_speciation(sp, c1, c2):
 
@@ -272,10 +269,8 @@ def make_speciation(sp, c1, c2):
 
             all_gene_families[gene.gene_family].register_event(0, "S", ";".join(nodes))
 
-
     c1.add_feature("genome", genome1)
     c2.add_feature("genome", genome2)
-
 
 def make_extinction(sp):
 
@@ -286,8 +281,6 @@ def make_extinction(sp):
     for chromosome in genome:
         for gene in chromosome:
             gene.active = False
-
-
 
 def make_loss(p, chromosome):
 
@@ -387,7 +380,6 @@ def make_origination(gene_family_id, species_tree_node):
 
     return gene, gene_family
 
-
 def make_transfer(p, chromosome1, chromosome2):
 
     affected_genes = chromosome1.obtain_affected_genes(p)
@@ -443,6 +435,11 @@ def make_transfer(p, chromosome1, chromosome2):
 # A gene belongs both to a gene family and to a chromosome
 # So first you create chromosomes and then they create gene families
 
+def FillGenome(gene_family, genome, input):
+    pass
+
+
+
 def GenomeEvolver():
 
     tree = ete3.Tree()
@@ -464,7 +461,6 @@ def GenomeEvolver():
 
         chromosome.species = tree.name
 
-
         for i in range(n_genes):
 
             # We fill the chromosomes and we create also the gene families
@@ -479,7 +475,7 @@ def GenomeEvolver():
 
 class GenomeSimulator():
 
-    def __init__(self, events_file):
+    def __init__(self, events):
 
         self.parameters = dict()
 
@@ -489,9 +485,8 @@ class GenomeSimulator():
         self.parameters["INVERSION_E"] = 0.1
         self.parameters["TRANSLOCATION_E"] = 0.1
 
-
         self.species_tree = ete3.Tree()
-        self.tree_events = events_file
+        self.tree_events = events
         self._start_tree()
 
     def _start_tree(self):
@@ -516,7 +511,7 @@ class GenomeSimulator():
         else:
             return None
 
-    def evolve_genomes(self, duplication, transfer, loss, inversion, translocation, origination, time_counter):
+    def evolve_genomes(self, lineages_active, duplication, transfer, loss, inversion, translocation, origination):
 
         total_probability_of_event = duplication + transfer + loss + inversion + translocation + origination
 
@@ -526,179 +521,116 @@ class GenomeSimulator():
         i_e = float(self.parameters["INVERSION_E"])
         c_e = float(self.parameters["TRANSLOCATION_E"])
 
-        active_genomes = [x for x in self.species_tree.get_leaves() if x.is_alive == True]
-        random.shuffle(active_genomes)
+        lineage = random.choice(lineages_active)
+        chromosome = lineage.genome.select_random_chromosome()
 
-        for node in active_genomes:
+        if numpy.random.uniform(0, 1) <= total_probability_of_event:  # An event takes place
 
-            genome = node.Genome
-            snode = node.name
+            event = self.choose_event(duplication, transfer, loss, inversion, translocation, origination)
 
-            if numpy.random.uniform(0, 1) <= total_probability_of_event:  # An event takes place
+            if event == "D":
+                make_duplication(d_e, chromosome)
 
-                event = self.choose_event(duplication, transfer, loss, inversion, translocation, origination)
+            elif event == "T":
 
-                if event == "D":
+                # We choose a recipient
 
-                    a = genome.obtain_affected_genes(d_e)
-                    genome.duplicate_segment(snode, self.homologous, time_counter, a)
+                possible_recipients = [x for x in lineages_active if x != lineage]
 
-                elif event == "T":
-                    recipient = self.choose_recipient(time_counter, node.name, 0)
-                    if recipient == None:
-                        continue
+                if len(possible_recipients) > 0:
 
-                    a = genome.obtain_affected_genes(t_e)
+                    recipient = random.choice(possible_recipients)
+                    chromosome_r = recipient.genome.select_random_chromosome()
+                    make_transfer(t_e, chromosome, chromosome_r)
 
-                    old_segment = list()
-                    new_segment = list()
+            elif event == "L":
+                make_loss(l_e, chromosome)
 
-                    for i in a:
+            elif event == "I":
+                make_inversion(i_e, chromosome)
 
-                        cb, sense, gf, id = genome.genes[i].split("_")
+            elif event == "C":
+                make_translocation(c_e, chromosome)
 
-                        self.homologous[gf]["Copies"] += 1
-                        name1  = snode + "_" + sense + "_" + gf + "_" + str(self.homologous[gf]["Copies"])
-                        old_segment.append(name1)
+            elif event == "O":
+                pass
+                #gene, gene_family = make_origination(1,lineage)
 
-                        self.homologous[gf]["Copies"] += 1
-                        name2 = recipient + "_" + sense + "_" + gf + "_" + str(self.homologous[gf]["Copies"])
-                        new_segment.append(name2)
+    def run(self):
 
-                        self.homologous[gf]["Events"].append(
-                            ("T", str(time_counter), snode + ";" + id + ";" + name1.split("_")[3] + ";" + recipient + ";" + name2.split("_")[3]))
+        d, t, l, i, c, o = (0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
 
-                    # Now I have prepared the two segments. First I am going to update de donor segment
+        event_counter = 0
+        time = 0
 
-                    elements_to_remove = [genome.genes[x] for x in a]
+        time_to_next_st_event, next_st_event, nodes_in_event = self.tree_events[event_counter]
 
-                    for element in elements_to_remove:
-                        genome.genes.remove(element)
+        while True:
 
-                    position = a[0]
+            lineages_alive = [x for x in self.species_tree.get_leaves() if x.is_alive == True]
+            time_to_next_event = self.get_time_to_next_event(len(lineages_alive), d, t, l, i, c, o)
 
-                    for i, x in enumerate(old_segment):
-                        genome.genes.insert(position + i + 1, x)
+            if time + float(time_to_next_event) >= float(time_to_next_st_event):
 
-                    # Then I update the receptor segment
+                time_to_next_st_event, next_st_event, nodes_in_event = self.tree_events[event_counter]
+                event_counter += 1
 
-                        my_recipient = self.species_tree&recipient
-                        recipient_genome = my_recipient.Genome
-                        p = recipient_genome.select_random_position()
-                        recipient_genome.insert_segment(p, new_segment)
+                if next_st_event == "S":
+                    self._get_speciated(nodes_in_event)
 
-                elif event == "L":
+                elif next_st_event == "E":
+                    self._get_extinct(nodes_in_event)
 
-                    a = genome.obtain_affected_genes(l_e)
+                elif next_st_event == "F":
+                    pass
 
-                    # We have to check that the minimal size has not been attained
+            else:
 
-                    if (len(genome.genes) - len(a)) <= int(self.parameters["MIN_GENOME_SIZE"]):
-                        pass
-                    else:
-                        genome.loss_segment(snode, self.homologous, time_counter, a)
+                time += float(time_to_next_event)
+                event = self.choose_event(d,t,l,i,c,o)
+                self.evolve_genomes(lineages_alive, d,t,l,i,c,o)
+                self.increase_distances(float(time_to_next_event), lineages_alive)
 
-                elif event == "I":
+    def get_time_to_next_event(self, n, d, t, l ,i , c, o):
 
+        total = 0.0
+        for j in range(n):
+            total += sum((d,t,l,i,c,o))
+        time = numpy.random.exponential(1/total)
+        return time
 
-                    a = genome.obtain_affected_genes(i_e)
-                    genome.invert_segment(snode, self.homologous,time_counter, a)
-
-                elif event == "C":
-                    a = genome.obtain_affected_genes(c_e)
-                    genome.translocate_segment(snode, self.homologous, time_counter, a)
-
-                elif event == "O":
-
-                    self.gf_number += 1
-
-                    if numpy.random.randint(2) == 0:
-                        sense = "+"
-                    else:
-                        sense = "-"
-
-                    mygf = str(self.gf_number)
-                    self.homologous[mygf] = dict()
-                    self.homologous[mygf]["Copies"] = 1
-                    self.homologous[mygf]["Events"] = list()
-                    self.homologous[mygf]["Events"].append(("O", str(time_counter),  snode + ";" + "1"))
-
-                    segment = ["_".join((snode,sense,mygf,"1"))]
-
-                    p = genome.select_random_position()
-                    genome.insert_segment(p, segment)
-
-    def run(self, genome_folder):
-
-        duplication, transfer, loss, inversion, translocation, origination = self.rm.mode_0()
-
-        for time_counter in range(int(self.total_time)):
-
-            if time_counter % 100 == 0:
-                print("Simulating genome evolution %s".format() % str('{:.1%}'.format(time_counter/int(self.total_time))))
-
-            if time_counter in self.tree_events:
-
-                for event, snode, children in self.tree_events[time_counter]:
-
-                    if event == "EX":
-                        self.get_extinct(time_counter, snode)
-
-                    elif event == "SP":
-
-                        # First we write the ancestral genome
-
-                        mynode = self.species_tree&snode
-                        mynode.Genome.write_genome(os.path.join(genome_folder, snode + "_GENOME.tsv"))
-
-                        sc1, sc2 = children.split("+")
-                        self.get_speciated(time_counter, snode, sc1, sc2)
-
-            self.evolve_genomes(duplication, transfer, loss, inversion, translocation, origination, time_counter)
-            self.increase_distances()
-
-    def increase_distances(self):
-
-        active_lineages = [x for x in self.species_tree.get_leaves() if x.is_alive == True]
+    def increase_distances(self, time_to_next_event, active_lineages):
 
         for node in active_lineages:
-            node.dist += 1
+            node.dist += time_to_next_event
 
-    def get_extinct(self, time, sp):
+    def _get_speciated(self, nodes_in_event):
 
-        sp = self.species_tree&sp
-        sp.is_alive = False
-        parent_genome = sp.Genome
+        # First we take care of the species tree
 
-        for i, gene in enumerate(parent_genome.genes):
-            cb, sense, gf, id = gene.split("_")
-            self.homologous[gf]["Events"].append(("E", time, id))
+        sp, c1, c2 = nodes_in_event.split(";")
 
-    def get_speciated(self, time, sp, c1, c2):
+        st_sp = self.species_tree&sp
 
-        sp = self.species_tree&sp
-        parent_genome = sp.Genome
-
-        sc1 = sp.add_child(dist=0)
+        sc1 = st_sp.add_child(dist=0)
         sc1.name = c1
         sc1.add_feature("is_alive", True)
-        sc1.add_feature("Genome", copy.deepcopy(parent_genome))
-        genes_affected_1 = sc1.Genome.update_homologous(sc1.name, self.homologous)
 
-        sc2 = sp.add_child(dist=0)
+        sc2 = st_sp.add_child(dist=0)
         sc2.name = c2
         sc2.add_feature("is_alive", True)
-        sc2.add_feature("Genome", copy.deepcopy(parent_genome))
-        genes_affected_2 = sc2.Genome.update_homologous(sc2.name, self.homologous)
 
-        for i, gene in enumerate(parent_genome.genes):
+        st_sp.is_alive = False
 
-            cb, sense, gf, id = gene.split("_")
-            speciation_event = ";".join(
-                (sp.name, id, sc1.name, genes_affected_1[i].split("_")[3], sc2.name, genes_affected_2[i].split("_")[3]))
-            self.homologous[gf]["Events"].append(("S", time, speciation_event))
+        # Then, we take care of the genomes affected by the speciation event
 
-        sp.is_alive = False
+        make_speciation(st_sp, sc1, sc2)
+
+    def _get_extinct(self, nodes_in_event):
+
+        sp_st = self.species_tree&nodes_in_event
+        sp_st.is_alive = False
+        make_extinction(sp_st)
 
     def get_gene_family_tree(self):
 
@@ -706,12 +638,6 @@ class GenomeSimulator():
             return "None"
         else:
             return self.gene_family["Gene_tree"].write(format=1)
-
-
-
-
-
-
 
 
 class SpeciesTreeGenerator():
@@ -750,12 +676,10 @@ class SpeciesTreeGenerator():
 
         tree.is_alive = False
 
-
     def generate_precomputed_tree(self, events):
 
         new_tree = ete3.Tree()
         self._start_tree(new_tree)
-
 
     def generate_new_tree(self):
 
@@ -779,11 +703,14 @@ class SpeciesTreeGenerator():
             if stopping_rule == 0 and time + time_to_next_event >= total_time:
 
                 self.increase_distances(total_time - time, lineages_alive)
+                self.events.append((total_time, "F", "None"))
 
                 break
             elif stopping_rule == 1 and len(lineages_alive) >= total_lineages:
 
                 self.increase_distances(time_to_next_event, lineages_alive)
+                self.events.append((time+time_to_next_event, "F", "None"))
+
                 break
 
             elif len(lineages_alive) == 0:
@@ -871,7 +798,13 @@ class SpeciesTreeGenerator():
 stg = SpeciesTreeGenerator()
 stg.generate_new_tree()
 print(stg.whole_species_tree.write(format=1))
-stg.write_log()
+events = stg.events
+
+gss = GenomeSimulator(events)
+gss.run()
+
+
+
 
 #chromosome.remove_segment(segment)
 
