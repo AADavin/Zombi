@@ -1,1 +1,43 @@
-MODE	0
+# Parameters for mode S
+# Please refer to the manual for more details
+#
+# *REQUIRED* parameters
+# The sequence size (integer, strictly positive value)
+SEQUENCE_SIZE	100
+# The type of sequence be either 'nucleotide', 'amino-acid' or 'codon'
+SEQUENCE	codon
+#
+# *REQUIRED* parameters if SEQUENCE='nucleotide'
+# Mutation rate between pairs of nucleotides (positive values)
+AC	1.0
+AG	1.0
+AT	1.0
+CA	1.0
+CG	1.0
+CT	1.0
+GA	1.0
+GC	1.0
+GT	1.0
+TA	1.0
+TC	1.0
+TG	1.0
+# Equilibrium frequencies of nucleotides (positive values, must sum to 1.0)
+A	0.25
+C	0.25
+G	0.25
+T	0.25
+#
+# *REQUIRED* parameters if SEQUENCE='amino-acid'
+# The empirical equilibrium frequencies are those published with each respective model’s original paper.
+# AA_MODEL can be either 'JTT', 'WAG', 'LG', 'DAYHOFF', 'MTMAM' or 'MTREV24'
+AA_MODEL	WAG
+#
+# *REQUIRED* parameters if SEQUENCE='codon'
+# CODON_MODEL can be either 'MG' (Muse-Gaut) or 'GY' (Goldman-Yang)
+CODON_MODEL	MG
+# Alpha (dS) is the rate of synonymous change (positive value)
+ALPHA	1.0
+# Beta (dN) is the rate of non-synonymous change (positive value)
+BETA	0.5
+# corresponds to the transition/transversion ratio (positive value)
+KAPPA	1.0
