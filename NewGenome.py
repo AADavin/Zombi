@@ -8,6 +8,41 @@ import random
 numpy.random.seed(245)
 random.seed(10)
 
+def generate_events(tree_file):
+
+    events = ""
+    lineage_counter = 0
+
+    with open(tree_file) as f:
+
+        tree = ete3.Tree(f.readline().strip(), format=1)
+
+    root = tree.get_tree_root()
+    root.name = "Root"
+
+    inner_nodes = [(x,x.get_distance(root)) for x in tree.traverse() if not x.is_leaf()]
+
+    # We order the events
+
+    sorted(inner_nodes, key = lambda x: x[1])
+
+    for node, time in inner_nodes:
+
+        pass
+
+        #print(str(time), )
+
+
+def read_parameters(parameters_file):
+
+    parameters = dict()
+
+    with open(parameters_file) as f:
+        for line in f:
+            line.strip().split("\t")
+
+    return parameters
+
 
 def copy_segment(segment, new_identifiers):
 
@@ -20,10 +55,7 @@ def copy_segment(segment, new_identifiers):
 
     return new_segment
 
-def invert_segment(segment):
 
-    for gene in segment:
-        gene.change_sense()
 
 class GeneFamily():
 
@@ -170,7 +202,8 @@ class Gene():
 
     def __str__(self):
         #myname = "_".join(map(str,(self.genome, self.orientation, self.gene_family, self.gene_id)))
-        myname = "_".join(map(str, (self.genome, self.gene_family, self.gene_id)))
+        #myname = "_".join(map(str, (self.genome, self.gene_family, self.gene_id)))
+        myname = "_".join(map(str, (self.orientation, self.gene_family)))
         return myname
 
 class Chromosome():
@@ -202,7 +235,6 @@ class Chromosome():
         for x in self.genes:
             yield x
 
-
 class CircularChromosome(Chromosome):
 
     def __init__(self):
@@ -222,8 +254,36 @@ class CircularChromosome(Chromosome):
     def insert_segment(self, position, segment):
 
         for i, x in enumerate(segment):
-
             self.genes.insert(position + i, x)
+
+    def invert_segment(self, affected_genes):
+
+        new_genes = list()
+        inverted_genes = list()
+
+        for i in range(len(self.genes)):
+            if i not in affected_genes:
+                new_genes.append(self.genes[i])
+        for i in affected_genes:
+            inverted_genes.append(self.genes[i])
+        for gene in inverted_genes:
+            gene.change_sense()
+        self.genes = new_genes + inverted_genes[::-1]
+
+    def cut_and_paste(self, position, affected_genes):
+
+
+        if position in affected_genes:
+            return 0
+
+        new_genes = list()
+        remaining_genes = list()
+
+        segment = [self.genes[x] for x in affected_genes]
+
+        for i, x in enumerate(self.genes):
+            pass
+
 
     def obtain_affected_genes(self, p_extension):
 
@@ -246,8 +306,12 @@ class CircularChromosome(Chromosome):
 
         return affected_genes
 
+
+
     def get_homologous_position(self):
         pass
+
+
 
 
 class LinearChromosome(Chromosome):
@@ -294,48 +358,6 @@ class Genome():
     def __iter__(self):
         for chromosome in self.chromosomes:
             yield chromosome
-
-def make_inversion(p, chromosome):
-
-    affected_genes = chromosome.obtain_affected_genes(p)
-    segment = chromosome.obtain_segment(affected_genes)
-
-    new_identifiers = return_new_identifiers_for_segment(segment, all_gene_families)
-    new_segment = copy_segment(segment, new_identifiers)
-    invert_segment(new_segment)
-
-    chromosome.insert_segment(affected_genes[0], new_segment[::-1])
-    chromosome.remove_segment(segment)
-
-    for i,gene in enumerate(segment):
-        gene.active = False
-        all_gene_families[gene.gene_family].register_event(0, "I", str(gene.gene_id) + ";" + str(new_identifiers[i]))
-
-
-def make_translocation(p, chromosome):
-
-    affected_genes = chromosome.obtain_affected_genes(p)
-    segment = chromosome.obtain_segment(affected_genes)
-
-    new_identifiers = return_new_identifiers_for_segment(segment, all_gene_families)
-    new_segment = copy_segment(segment, new_identifiers)
-
-    # For now all translocations keep the orientation of the DNA
-
-    position = chromosome.select_random_position()
-
-    # Watch out! Right now translocations can occur within the sequence (resulting in no changes at all)
-
-    chromosome.insert_segment(position, new_segment)
-    chromosome.remove_segment(segment)
-
-    for i, gene in enumerate(segment):
-        gene.active = False
-        all_gene_families[gene.gene_family].register_event(0, "C",
-                                                           str(gene.gene_id) + ";" + str(new_identifiers[i]))
-
-
-
 
 
 class GenomeSimulator():
@@ -412,9 +434,9 @@ class GenomeSimulator():
 
         return genome
 
-    def myrun(self):
+    def run(self):
 
-        d, t, l, i, c, o = (0, 0, 4, 0.1, 0.1, 0.1)
+        d, t, l, i, c, o = (0, 0, 0, 2, 2, 0)
 
         # First we prepare the first genome
 
@@ -430,7 +452,6 @@ class GenomeSimulator():
         elapsed_time = 0.0
 
         while current_species_tree_event < all_species_tree_events:
-
 
             time_of_next_species_tree_event, event, nodes = self.tree_events[current_species_tree_event]
             time_of_next_species_tree_event = float(time_of_next_species_tree_event)
@@ -478,8 +499,6 @@ class GenomeSimulator():
                 current_time += time_to_next_genome_event
 
                 self.evolve_genomes(d, t, l, i, c, o, current_time)
-
-
 
     def choose_event(self, duplication, transfer, loss, inversion, translocation, origination):
 
@@ -530,12 +549,10 @@ class GenomeSimulator():
                 self.make_loss(l_e, lineage, time)
 
             elif event == "I":
-                pass
-                #make_inversion(i_e, chromosome)
+                self.make_inversion(i_e, lineage, time)
 
             elif event == "C":
-                pass
-                #make_translocation(c_e, chromosome)
+                self.make_translocation(c_e, lineage, time)
 
             elif event == "O":
                 pass
@@ -698,7 +715,6 @@ class GenomeSimulator():
 
         for i, gene in enumerate(segment):
 
-
             nodes = [gene.genome,
                      gene.gene_id,
                      copied_segment1[i].genome,
@@ -778,6 +794,42 @@ class GenomeSimulator():
         for gene in segment:
             gene.active = False
             self.all_gene_families[gene.gene_family].register_event(time, "L", ";".join(map(str,[lineage, gene.gene_id])))
+
+    def make_inversion(self, p, lineage, time):
+
+        chromosome = self.all_genomes[lineage].select_random_chromosome()
+        affected_genes = chromosome.obtain_affected_genes(p)
+        segment = chromosome.obtain_segment(affected_genes)
+        chromosome.invert_segment(affected_genes)
+
+        for i, gene in enumerate(segment):
+            self.all_gene_families[gene.gene_family].register_event(str(time), "I", ";".join(map(str,[lineage, gene.gene_id])))
+
+    def make_translocation(self, p, lineage, time):
+
+        chromosome = self.all_genomes[lineage].select_random_chromosome()
+        affected_genes = chromosome.obtain_affected_genes(p)
+        segment = chromosome.obtain_segment(affected_genes)
+
+        #position_found = False
+
+        #while position_found == False:
+
+            #position = chromosome.select_random_position()
+        #    if position not in affected_genes:
+        #        position_found = True
+
+
+        position = chromosome.select_random_position()
+
+
+        # For now all translocations keep the orientation of the DNA
+        chromosome.cut_and_paste(position, affected_genes)
+        chromosome.insert_segment(position, new_segment)
+        chromosome.remove_segment(segment)
+
+        for i, gene in enumerate(segment):
+            self.all_gene_families[gene.gene_family].register_event(str(time), "C", ";".join(map(str,[lineage, gene.gene_id])))
 
     def get_gene_family_tree(self):
 
@@ -955,7 +1007,7 @@ class SpeciesTreeGenerator():
 
 myevents = "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/Gillespie/Events.tsv"
 #mytree = "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/Gillespie/WholeTree"
-
+tree_file = "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/Gillespie/CyanoTree"
 #stg.write_events_file(myevents)
 #stg.write_tree(mytree)
 
@@ -964,25 +1016,12 @@ myevents = "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/Gillespie/
 
 
 gss = GenomeSimulator(myevents)
-gss.myrun()
+gss.run()
 for item in gss.all_gene_families["3"].events:
     print(item)
 
-
-print(gss.all_gene_families["3"].generate_tree())
-
-
-#gss.run()
-
-
-#chromosome.remove_segment(segment)
-
-#for gene in segment:
-#    gene.active = False
-#    all_gene_families[gene.gene_family].register_loss(0, gene)
-
-#print(chromosome)
-
+#print(gss.all_gene_families["3"].generate_tree())
+generate_events(tree_file)
 
 # Genome evolution in continuous time
 
@@ -991,6 +1030,26 @@ print(gss.all_gene_families["3"].generate_tree())
 ### It suffices to have two lists. One with active genomes and a second one with inactive genomes
 ### Each time that there is a speciation I add two active genomes and move the previous active genome to the list of
 ### inactive genome. When there is an extinction, I move one active genome to inactive
+
+## When I come back:
+
+# 1. Fix function make_duplication so that it takes lineage instead of chromosome 10 min
+# 2. Fix inversions and translocations 1 h
+# 3. Function to prune the trees 10 m
+# 4. Write nice input and output 2 h
+# 5. Write replacement transfers 1 h
+
+# I shouldn't continue with the next points till having al the other things solved
+
+# 6. Transfers proportional to distance 2h
+# 7. Variable rates for the species tree 8h
+# 8. Variable rates for genomes 16h
+# 9. Documenting software 8h
+# 10. Adding sequences evolution 16h
+# 11. Adding linear chromosomes 8h
+# 12. Adding intergenic distances 8h
+
+
 
 # Write output
 # Replacement transfers
@@ -1003,12 +1062,3 @@ print(gss.all_gene_families["3"].generate_tree())
 # Testing different pieces of software
 # Simulation of independent gene families (?)
 
-'''
-
-if __name__ == "__main__":
-
-    args = sys.argv[1:]
-    if len(args) != 3:
-        print("Incorrect usage. Please read the manual. The usual way to run this script is:")
-        print("python simuLyon.py T Parameters_file.tsv /Output_folder")
-'''

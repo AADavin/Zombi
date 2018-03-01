@@ -69,8 +69,8 @@
       <file leaf-file-name="NewGenome.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/NewGenome.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6240">
-              <caret line="416" column="35" lean-forward="false" selection-start-line="416" selection-start-column="35" selection-end-line="416" selection-end-column="35" />
+            <state relative-caret-position="283">
+              <caret line="1050" column="0" lean-forward="true" selection-start-line="1050" selection-start-column="0" selection-end-line="1050" selection-end-column="0" />
               <folding>
                 <element signature="e#0#30#0" expanded="true" />
               </folding>
@@ -145,7 +145,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>read_paramet</find>
       <find>self.para</find>
       <find>read_para</find>
       <find>read</find>
@@ -175,6 +174,7 @@
       <find>def make</find>
       <find>def make_transf</find>
       <find>def make_extinction(</find>
+      <find>print</find>
     </findStrings>
     <replaceStrings>
       <replace>transfer</replace>
@@ -444,10 +444,11 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1600" height="900" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32941177" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32941177" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32941177" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32941177" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -929,8 +930,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/NewGenome.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6240">
-          <caret line="416" column="35" lean-forward="false" selection-start-line="416" selection-start-column="35" selection-end-line="416" selection-end-column="35" />
+        <state relative-caret-position="283">
+          <caret line="1050" column="0" lean-forward="true" selection-start-line="1050" selection-start-column="0" selection-end-line="1050" selection-end-column="0" />
           <folding>
             <element signature="e#0#30#0" expanded="true" />
           </folding>
