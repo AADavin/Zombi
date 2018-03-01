@@ -200,11 +200,58 @@ class SimuLYON():
 
         gfs.write_log(gene_trees_folder, events_per_family_folder, complete_genomes_folder, events_per_branch_folder)
 
-
     def obtain_sequences(self, parameters_file, experiment_folder):
-        pass
+        import pyvolve
+        from ete3 import Tree
 
-    def _prepare_profile_file(self,tree, myfile):
+        genome_folder = os.path.join(experiment_folder, "Genomes")
+        gene_trees_folder = os.path.join(genome_folder, "GeneTrees")
+        sequences_folder = os.path.join(experiment_folder, "Sequences")
+
+        if not os.path.isdir(sequences_folder):
+            os.mkdir(sequences_folder)
+
+        self.read_parameters(parameters_file, self.sequence_parameters)
+        size = int(self.sequence_parameters["SEQUENCE_SIZE"])
+        sequence = self.sequence_parameters["SEQUENCE"]
+        sequence_type = "The type of sequence be either 'nucleotide', 'amino-acid' or 'codon'"
+        assert sequence in ['nucleotide', 'amino-acid', 'codon'], sequence_type
+
+        if sequence == 'nucleotide':
+            nucleotides = ['A', 'C', 'G', 'T']
+            state_freqs = []
+            custom_mu = {}
+
+            for source in nucleotides:
+                state_freqs.append(float(self.sequence_parameters[source]))
+                for target in nucleotides:
+                    if source != target:
+                        pair = source + target
+                        custom_mu[pair] = float(self.sequence_parameters[pair])
+            assert abs(sum(state_freqs) - 1) < 1e-6, "Equilibrium frequencies of nucleotides must sum to 1.0"
+
+            model = pyvolve.Model("nucleotide", {"mu": custom_mu, "state_freqs": state_freqs})
+        elif sequence == 'amino-acid':
+
+            model = pyvolve.Model(self.sequence_parameters['AA_MODEL'])
+        else:
+            codon_params = {}
+            for param in ["ALPHA", "BETA", "KAPPA"]:
+                codon_params[param.lower()] = float(self.sequence_parameters[param])
+
+            model = pyvolve.Model(self.sequence_parameters['CODON_MODEL'], codon_params, neutral_scaling=True)
+
+        for tree_file in os.listdir(gene_trees_folder):
+            tree_path = os.path.join(gene_trees_folder, tree_file)
+            ete_tree = Tree(tree_path)
+            if len(ete_tree) != 1:
+                tree = pyvolve.read_tree(tree=ete_tree.write(format=5))
+                partition = pyvolve.Partition(models=model, size=size)
+                evolver = pyvolve.Evolver(tree=tree, partitions=partition)
+                fasta_file = tree_file.replace(".txt", "_") + sequence + ".fasta"
+                evolver(seqfile=os.path.join(sequences_folder, fasta_file), ratefile=None, infofile=None)
+
+    def _prepare_profile_file(self,tree,myfile):
 
         with open(myfile, "w") as f:
             line = list()
@@ -253,7 +300,7 @@ if __name__ == "__main__":
 
         elif mode == "S":
 
-            print("This mode is not ready to be used yet")
+            SL.obtain_sequences(parameters_file, experiment_folder)
 
         else:
             print("Incorrect usage. Please select a mode: T, G, F or S")

@@ -33,6 +33,8 @@ Watch out! simuLyon is **unfinished**. The current version can undergo big chang
 
 You need **python 3.6** installed with **ETE3** and **numpy**
 
+    pip3 install ete3 numpy
+
 There are **four** modes to run simuLyon: **T** (species Tree), **G** (Genomes), **F** (gene Families) and  **S** (Sequences) 
 
 Computing **genomes** or **gene families** requires having computed previously a species tree computed with the mode T
@@ -42,17 +44,22 @@ The parameters are read from a tsv file that it can be modified with any text ed
 
 To start using simuLyon right away you can use:
 
-    python simuLyon.py T SpeciesTreeParameters.tsv /Output_folder
+    mkdir ./Output_folder
+    python3 simuLyon.py T ./Parameters/SpeciesTreeParameters.tsv ./Output_folder
 
 The Species Tree will be created in the /Output folder, along some other useful files (this is explained in the Output section of this manual)
 
 Then, you can simulate the evolution of genomes in that species tree using:
 
-    python simuLyon.py G GenomeParameters.tsv /previous_Output_folder
+    python3 simuLyon.py G ./Parameters/GenomeParameters.tsv ./Output_folder
 
 Make sure that the Output_folder is the same that you were using when you generated the Species Tree! 
 simuLyon will simulate the evolution of genomes inside the whole species tree and it will print a very detailed
 information about them
+
+Then, you can simulate the evolution of sequences for each gene in that species tree using:
+
+    python3 simuLyon.py S ./Parameters/SequenceParameters.tsv ./Output_folder
 
 Go through the examples for more details    
    
@@ -133,7 +140,12 @@ of genes that are found in no particular order in a given point of the species t
 
 ### **Generating sequences (S)** ###
 
-**This is not written yet**
+With this method it is possible to simulate an alignment for each gene that evolve inside the species tree.
+This method can simulate non-coding DNA sequences, coding DNA sequences and amino-acids sequences.
+
+This module requires Pyvolve (https://github.com/sjspielman/pyvolve), to install it use the command:
+
+    pip3 install pyvolve
 
 ### Examples 
 
@@ -141,8 +153,9 @@ of genes that are found in no particular order in a given point of the species t
 
 First thing we do is we are going to change the parameters of the Species Tree.
  For that we create a new file using:
- 
-     cp SpeciesTreeParameters.tsv   example1_SpeciesTreeParameters.tsv
+
+     mkdir ./EXAMPLE_1
+     cp ./Parameters/SpeciesTreeParameters.tsv ./EXAMPLE_1/SpeciesTreeParameters.tsv
      
 By default (STOPPING_RULE = 0), the tree evolves until time reaches TOTAL_TIME
 Let us change this to obtain a tree with 6 living lineages. We open the file and we modify:
@@ -158,8 +171,8 @@ Let us also use change the default and extinction rates. For that, we will use a
 and as extinction rate 1 * 10^-4
 
 For that we make SPECIATION_P0 = 0.0003 and EXTINCTION_P0 = 0.0001. Once we have changed that, we can run the command
-        
-     python simuLyon.py T example1_SpeciesTreeParameters.tsv EXAMPLE_1
+
+     python3 simuLyon.py T ./EXAMPLE_1/SpeciesTreeParameters.tsv ./EXAMPLE_1
    
  Then we can go to the folder /EXAMPLE_1 and inspect the files that have been created there.
  
@@ -168,7 +181,7 @@ For that we make SPECIATION_P0 = 0.0003 and EXTINCTION_P0 = 0.0001. Once we have
  
 Once that we have computed a species tree, we can simulate **the evolution of genomes** inside this species tree. We will change the default parameters.
 
-     cp GenomeParameters.tsv  example1_GenomeParameters.tsv
+     cp ./Parameters/GenomeParameters.tsv  ./EXAMPLE_1/GenomeParameters.tsv
         
 First, we are going to use the SEED = 237 to have reproducible results.
 
@@ -181,8 +194,14 @@ INVERSION_E = 0.05
 
  Finally, we launch simuLyon using the command
   
-     python simuLyon.py G example1_GenomeParameters.tsv EXAMPLE_1
-      
+     python3 simuLyon.py G ./EXAMPLE_1/GenomeParameters.tsv ./EXAMPLE_1
+
+Once that we have computed gene trees, we can simulate DNA and amino-acid sequences of each gene inside this species tree.
+We will not change the default parameters set to simulate DNA sequences.
+
+     cp ./Parameters/SequenceParameters.tsv ./EXAMPLE_1/SequenceParameters.tsv
+     python3 simuLyon.py S ./EXAMPLE_1/GenomeParameters.tsv ./EXAMPLE_1/
+
 
 ### **Output** ###
 
@@ -234,9 +253,10 @@ Please notice that in the case of events that affect to several genes, this will
 
 *Transfers.tsv*: A complete list of the transfer events, with donor and recipients
 
-#### Mode S 
+#### Mode S
 
-**Not written yet**
+*Sequences*: A folder with one fasta file per gene of the species tree.
+Each fasta alignment contains the simulated sequences obtained at the leaves of the tree, not the internal nodes.
 
 ### Parameters ###
 
@@ -352,14 +372,14 @@ Very frequently you will be interested in having a Species Tree that contains on
 
 For doing that, we resort to the script **sampLyon.py**. This script is going to prune and sample the different trees generated. For running it you can use:
 
-    python sampLyon.py T /previous_Output_folder Sample_name N
+    python3 sampLyon.py T /previous_Output_folder Sample_name N
     
 T indicates the mode (prune and sample species Tree), then we input the folder we created before, we give a name to this sample and finally we introduce the fraction (N)
 of species that will be sampled.
 
 Once you have done that, if you are interested in using the gene trees you *have to* run sampLyon this way: 
 
-    python sampLyon.py G /previous_Output_folder /previous_Sample_name
+    python3 sampLyon.py G /previous_Output_folder /previous_Sample_name
 
 This will cut the gene trees removing extinct species and other species that were not including in the sample
 
@@ -393,7 +413,7 @@ time 0.6 and time 0.7.
  
  Once we have done that, we can run simuLyon by using:
 
-     python simuLyon.py T example1_SpeciesTreeParameters.tsv EXAMPLE_2 
+     python3 simuLyon.py T example1_SpeciesTreeParameters.tsv EXAMPLE_2
 
 ### To do
 
