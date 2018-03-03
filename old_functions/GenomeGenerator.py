@@ -3,8 +3,8 @@ import os
 import numpy
 import random
 import AuxiliarFunctions as af
-from RatesManager import GenomeEvolutionRates
-from Genome import Genome
+from old_functions.RatesManager import GenomeEvolutionRates
+from old_functions.Genome import Genome
 import copy
 
 class GenomeSimulator():
@@ -86,14 +86,6 @@ class GenomeSimulator():
             return recipient
         else:
             return None
-
-    def get_time_to_next_event(self, n, d, t, l, i, c, o):
-
-        total = 0.0
-        for j in range(n):
-            total += d + t + l + i + c + o
-        time = numpy.random.exponential(1/total)
-        return time
 
     def evolve_genomes(self, duplication, transfer, loss, inversion, translocation, origination, time_counter):
 
@@ -209,42 +201,40 @@ class GenomeSimulator():
 
     def run(self, genome_folder):
 
-        next_event_in_species_tree = 0
-
         duplication, transfer, loss, inversion, translocation, origination = self.rm.mode_0()
 
-        finished = False
+        for time_counter in range(int(self.total_time)):
 
-        while finished == False
+            if time_counter % 100 == 0:
+                print("Simulating genome evolution %s".format() % str('{:.1%}'.format(time_counter/int(self.total_time))))
 
-            time = self.get_time_to_next_event()
+            if time_counter in self.tree_events:
 
-            if time >= next_event_in_species_tree:
-                print("Do the event in the species tree")
+                for event, snode, children in self.tree_events[time_counter]:
 
-                if event == "EX":
-                    self.get_extinct(time_counter, snode)
+                    if event == "EX":
+                        self.get_extinct(time_counter, snode)
 
-                elif event == "SP":
+                    elif event == "SP":
 
-                    # First we write the ancestral genome
+                        # First we write the ancestral genome
 
-                    mynode = self.species_tree & snode
-                    mynode.Genome.write_genome(os.path.join(genome_folder, snode + "_GENOME.tsv"))
+                        mynode = self.species_tree&snode
+                        mynode.Genome.write_genome(os.path.join(genome_folder, snode + "_GENOME.tsv"))
 
-                    sc1, sc2 = children.split("+")
-                    self.get_speciated(time_counter, snode, sc1, sc2)
-            else:
+                        sc1, sc2 = children.split("+")
+                        self.get_speciated(time_counter, snode, sc1, sc2)
 
-                self.evolve_genomes(duplication, transfer, loss, inversion, translocation, origination, time_counter)
-                self.increase_distances(time)
-
+            self.evolve_genomes(duplication, transfer, loss, inversion, translocation, origination, time_counter)
+            self.increase_distances()
 
 
-    def increase_distances(self, time):
+    def increase_distances(self):
+
         active_lineages = [x for x in self.species_tree.get_leaves() if x.is_alive == True]
+
         for node in active_lineages:
-            node.dist += time
+            node.dist += 1
 
     def get_extinct(self, time, sp):
 

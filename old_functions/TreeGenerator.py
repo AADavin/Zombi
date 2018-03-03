@@ -1,4 +1,4 @@
-from RatesManager import SpeciesEvolutionRates
+from old_functions.RatesManager import SpeciesEvolutionRates
 import ete3
 import numpy
 import os

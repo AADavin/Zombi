@@ -1,9 +1,5 @@
 import ete3
-import os
-import AuxiliarFunctions as af
-from RatesManager import GeneEvolutionRates
 import numpy
-import random
 
 
 class SequenceSimulator():

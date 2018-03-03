@@ -3,7 +3,7 @@ import os
 import numpy
 import random
 import AuxiliarFunctions as af
-from RatesManager import GeneEvolutionRates
+from old_functions.RatesManager import GeneEvolutionRates
 import copy
 
 

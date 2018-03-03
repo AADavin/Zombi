@@ -1,7 +1,7 @@
-from GeneFamilyGenerator import FamilyOriginator, GeneFamilySimulator
-from GenomeGenerator import GenomeSimulator
-from TreeGenerator import TreeGenerator
-from TreeGeneratorContinuousTime import TreeGeneratorContinuousTime
+from old_functions.GeneFamilyGenerator import FamilyOriginator, GeneFamilySimulator
+from old_functions.GenomeGenerator import GenomeSimulator
+from old_functions.TreeGenerator import TreeGenerator
+from old_functions.TreeGeneratorContinuousTime import TreeGeneratorContinuousTime
 import ete3
 import sys
 import os

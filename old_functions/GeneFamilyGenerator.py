@@ -1,11 +1,8 @@
 import ete3
-import os
 import numpy
 import random
 import AuxiliarFunctions as af
-from RatesManager import GeneEvolutionRates, GenomeEvolutionRates
-from Genome import Genome
-import copy
+from old_functions.RatesManager import GeneEvolutionRates
 
 
 class FamilyOriginator():
