@@ -131,13 +131,35 @@ def get_homologous_position(segment, genes):
 
     return positions
 
+# numpy.random.seed(245)
+# random.seed(10)
+# GenomeEvolver()
+# stg = SpeciesTreeGenerator()
+# stg.generate_new_tree()
+# print(stg.whole_species_tree.write(format=1))
 
-    # Then we traverse the genome backwards:
+myevents = "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/Gillespie/Events.tsv"
+# mytree = "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/Gillespie/WholeTree"
+tree_file = "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/Gillespie/CyanoTree"
+# stg.write_events_file(myevents)
+# stg.write_tree(mytree)
 
+# species_tree_events = list()
+# species_counter = 0
 
-genes = ["-_1","+_1","-_2","-_3","+_4","+_5","+_1","-_2","-_3","+_3","+_2"]
-segment = ["+_1","-_2","-_3"]
+gss = GenomeSimulator(myevents)
+gss.verbose_run()
 
-print(get_homologous_position(segment, genes))
+# p = read_parameters("/Users/adriandavin/PycharmProjects/SimuLYON/Parameters/SpeciesTreeParameters.tsv")
+# p = prepare_parameters(p)
 
+# gss.write_genomes("/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/Gillespie/All/Genomes/")
+# gss.write_gene_family_events("/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/Gillespie/All/Gene_families/")
+gss.write_gene_trees("/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/Gillespie/All/Gene_trees/")
+# gss.write_events_per_branch("/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/Gillespie/All/Events_per_branch")
 
+# for item in gss.all_gene_families["3"].events:
+#    print(item)
+
+# print(gss.all_gene_families["3"].generate_tree())
+# generate_events(tree_file)

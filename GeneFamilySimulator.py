@@ -4,53 +4,18 @@ import copy
 import random
 import os
 
-from GenomeClasses import GeneFamily, Gene, CircularChromosome, LinearChromosome, Genome
+from GenomeClasses import GeneFamily, Gene
 
 
-class GenomeSimulator():
+class GeneFamilySimulator:
 
-    def __init__(self, events_file):
+    def __init__(self, parameters_file, events_file):
 
-        self.parameters = dict()
-
-        self.parameters["DUPLICATION_E"] = 0.2
-        self.parameters["LOSS_E"] = 0.8
-        self.parameters["TRANSFER_E"] = 0.8
-        self.parameters["INVERSION_E"] = 0.1
-        self.parameters["TRANSLOCATION_E"] = 0.1
-        self.parameters["REPLACEMENT_TRANSFER"] = 1
-        self.parameters["GENOME_FILE"] = "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/Gillespie/Genome_file.tsv"
-
+        self.parameters = af.prepare_gene_familiy_parameters(af.read_parameters(parameters_file))
         self.tree_events = self._read_events_file(events_file)
-
-        self.all_genomes = dict()
         self.all_gene_families = dict()
-
         self.gene_families_counter = 0
 
-        self.active_genomes = set()
-
-
-    def write_genomes(self, genome_folder):
-
-        if not os.path.isdir(genome_folder):
-            os.mkdir(genome_folder)
-
-        for genome_name,genome in self.all_genomes.items():
-            # Open file
-            with open(os.path.join(genome_folder,genome_name + "_GENOME.tsv"),"w") as f:
-
-                header = ["POSITION","GENE_FAMILY","ORIENTATION","GENE_ID"]
-                header = "\t".join(map(str, header)) + "\n"
-
-                f.write(header)
-
-                for chromosome in genome:
-                    for index, gene in enumerate(chromosome):
-                        #print(chromosome) I have to add the chromosome id
-                        line = [index, gene.gene_family, gene.orientation, gene.gene_id]
-                        line = "\t".join(map(str,line)) +"\n"
-                        f.write(line)
 
     def write_gene_family_events(self, gene_family_events_folder):
 
@@ -168,62 +133,29 @@ class GenomeSimulator():
                 events.append(handle)
         return events
 
-    def return_new_identifiers_for_segment(self, segment):
 
-        new_identifiers = list()
+    def loop_families(self):
 
-        for gene in segment:
-            gf = gene.gene_family
-            new_id = self.all_gene_families[gf].obtain_new_gene_id()
-            new_identifiers.append(new_id)
+        families_in_stem = self.parameters["STEM_FAMILIES"]
 
-        return new_identifiers
+        # First we compute the families beginning in the stem
 
-    def _FillGenome(self, genome_file, all_gene_families):
+        start_time = 0
+        lineage = "Root"
 
-        genome = Genome()
-        genome.species = "Root"
-        time = 0
+        for family_i in range(families_in_stem):
+            self.run(start_time, lineage)
 
-        with open(genome_file) as f:
+    def run(self, start_time, lineage):
 
-            for line in f:
-
-                n_genes, shape = line.strip().split("\t")
-
-                # We create a chromosome for each entry
-
-                if shape == "L":
-                    chromosome = LinearChromosome()
-                    chromosome.shape = "L"
-                elif shape == "C":
-                    chromosome = CircularChromosome()
-                    chromosome.shape = "C"
-
-                for i in range(int(n_genes)):
-                    # We fill the chromosomes and we create also the gene families
-
-                    gene, gene_family = self.make_origination(genome.species, time)
-                    chromosome.genes.append(gene)
-                    all_gene_families[str(self.gene_families_counter)] = gene_family
-
-                genome.chromosomes.append(chromosome)
-
-        return genome
-
-    def run(self):
-
-        d, t, l, i, c, o = (4, 4, 0, 0, 0, 5)
-
-        # First we prepare the first genome
-
-        genome = self._FillGenome(self.parameters["GENOME_FILE"], self.all_gene_families)
-        self.active_genomes.add(genome.species)
-        self.all_genomes["Root"] = genome
+        d, t, l = self.parameters["DUPLICATIONS"], self.parameters["TRANSFERS"], self.parameters["LOSSES"]
 
         current_species_tree_event = 0
-        current_time = 0.0
+        current_time = start_time
         all_species_tree_events = len(self.tree_events)
+
+        self.active_genomes = set()
+
         # Second, we compute the time to the next event:
 
         elapsed_time = 0.0
@@ -235,8 +167,7 @@ class GenomeSimulator():
 
             # We check that we are not exactly in the same span of time WRITE THIS!!
 
-            time_to_next_genome_event = self.get_time_to_next_event(len(self.active_genomes), d, t, l, i, c, o)
-
+            time_to_next_genome_event = self.get_time_to_next_event(len(self.active_genomes), d, t, l)
             elapsed_time = float(current_time) - elapsed_time
 
             if time_to_next_genome_event + current_time >= float(time_of_next_species_tree_event):
@@ -272,105 +203,12 @@ class GenomeSimulator():
 
                 current_time += time_to_next_genome_event
 
-                self.evolve_genomes(d, t, l, i, c, o, current_time)
+                self.evolve_genomes(d, t, l, current_time)
 
+    def choose_event(self, duplication, transfer, loss):
 
-    def verbose_run(self):
-
-        # Only for debugging purposes
-
-        detailed_genomes = list()
-
-        d, t, l, i, c, o = (4, 4, 0, 0, 0, 0)
-
-        # First we prepare the first genome
-
-        genome = self._FillGenome(self.parameters["GENOME_FILE"], self.all_gene_families)
-        self.active_genomes.add(genome.species)
-        self.all_genomes["Root"] = genome
-
-        detailed_genomes.append((0, genome.species, copy.deepcopy(genome)))
-
-        current_species_tree_event = 0
-        current_time = 0.0
-        all_species_tree_events = len(self.tree_events)
-        # Second, we compute the time to the next event:
-
-        elapsed_time = 0.0
-
-        while current_species_tree_event < all_species_tree_events:
-
-            time_of_next_species_tree_event, event, nodes = self.tree_events[current_species_tree_event]
-            time_of_next_species_tree_event = float(time_of_next_species_tree_event)
-
-            # We check that we are not exactly in the same span of time WRITE THIS!!
-
-            time_to_next_genome_event = self.get_time_to_next_event(len(self.active_genomes), d, t, l, i, c, o)
-
-            elapsed_time = float(current_time) - elapsed_time
-
-            if time_to_next_genome_event + current_time >= float(time_of_next_species_tree_event):
-
-                current_species_tree_event +=1
-                current_time = time_of_next_species_tree_event
-
-                if event == "S":
-
-                    sp,c1,c2 = nodes.split(";")
-
-                    # First we keep track of the active and inactive genomes
-
-                    self.active_genomes.discard(sp)
-                    self.active_genomes.add(c1)
-                    self.active_genomes.add(c2)
-
-                    # Second, we speciate the genomes
-
-                    genome_c1, genome_c2 = self.make_speciation(sp, c1, c2, current_time)
-
-                    self.all_genomes[c1] = genome_c1
-                    self.all_genomes[c2] = genome_c2
-
-                    detailed_genomes.append((current_time, c1, copy.deepcopy(genome_c1)))
-                    detailed_genomes.append((current_time, c2,  copy.deepcopy(genome_c2)))
-
-
-                elif event == "E":
-                    self.make_extinction(nodes, current_time)
-                    self.active_genomes.discard(nodes)
-
-                    detailed_genomes.append((current_time, nodes, copy.deepcopy(self.all_genomes[nodes])))
-
-                elif event == "F":
-                    self.make_end(current_time)
-
-            else:
-
-                current_time += time_to_next_genome_event
-                genome_event, affected_linage = self.evolve_genomes(d, t, l, i, c, o, current_time)
-                if genome_event == "T":
-
-                    donor, recipient = affected_linage.split("->")
-
-                    detailed_genomes.append((current_time, donor + ";" + "LT",
-                                             copy.deepcopy(self.all_genomes[donor])))
-
-                    detailed_genomes.append((current_time, recipient + ";" + "AT",
-                                             copy.deepcopy(self.all_genomes[recipient])))
-
-                else:
-                    detailed_genomes.append((current_time, affected_linage + ";" + genome_event,
-                                             copy.deepcopy(self.all_genomes[affected_linage])))
-
-
-        for time, lineage, genome in detailed_genomes:
-            print(time, lineage, genome)
-
-
-    def choose_event(self, duplication, transfer, loss, inversion, translocation, origination):
-
-        draw = numpy.random.choice(["D", "T", "L", "I", "C", "O"], 1,
-                                   p=af.normalize([duplication, transfer, loss, inversion, translocation, origination]))
+        draw = numpy.random.choice(["D", "T", "L"], 1,
+                                   p=af.normalize([duplication, transfer, loss]))
         return draw
 
     def choose_recipient(self, lineages_alive, donor):
@@ -381,20 +219,14 @@ class GenomeSimulator():
         else:
             return None
 
-    def evolve_genomes(self, duplication, transfer, loss, inversion, translocation, origination, time):
+    def evolve_gene_family(self, duplication, transfer, loss, time):
 
-        total_probability_of_event = duplication + transfer + loss + inversion + translocation + origination
-
-        d_e = float(self.parameters["DUPLICATION_E"])
-        t_e = float(self.parameters["TRANSFER_E"])
-        l_e = float(self.parameters["LOSS_E"])
-        i_e = float(self.parameters["INVERSION_E"])
-        c_e = float(self.parameters["TRANSLOCATION_E"])
+        total_probability_of_event = duplication + transfer + loss
 
         if numpy.random.uniform(0, 1) <= total_probability_of_event:  # An event takes place
 
             lineage = random.choice(list(self.active_genomes))
-            event = self.choose_event(duplication, transfer, loss, inversion, translocation, origination)
+            event = self.choose_event(duplication, transfer, loss)
 
             if event == "D":
                 self.make_duplication(d_e, lineage, time)
@@ -421,31 +253,12 @@ class GenomeSimulator():
                 self.make_loss(l_e, lineage, time)
                 return "L", lineage
 
-            elif event == "I":
-                self.make_inversion(i_e, lineage, time)
-                return "I", lineage
 
-            elif event == "C":
-                self.make_translocation(c_e, lineage, time)
-                return "C",lineage
-
-            elif event == "O":
-
-                gene, gene_family = self.make_origination(lineage, time)
-
-                chromosome = self.all_genomes[lineage].select_random_chromosome()
-                position = chromosome.select_random_position()
-                segment = [gene]
-                chromosome.insert_segment(position, segment)
-
-                return "O", lineage
-
-
-    def get_time_to_next_event(self, n, d, t, l ,i , c, o):
+    def get_time_to_next_event(self, n, d, t, l):
 
         total = 0.0
         for j in range(n):
-            total += sum((d,t,l,i,c,o))
+            total += sum((d,t,l))
         time = numpy.random.exponential(1/total)
         return time
 
@@ -477,7 +290,6 @@ class GenomeSimulator():
 
     def make_speciation(self, sp, c1, c2, time):
 
-        # This function receives a genome and the names of the two branching lineages of the species node
 
         genome_sp = self.all_genomes[sp]
 
@@ -759,29 +571,18 @@ class GenomeSimulator():
             gene.active = False
             self.all_gene_families[gene.gene_family].register_event(time, "L", ";".join(map(str,[lineage, gene.gene_id])))
 
-    def make_inversion(self, p, lineage, time):
-
-        chromosome = self.all_genomes[lineage].select_random_chromosome()
-        affected_genes = chromosome.obtain_affected_genes(p)
-        segment = chromosome.obtain_segment(affected_genes)
-        chromosome.invert_segment(affected_genes)
-
-        for i, gene in enumerate(segment):
-            self.all_gene_families[gene.gene_family].register_event(str(time), "I", ";".join(map(str,[lineage, gene.gene_id])))
-
-    def make_translocation(self, p, lineage, time):
-
-        chromosome = self.all_genomes[lineage].select_random_chromosome()
-        affected_genes = chromosome.obtain_affected_genes(p)
-        segment = chromosome.obtain_segment(affected_genes)
-        chromosome.cut_and_paste(affected_genes)
-
-        for i, gene in enumerate(segment):
-            self.all_gene_families[gene.gene_family].register_event(str(time), "C", ";".join(map(str,[lineage, gene.gene_id])))
-
     def get_gene_family_tree(self):
 
         if len(self.gene_family["Gene_tree"].get_leaves()) < 3:
             return "None"
         else:
             return self.gene_family["Gene_tree"].write(format=1)
+
+
+
+parameters_file = "/Users/adriandavin/PycharmProjects/SimuLYON/NewParameters/GeneFamilyParameters.tsv"
+events_file = "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/Gillespie/Events.tsv"
+
+gfs = GeneFamilySimulator(parameters_file, events_file)
+
+#gfs.run()

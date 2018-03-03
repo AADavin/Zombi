@@ -6,22 +6,15 @@ import random
 
 class SpeciesTreeGenerator():
 
-    def __init__(self):
+    def __init__(self, parameters):
 
         self.whole_species_tree = ete3.Tree()
 
         self.lineages_counter = 0
         self.events = list()
         self.events.append(("0", "S", "Root;n1;n2"))
-
         self._start_tree(self.whole_species_tree)
-        self.parameters = dict()
-
-        self.parameters["SPECIATION"] = 1.2
-        self.parameters["EXTINCTION"] = 0.2
-        self.parameters["TOTAL_TIME"] = 6
-        self.parameters["STOPPING_RULE"] = 1
-        self.parameters["TOTAL_LINEAGES"] = 5
+        self.parameters = parameters
 
     def _start_tree(self, tree):
 
@@ -45,22 +38,23 @@ class SpeciesTreeGenerator():
         new_tree = ete3.Tree()
         self._start_tree(new_tree)
 
-    def generate_new_tree(self):
+    def run(self):
 
-        speciation = float(self.parameters["SPECIATION"])
-        extinction = float(self.parameters["EXTINCTION"])
-        stopping_rule = int(self.parameters["STOPPING_RULE"])
-        total_time = float(self.parameters["TOTAL_TIME"])
-        total_lineages = float(self.parameters["TOTAL_LINEAGES"])
+        speciation = self.parameters["SPECIATION"]
+        extinction = self.parameters["EXTINCTION"]
+        stopping_rule = self.parameters["STOPPING_RULE"]
+        total_time = self.parameters["TOTAL_TIME"]
+        total_lineages = self.parameters["TOTAL_LINEAGES"]
+        max_lineages = self.parameters["MAX_LINEAGES"]
 
         time = 0
         success = False
 
         while True:
 
-            print(time)
-
             lineages_alive = [x for x in self.whole_species_tree.get_leaves() if x.is_alive == True]
+            print("Time: %s ; Number of lineages alive: %s" % (str(time), str(len(lineages_alive))))
+
 
             time_to_next_event = self.get_time_to_next_event(len(lineages_alive), speciation, extinction)
 
@@ -81,6 +75,11 @@ class SpeciesTreeGenerator():
 
                 self.increase_distances(time_to_next_event, lineages_alive)
                 print("All dead")
+                break
+
+            elif len(lineages_alive) >= max_lineages:
+
+                print("Aborting. Max n of lineages attained")
                 break
 
             else:
@@ -134,7 +133,7 @@ class SpeciesTreeGenerator():
 
         self.events.append((time, "E", lineage.name))  # Store the event
 
-    def get_extant_tree(self):
+    def write_extant_tree(self, tree_file):
 
         leaves_alive = [x.name for x in self.whole_species_tree.get_leaves() if x.is_alive == True]
 
@@ -143,6 +142,9 @@ class SpeciesTreeGenerator():
 
         self.extant_species_tree = ete3.Tree(self.whole_species_tree.write(format=1), format=1)
         self.extant_species_tree.prune(leaves_alive, preserve_branch_length=True)
+
+        with open(tree_file, "w") as f:
+            f.write(self.extant_species_tree.write(format=1))
 
     def choose_event(self, speciation, extinction):
 
@@ -158,7 +160,7 @@ class SpeciesTreeGenerator():
                 line = "\t".join(map(str,item)) + "\n"
                 f.write(line)
 
-    def write_tree(self, tree_file):
+    def write_whole_tree(self, tree_file):
 
         with open(tree_file, "w") as f:
             f.write(self.whole_species_tree.write(format=1))
