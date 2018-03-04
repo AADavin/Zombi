@@ -6,19 +6,17 @@
 
 ### **Introduction** ###
 
-SimuLyon is a simulator of species tree and genome evolution that accounts for extinct lineages. 
+SimuLyon is a simulator of genome evolution that accounts for extinct lineages. 
 This feature makes it especially interesting for those studying organisms in which there exists Lateral Gene Transfers, since transfer events can take place between lineages that have left no surviving descendants.
-SimuLyon uses a Birth-death model to generate a species tree. Different functions are included to generate species tree with non-constant rates of speciation and extinction. 
-Then it simulates the evolution of genomes along this species tree. Genomes evolve undergoing events of duplication, transfer, loss, translocation and inversion. 
+SimuLyon uses a Birth-death model to generate a species tree and then it simulates the evolution of genomes along this species tree. Genomes evolve undergoing events of duplication, transfer, loss, translocation and inversion. 
 
 SimuLyon can be of great interest to those who want to test different evolutionary hypothesis under simulations and need to use a fast and easy to use tool to generate species trees, gene trees and sequences.
 
 Please read the manual before using it. I know you are in a hurry but it only takes around 15 minutes of your time. If you are really in a hurry
 then just follow the **Example 1**.
 
-**The current version of simuLyon runs in discrete time. A newer version in continous time will come soon**
-
 Writen by Adrián A. Davín 
+
 Using ideas, suggestions and comments coming from: (still to fill) 
 
 contact to aaredav@gmail.com
@@ -35,12 +33,13 @@ You need **python 3.6** installed with **ETE3** and **numpy**
 
     pip3 install ete3 numpy
 
-There are **four** modes to run simuLyon: **T** (species Tree), **G** (Genomes), **F** (gene Families) and  **S** (Sequences) 
+There are **three** modes to run simuLyon: **T** (species Tree), **G** (Genomes) and  **S** (Sequences) 
 
-Computing **genomes** or **gene families** requires having computed previously a species tree computed with the mode T
-Computing **sequences** requires having computed previously either **genomes** or **gene families**
+You must run the computations in sequential order. This means that:
+Computing **genomes** requires having computed previously a species tree computed with the mode T
+Computing **sequences** requires having computed previously **genomes**.
 
-The parameters are read from a tsv file that it can be modified with any text editor. 
+The parameters are read from a .tsv file that it can be modified with any text editor. 
 
 To start using simuLyon right away you can use:
 
@@ -65,35 +64,18 @@ Go through the examples for more details
    
 ### **Generating a species tree (T)** ###
 
-SimuLyon uses a Birth-death model to generate a species tree. In each step of time, lineages can speciate given rise to two new lineages
-or go extinct. Different functions are included to generate trees with variable rates, namely:
-
- - 0: Global rates of speciation and extinction - This is the "traditional" way to simulate species tree using a Birth and death model. Both rates are constant over time and over all lineages
- - 1: Lineage-specific rates (time and lineage autocorrelated)  - **Not ready yet**.
- - 2: Lineage-specific rates (lineage autocorrelated) - **Not ready yet**
- - 3: Lineage-specific rates (uncorrelated) - **Not ready yet**
- - 4: User defined rates - The user can modify  the speciation and extinction rates in different interval of times. See example 4 for more details
-
-Once a species tree is generated some other files are generated along. Those files are used by simuLyon when computing genomes
+SimuLyon uses a Birth-death model to generate a species tree. Lineages can speciate given rise to two new lineages
+or go extinct over time. 
 
 ### **Generating a genome (G)** ###
 
 To generate a genome it is first necessary to simulate a Species Tree using simuLyon. And no, it is not possible to input an externally computed tree, **but it will be in future versions**
 
 To simulate genomes, simuLyon starts with an ancestral genome at the root, with a given number of genes. For now in the current version, all genes families present in this 
-genome have a single copy (so in this ancestral genome there are no duplicated genes). In the current version, genes have 4 fields, separated by underscored.
-For example, a given gene can be:
+genome have a single copy (so in this ancestral genome there are no duplicated genes). 
 
-n4_+_5_12
-
-The meaning of this is:
-
-* n4: The branch in the species tree where that gene is found
-* +: The orientation of the gene (it can be + or -). This is determined randomly with a bernouilli distribution p=0.5
-* 5: The gene family identifier (in this case, gene family 5)
-* 12: An unique identifier for that gene. 
- 
 A genome is an ordered collection of genes. So if we begin with a genome that has 5 genes, what we see is something like
+
 
 | Position | Gene_family | Orientation | Id |
 |----------|-------------|-------------|----|
@@ -103,13 +85,18 @@ A genome is an ordered collection of genes. So if we begin with a genome that ha
 | 3        | 4           | +           | 1  |
 | 4        | 5           | -           | 1  |
 
-The genome is circular, so the position 4 is adjacent to the position 3 and 0
 
-The events of evolution in this mode are:
+The meaning of this is:
+Position: The position in the genome. The genome is circular, so the position 4 is adjacent to the position 3 and 0
+Gene_family: The identifier of the gene family
+Orientation: The orientation of that gene in the genome
+Id: The identifier of the gene.
+
+Genomes evolve undergoing a series of events:
 
 * D: Duplications. A segment of the genome is duplicated. The new copy is inserted next to the old one
 * L: Losses. A segment of the genome is lost
-* T: Transfers. A segment of the genome is transferred to a contemporary species. The segment is inserted in a random position
+* T: Transfers. A segment of the genome is transferred to a contemporary species. The segment is inserted in a random position. For now, replacement transfers are **not implemented**
 * C: Translocations. A segment of the genome changes its position within the genome
 * I: Inversions. A segment of the genome inverts its position
 * O: Originations. A new gene family appears and it is inserted in a random position
@@ -119,24 +106,28 @@ The rates in this case are **genome-wise**.
 There is also an additional rate for each event. This is called the **extension_rate**. This number (between 0 and 1) is
 the p parameters of a **geometric distribution** that controls the length of the affected segment.
 
-For example, if DUPLICATION_E == 1, the extension of the segment duplicated will be always 1 (meaning that only one gene is duplicated at a time)
+For example, if DUPLICATION_EXTENSION == 1, the extension of the segment duplicated will be always 1 (meaning that only one gene is duplicated at a time)
 
 By changing this parameter we can fine tune the extension associated to the different events. If inversions affect normally large chunks of the genome,
 it suffices to use a low p.
 
 Origination of new gene families are always of size 1, meaning that it is not possible to have an origination of two gene families in the same step of time.
-
 Once that the full evolution of genomes has been simulated, simuLyon prints also the gene trees associated to the different gene families, all the events taking place
 in each gene family, the events taking place in each branch and the genomes of each node in the species tree.
 
-### **Generating gene families (F)** ###
+Some other events are do not depend intrinsically on genomes but in the species tree that is used to simulate genome evolution
 
-**Not working yet**
+* S: Speciation. When a genome arrives at a speciation node, the genome is divided and continues to evolve in both descendant branches
+* E: Extinction. When a genome arrives at a extinction event, the genome stop its evolution
 
-With this method is possible to simulate genes that evolve inside the species tree independent from other genes. Genes families evolve inside the species tree undergoing events 
-of duplications, transfers and losses. This method however, does not provide any information regarding the position of the different genes within the genomes, but technically simulating
-a large number of independent gene families it is possible to study the presence or absence of different genes in different positions of the species tree to recover genomes. In this case genomes are simply a bunch
-of genes that are found in no particular order in a given point of the species tree. This method uses **gene-wise** rates.
+*Some advances details regarding the genes identifiers: You might want to skip this part if you are reading this for the first time*
+
+Events that introduce nodes in the topology of the gene tree, change the identifier of the gene.
+For example, let us say that in the root we have a gene whose identifier is 1. If the genome where the gene is speciates,
+the two branches will inherit one a gene whose identifier is 2 and the other one 3. A duplication will change also the identifiers of the
+duplicated genes. When a gene has been transferred, it changes the identifier of the gene remaining in the genome and in the recipient genome.
+This way is easy to track the events that have given rise to different tree topologies. Inversions and translocations do not introduce
+changes in the tree topology and for that reason they do not change the identifier of the affected genes.
 
 ### **Generating sequences (S)** ###
 
@@ -438,3 +429,13 @@ Species tree
 File containing the multipliers on the speciation and the extinction rate per unit of time, to be used when the species tree is simulated in mode 4
 The format is (separated by tabs)
 time_start	time_end	spec_mult	ext_mult
+
+
+### **Generating gene families (F)** ###
+
+**Not working yet**
+
+With this method is possible to simulate genes that evolve inside the species tree independent from other genes. Genes families evolve inside the species tree undergoing events 
+of duplications, transfers and losses. This method however, does not provide any information regarding the position of the different genes within the genomes, but technically simulating
+a large number of independent gene families it is possible to study the presence or absence of different genes in different positions of the species tree to recover genomes. In this case genomes are simply a bunch
+of genes that are found in no particular order in a given point of the species tree. This method uses **gene-wise** rates.

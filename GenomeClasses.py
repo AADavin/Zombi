@@ -223,6 +223,11 @@ class GeneFamily():
         return len([x for x in self.genes if x.active == True])
 
 
+    def __iter__(self):
+        for gene in self.genes:
+            yield gene
+
+
 class Gene():
 
     def __init__(self):

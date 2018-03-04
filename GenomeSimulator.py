@@ -149,6 +149,35 @@ class GenomeSimulator():
                     f.write(line)
 
 
+    def write_profiles(self, profiles_folder):
+
+        if not os.path.isdir(profiles_folder):
+            os.mkdir(profiles_folder)
+
+
+        genome_names = [x for x in self.all_genomes.keys()]
+
+        with open(os.path.join(profiles_folder, "Profiles.tsv"), "w") as f:
+
+            header = ["FAMILY"] + genome_names
+            header = "\t".join(map(str, header)) + "\n"
+
+            f.write(header)
+
+            for gene_family_name, gene_family in self.all_gene_families.items():
+                print("Writing profile for family %s" % str(gene_family_name))
+                line = ["Fam" + gene_family_name]
+                for genome in genome_names:
+                    n = 0
+                    for gene in gene_family:
+                        if gene.species == genome:
+                            n+=1
+                    line.append(str(n))
+
+                line = "\t".join(line)+"\n"
+
+                f.write(line)
+
     def _read_events_file(self, events_file):
 
         events = list()
