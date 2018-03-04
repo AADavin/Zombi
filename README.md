@@ -219,6 +219,7 @@ events taking place in that gene family. There are 3 fields.
  **S, D and T**: 6 fields separated by semicolons. This can be better understood looking at the picture:
 
 [nodescode]: https://github.com/AADavin/SimuLyon/blob/master/Images/NodesCode.png "Nodes codes"
+![alt text][nodescode]
 
 * **L, I, C, O and F**: 2 fields separated by semicolons. First, the species tree branch where the event takes place and second, the identifier of the gene affected
 
