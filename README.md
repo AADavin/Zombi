@@ -12,14 +12,13 @@ SimuLyon uses a Birth-death model to generate a species tree and then it simulat
 
 SimuLyon can be of great interest to those who want to test different evolutionary hypothesis under simulations and need to use a fast and easy to use tool to generate species trees, gene trees and sequences.
 
-Please read the manual before using it. I know you are in a hurry but it only takes around 15 minutes of your time. If you are really in a hurry
-then just follow the **Example 1**.
+Please,**read the manual before using it!** 
 
 Writen by Adrián A. Davín 
 
 Using ideas, suggestions and comments coming from: (still to fill) 
 
-contact to aaredav@gmail.com
+**contact to aaredav@gmail.com**
 
 Watch out! simuLyon is **unfinished**. The current version can undergo big changes
 
@@ -139,61 +138,6 @@ This module requires Pyvolve (https://github.com/sjspielman/pyvolve), to install
 
     pip3 install pyvolve
 
-### Examples 
-
-#### Example 1 - Simulating a species tree and the genomes ####
-
-First thing we do is we are going to change the parameters of the Species Tree.
- For that we create a new file using:
-
-     mkdir ./EXAMPLE_1
-     cp ./Parameters/SpeciesTreeParameters.tsv ./EXAMPLE_1/SpeciesTreeParameters.tsv
-     
-By default (STOPPING_RULE = 0), the tree evolves until time reaches TOTAL_TIME
-Let us change this to obtain a tree with 6 living lineages. We open the file and we modify:
- 
- * STOPPING_RULE = 3
- * N_LINEAGES = 6
- 
-To make the example reproducible, let us also change the seed.
-
-* SEED = 237
-
-Let us also use change the default and extinction rates. For that, we will use as the speciation rate: 3 * 10^4
-and as extinction rate 1 * 10^-4
-
-For that we make SPECIATION_P0 = 0.0003 and EXTINCTION_P0 = 0.0001. Once we have changed that, we can run the command
-
-     python3 simuLyon.py T ./EXAMPLE_1/SpeciesTreeParameters.tsv ./EXAMPLE_1
-   
- Then we can go to the folder /EXAMPLE_1 and inspect the files that have been created there.
- 
- The resulting tree has 6 extant lineages and it can be found in the file /EXAMPLE_1/WholeTree
- The surviving species can be found in /EXAMPLE1/ExtantTree 
- 
-Once that we have computed a species tree, we can simulate **the evolution of genomes** inside this species tree. We will change the default parameters.
-
-     cp ./Parameters/GenomeParameters.tsv  ./EXAMPLE_1/GenomeParameters.tsv
-        
-First, we are going to use the SEED = 237 to have reproducible results.
-
-Second, we will make STEM_FAMILIES = 100. This makes the genome of the root to be composed of 100 gene families ordered in a circle 
-
-Third, we are going to make inversions and translocations to affect large sections of the genome. For that we will change:
-
-TRANSLOCATION_E = 0.05
-INVERSION_E = 0.05 
-
-After that we launch simuLyon using the command
-  
-     python3 simuLyon.py G ./EXAMPLE_1/GenomeParameters.tsv ./EXAMPLE_1
-
-Once that we have computed gene trees, we can simulate DNA and amino-acid sequences of each gene inside this species tree.
-We will not change the default parameters set to simulate DNA sequences.
-
-     cp ./Parameters/SequenceParameters.tsv ./EXAMPLE_1/SequenceParameters.tsv
-     python3 simuLyon.py S ./EXAMPLE_1/SequenceParameters.tsv ./EXAMPLE_1/
-
 ### **Output** ###
 
 ##### Mode T
@@ -263,63 +207,35 @@ You can change the parameters directly in the tsv files. Watch out, it is a tabu
 
 #### Species tree evolution (T) ####
 
-**SPECIES_EVOLUTION_MODE**
-
- - 0: Global rates of speciation and extinction (only working mode so far)
-
-**SEED**
-
-If the SEED is 0, the seed is randomly computed for each run. Any other number will be used as the input seed
-
-**PRUNING**
-
-If PRUNING == 1, the file ExtantTree containing only surviving lineages is generated
-
 **STOPPING_RULE**
 
  - 0: Time stops arriving at TOTAL_TIME
- - 1: Tree evolves until a total of species = N_LINEAGES (extinct and alive) have been generated
- - 2: Tree evolves until a total of species = N_LINEAGES (extinct) have been generated
- - 3: Tree evolves until a total of species = N_LINEAGES (alive) have been generated
-
+ - 1: Tree evolves until a total of species = N_LINEAGES (alive) have been generated
+ 
 **TOTAL_TIME**
 
 To use with the stopping rule 0
 
 **N_LINEAGES**
 
-To use in combination with the stopping rules 1,2 or 3
+To use in combination with the stopping rule 1. Otherwise is ignored
 
-**SPECIATION_D, EXTINCTION_D**
+**SPECIATION, EXTINCTION**
 
-Distribution probability for each type of event
+Rates of evolution
 
- - **fixed**: In this case, the value of the corresponding parameter 0 will be use as the rate. For example, if you are planning to use a constant rate of 0.005 for speciations you must use: speciation_d = fixed ; speciation_p0 = 0.005
- - **uniform**: The value will be sampled from an uniform distribution between the corresponding values of p0 and p1. For example, if you want the speciation rate to be randomly sampled from an uniform distribution U(0.003,0.007) you should use speciation_d = uniform; speciation_p0 = 0.003; speciation_p1 = 0.007.
- - **normal**: The value will be sampled from a normal distribution between the corresponding values of p0 and p1. For example, if you want the speciation rate to be randomly sampled from a normal distribution N(0.003,0.007) you should use speciation_d = normal; speciation_p0 = 0.003; speciation_p1 = 0.007.
 
 #### Genome evolution (G) ####
 
-**MODE**
 
- - 0: Global rates (only working mode so far)
- 
-**PREFIX**
+**DUPLICATION, TRANSFER, LOSS, INVERSION, TRANSLOCATION, ORIGINATION**
 
-- Adds a prefix to the gene families
+The value for each type of event. 
 
-**DUPLICATION_D, TRANSFER_D, LOSS_D, INVERSION_D, TRANSLOCATION_D, ORIGINATION_D**
-
-Distribution probability for each type of event (fixed, uniform or normal)
-
-**DUPLICATION_E, TRANSFER_E, LOSS_E, INVERSION_E, TRANSLOCATION_E**
+**DUPLICATION_EXTENSION, TRANSFER_EXTENSION, LOSS_EXTENSION, INVERSION_EXTENSION, TRANSLOCATION_EXTENSION**
 
 The value of the p parameter of a geometric distribution that determines the extension of the genome (measured in number of genes) 
 affected for event
-
-**REPLACEMENT_T**
-
-Not doing anything yet
 
 **STEM_FAMILIES**
 
@@ -330,120 +246,3 @@ Number of gene families present in the ancestral genome at the root
 The minimal size for a given genome. Smaller genomes will not be affected by losses events
 
 
-#### Gene family evolution (F) ####
-
-
-**STOPPING_RULE**
-
- - 0: A fixed number of gene families will be simulated == N_FAMILIES. Notice that gene families introduced by STEM_FAMILIES are not accounted for in the above computation
-   
-**GENE_EVOLUTION_MODE**
-
- - 0: Global rates 
-
-**DUPLICATION_D, TRANSFER_D, LOSS_D, INVERSION_D, TRANSLOCATION_D**
-
-Distribution probability for each type of event
-
- - **fixed**: In this case, the value of the corresponding parameter 0 will be use as the rate. For example, if you are planning to use a constant rate of 0.5 for duplications you must use: duplication_d = fixed ; duplication_p0 = 0.5
- - **uniform**: The value will be sampled from an uniform distribution between the corresponding values of p0 and p1. For example, if you want the duplication rate is randomly sampled from an uniform distribution U(3,5) you should use duplication_d = uniform; duplication_p0 = 3; duplication_p1 = 5.
- - **normal**: The value will be sampled from a normal distribution between the corresponding values of p0 and p1. For example, if you want the duplication rate is randomly sampled from an normal distribution N(3,5) you should use duplication_d = normal; duplication_p0 = 3; duplication_p1 = 5.
-
-**STEM_FAMILIES**
-
-Number of gene families already in the stem clade
-
-#### Sequence evolution ####
-
-This is not written yet
-
-### FROM NOW ON, OLD TEXT AND UNFINISHED PIECES. PLEASE JUST IGNORE
-
-**SEQUENCE_EVOLUTION_MODE**
-
- - 0: No heterogeneity
- - 1: Lineage-specific heterogeneity (time and lineage autocorrelated)
- - 2: Lineage-specific heterogeneity (lineage autocorrelated)
- - 3: Lineage-specific heterogeneity (uncorrelated)
- - 4: User defined heterogeneity
-
-Very frequently you will be interested in having a Species Tree that contains only extant species and potentially, only a fraction of all the surviving lineages.
-
-For doing that, we resort to the script **sampLyon.py**. This script is going to prune and sample the different trees generated. For running it you can use:
-
-    python3 sampLyon.py T /previous_Output_folder Sample_name N
-    
-T indicates the mode (prune and sample species Tree), then we input the folder we created before, we give a name to this sample and finally we introduce the fraction (N)
-of species that will be sampled.
-
-Once you have done that, if you are interested in using the gene trees you *have to* run sampLyon this way: 
-
-    python3 sampLyon.py G /previous_Output_folder /previous_Sample_name
-
-This will cut the gene trees removing extinct species and other species that were not including in the sample
-
-#### Example 4 - Simulating a dataset with a massive extinction event NOT FINISHED YET####
-
-In this example we will simulate a dataset in which a massive extinction event takes between
-time 0.6 and time 0.7.
-
- First thing we do is we are going to change the parameters of the Species Tree.
- For that we create a new file using:
- 
-     cp SpeciesTreeParameters.tsv   example2_SpeciesTreeParameters.tsv
-     
- Then we are going to open example1_SpeciesTreeParameters.tsv in any text editor and modify
- SPECIES_EVOLUTION_MODE to 4 (user defined rates).
- 
- We are going to change also the speciation rate to a fixed number of 10 and the extinction rate to 3.
- For that we make SPECIATION_P0 = 10 and EXTINCTION_P0 = 3  
- 
- Then we are going to use the file massive_extinction.tsv included in the folder SimuLYON/Example/1
- 
- If we open it we see a single line, that includes in this order:
- 
- The beginning of the rate change, the end of the rate change, the number by which the speciation rate is multiplied
- during that period and the number by which the extinction rate is multiplied during that period.
- 
- In plain words, the file says that during the time 0.6 and until time 0.7, the speciation rate is maintained the same (multiplied by 1)
- and the extinction rate is multiplied by 15.
- 
- We need to modify then the example1_SpeciesTreeParameters.tsv to include also USER_DEFINE_RATES = path_to_massive_extinction.tsv
- 
- Once we have done that, we can run simuLyon by using:
-
-     python3 simuLyon.py T example1_SpeciesTreeParameters.tsv EXAMPLE_2
-
-### To do
-
-Species tree
-
- - 1: Lineage-specific rates (time and lineage autocorrelated)  - Not ready yet
- - 2: Lineage-specific rates (lineage autocorrelated) - Not ready yet
- - 3: Lineage-specific rates (uncorrelated) - Not ready yet
- - 4: User defined rates
- 
- Gene families
- 
-  - 1: Family-wise rates
- - 2: Lineage-specific rates (time and lineage autocorrelated)
- - 3: Lineage-specific rates (lineage autocorrelated)
- - 4: Lineage-specific rates (uncorrelated)
- - 5: User defined rates
- 
- 
- **USER_DEFINED_RATES**
-
-File containing the multipliers on the speciation and the extinction rate per unit of time, to be used when the species tree is simulated in mode 4
-The format is (separated by tabs)
-time_start	time_end	spec_mult	ext_mult
-
-
-### **Generating gene families (F)** ###
-
-**Not working yet**
-
-With this method is possible to simulate genes that evolve inside the species tree independent from other genes. Genes families evolve inside the species tree undergoing events 
-of duplications, transfers and losses. This method however, does not provide any information regarding the position of the different genes within the genomes, but technically simulating
-a large number of independent gene families it is possible to study the presence or absence of different genes in different positions of the species tree to recover genomes. In this case genomes are simply a bunch
-of genes that are found in no particular order in a given point of the species tree. This method uses **gene-wise** rates.

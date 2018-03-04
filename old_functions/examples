@@ -1,0 +1,54 @@
+### Examples
+
+#### Example 1 - Simulating a species tree and the genomes ####
+
+First thing we do is we are going to change the parameters of the Species Tree.
+ For that we create a new file using:
+
+     mkdir ./EXAMPLE_1
+     cp ./Parameters/SpeciesTreeParameters.tsv ./EXAMPLE_1/SpeciesTreeParameters.tsv
+
+By default (STOPPING_RULE = 0), the tree evolves until time reaches TOTAL_TIME
+Let us change this to obtain a tree with 6 living lineages. We open the file and we modify:
+
+ * STOPPING_RULE = 3
+ * N_LINEAGES = 6
+
+To make the example reproducible, let us also change the seed.
+
+* SEED = 237
+
+Let us also use change the default and extinction rates. For that, we will use as the speciation rate: 3 * 10^4
+and as extinction rate 1 * 10^-4
+
+For that we make SPECIATION_P0 = 0.0003 and EXTINCTION_P0 = 0.0001. Once we have changed that, we can run the command
+
+     python3 simuLyon.py T ./EXAMPLE_1/SpeciesTreeParameters.tsv ./EXAMPLE_1
+
+ Then we can go to the folder /EXAMPLE_1 and inspect the files that have been created there.
+
+ The resulting tree has 6 extant lineages and it can be found in the file /EXAMPLE_1/WholeTree
+ The surviving species can be found in /EXAMPLE1/ExtantTree
+
+Once that we have computed a species tree, we can simulate **the evolution of genomes** inside this species tree. We will change the default parameters.
+
+     cp ./Parameters/GenomeParameters.tsv  ./EXAMPLE_1/GenomeParameters.tsv
+
+First, we are going to use the SEED = 237 to have reproducible results.
+
+Second, we will make STEM_FAMILIES = 100. This makes the genome of the root to be composed of 100 gene families ordered in a circle
+
+Third, we are going to make inversions and translocations to affect large sections of the genome. For that we will change:
+
+TRANSLOCATION_E = 0.05
+INVERSION_E = 0.05
+
+After that we launch simuLyon using the command
+
+     python3 simuLyon.py G ./EXAMPLE_1/GenomeParameters.tsv ./EXAMPLE_1
+
+Once that we have computed gene trees, we can simulate DNA and amino-acid sequences of each gene inside this species tree.
+We will not change the default parameters set to simulate DNA sequences.
+
+     cp ./Parameters/SequenceParameters.tsv ./EXAMPLE_1/SequenceParameters.tsv
+     python3 simuLyon.py S ./EXAMPLE_1/SequenceParameters.tsv ./EXAMPLE_1/
