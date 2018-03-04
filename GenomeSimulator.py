@@ -6,7 +6,6 @@ import os
 
 from GenomeClasses import GeneFamily, Gene, CircularChromosome, LinearChromosome, Genome
 
-
 class GenomeSimulator():
 
     def __init__(self, parameters, events_file):
@@ -68,11 +67,15 @@ class GenomeSimulator():
 
         for gene_family_name, gene_family in self.all_gene_families.items():
 
+            print("Generating gene tree for family %s" % gene_family_name)
+
             whole_tree, pruned_tree = gene_family.generate_tree()
 
             with open(os.path.join(gene_tree_folder, gene_family_name + "_wholetree.nwk"),"w") as f:
 
                 f.write(whole_tree)
+
+            print("Pruning gene tree for family %s" % gene_family_name)
 
             if pruned_tree != None:
 
@@ -93,11 +96,11 @@ class GenomeSimulator():
 
                 name = nodes.split(";")[0]
 
-                if event == "S" or event == "E" or event == "F":
-                    continue
-
                 if name not in events_per_branch:
                     events_per_branch[name] = list()
+
+                if event == "S" or event == "E" or event == "F":
+                    continue
 
                 elif event == "T":
                     donor = name
@@ -125,9 +128,6 @@ class GenomeSimulator():
                     events_per_branch[name].append((time, event, new_nodes))
 
                 else:
-
-                    if name not in events_per_branch:
-                        events_per_branch[name] = list()
 
                     gene_id = nodes.split(";")[-1]
                     events_per_branch[name].append((time, event, gene_family_name + "_" + gene_id))
@@ -169,35 +169,32 @@ class GenomeSimulator():
 
         return new_identifiers
 
-    def _FillGenome(self, genome_file, all_gene_families):
+    def _FillGenome(self):
 
         genome = Genome()
         genome.species = "Root"
         time = 0
 
-        with open(genome_file) as f:
+        stem_families = self.parameters["STEM_FAMILIES"].split(";")
+        shape = self.parameters["CHROMOSOME_SHAPE"]
 
-            for line in f:
+        for n_genes in stem_families:
 
-                n_genes, shape = line.strip().split("\t")
+            if shape == "L":
+                chromosome = LinearChromosome()
+                chromosome.shape = "L"
+            elif shape == "C":
+                chromosome = CircularChromosome()
+                chromosome.shape = "C"
 
-                # We create a chromosome for each entry
+            for i in range(int(n_genes)):
+                # We fill the chromosomes and we create also the gene families
 
-                if shape == "L":
-                    chromosome = LinearChromosome()
-                    chromosome.shape = "L"
-                elif shape == "C":
-                    chromosome = CircularChromosome()
-                    chromosome.shape = "C"
+                gene, gene_family = self.make_origination(genome.species, time)
+                chromosome.genes.append(gene)
+                self.all_gene_families[str(self.gene_families_counter)] = gene_family
 
-                for i in range(int(n_genes)):
-                    # We fill the chromosomes and we create also the gene families
-
-                    gene, gene_family = self.make_origination(genome.species, time)
-                    chromosome.genes.append(gene)
-                    all_gene_families[str(self.gene_families_counter)] = gene_family
-
-                genome.chromosomes.append(chromosome)
+            genome.chromosomes.append(chromosome)
 
         return genome
 
@@ -210,7 +207,7 @@ class GenomeSimulator():
 
         # First we prepare the first genome
 
-        genome = self._FillGenome(self.parameters["GENOME_FILE"], self.all_gene_families)
+        genome = self._FillGenome()
         self.active_genomes.add(genome.species)
         self.all_genomes["Root"] = genome
 
@@ -282,7 +279,7 @@ class GenomeSimulator():
 
         # First we prepare the first genome
 
-        genome = self._FillGenome(self.parameters["GENOME_FILE"], self.all_gene_families)
+        genome = self._FillGenome()
         self.active_genomes.add(genome.species)
         self.all_genomes["Root"] = genome
 
@@ -454,7 +451,6 @@ class GenomeSimulator():
     def make_origination(self, species_tree_node, time):
 
         self.gene_families_counter += 1
-
         gene_family_id = str(self.gene_families_counter)
 
         gene = Gene()
@@ -747,6 +743,12 @@ class GenomeSimulator():
         chromosome = self.all_genomes[lineage].select_random_chromosome()
         affected_genes = chromosome.obtain_affected_genes(p)
         segment = chromosome.obtain_segment(affected_genes)
+
+        # Now we check we are not under the minimum size
+
+        if len(chromosome) - len(affected_genes) <= 0:
+            return 0
+
         chromosome.remove_segment(segment)
 
         # We have to register in the affected gene families that there has been as loss

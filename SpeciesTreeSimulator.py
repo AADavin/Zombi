@@ -53,10 +53,10 @@ class SpeciesTreeGenerator():
         while True:
 
             lineages_alive = [x for x in self.whole_species_tree.get_leaves() if x.is_alive == True]
-            print("Time: %s ; Number of lineages alive: %s" % (str(time), str(len(lineages_alive))))
+            n_lineages_alive = len(lineages_alive)
+            print("Time: %s ; Number of lineages alive: %s" % (str(time), str(n_lineages_alive)))
 
-
-            time_to_next_event = self.get_time_to_next_event(len(lineages_alive), speciation, extinction)
+            time_to_next_event = self.get_time_to_next_event(n_lineages_alive, speciation, extinction)
 
             if stopping_rule == 0 and time + time_to_next_event >= total_time:
 
@@ -64,20 +64,22 @@ class SpeciesTreeGenerator():
                 self.events.append((total_time, "F", "None"))
 
                 break
-            elif stopping_rule == 1 and len(lineages_alive) >= total_lineages:
+
+            elif stopping_rule == 1 and n_lineages_alive >= total_lineages:
 
                 self.increase_distances(time_to_next_event, lineages_alive)
                 self.events.append((time+time_to_next_event, "F", "None"))
 
                 break
 
-            elif len(lineages_alive) == 0:
+
+            elif n_lineages_alive == 0:
 
                 self.increase_distances(time_to_next_event, lineages_alive)
                 print("All dead")
                 break
 
-            elif len(lineages_alive) >= max_lineages:
+            elif n_lineages_alive >= max_lineages:
 
                 print("Aborting. Max n of lineages attained")
                 break

@@ -39,6 +39,7 @@ class simuLyon():
 
         genome_folder = os.path.join(experiment_folder, "Genomes")
         gene_families_folder = os.path.join(experiment_folder, "Gene_families")
+        gene_trees_folder = os.path.join(experiment_folder, "Gene_trees")
         events_per_branch_folder = os.path.join(experiment_folder, "Events_per_branch")
 
         gss = GenomeSimulator(parameters, events_file)
@@ -49,7 +50,32 @@ class simuLyon():
         gss.write_genomes(genome_folder)
         print("Writing Gene Families")
         gss.write_gene_family_events(gene_families_folder)
-        #gss.write_gene_trees("/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/Gillespie/All/Gene_trees/")
+        print("Writing Gene Trees")
+        gss.write_gene_trees(gene_trees_folder)
+        print("Writing Events Per Branch")
+        gss.write_events_per_branch(events_per_branch_folder)
+
+
+    def DG(self,parameters_file, experiment_folder):
+
+        parameters = af.prepare_genome_parameters(af.read_parameters(parameters_file))
+        events_file = os.path.join(experiment_folder, "Events.tsv")
+
+        genome_folder = os.path.join(experiment_folder, "Genomes")
+        gene_families_folder = os.path.join(experiment_folder, "Gene_families")
+        gene_trees_folder = os.path.join(experiment_folder, "Gene_trees")
+        events_per_branch_folder = os.path.join(experiment_folder, "Events_per_branch")
+
+        gss = GenomeSimulator(parameters, events_file)
+
+        gss.verbose_run()
+
+        print("Writing Genomes")
+        gss.write_genomes(genome_folder)
+        print("Writing Gene Families")
+        gss.write_gene_family_events(gene_families_folder)
+        print("Writing Gene Trees")
+        gss.write_gene_trees(gene_trees_folder)
         print("Writing Events Per Branch")
         gss.write_events_per_branch(events_per_branch_folder)
 
@@ -143,6 +169,15 @@ if __name__ == "__main__":
         elif mode == "S":
 
             SL.obtain_sequences(parameters_file, experiment_folder)
+
+        elif mode == "DG":
+
+            genome_folder = os.path.join(experiment_folder, "Genomes")
+
+            if not os.path.isdir(genome_folder):
+                os.mkdir(genome_folder)
+
+            SL.DG(parameters_file, experiment_folder)
 
         else:
             print("Incorrect usage. Please select a mode: T, G, F or S")

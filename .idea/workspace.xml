@@ -2,17 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="59ba90f0-ee1f-4701-b72e-68f3e4c50e55" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/GeneFamilySimulator.py" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/AuxiliarFunctions.py" afterPath="$PROJECT_DIR$/AuxiliarFunctions.py" />
-      <change beforePath="$PROJECT_DIR$/NewGenome.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/NewParameters/GeneFamilyParameters.tsv" afterPath="$PROJECT_DIR$/NewParameters/GeneFamilyParameters.tsv" />
+      <change beforePath="$PROJECT_DIR$/GenomeClasses.py" afterPath="$PROJECT_DIR$/GenomeClasses.py" />
+      <change beforePath="$PROJECT_DIR$/GenomeSimulator.py" afterPath="$PROJECT_DIR$/GenomeSimulator.py" />
       <change beforePath="$PROJECT_DIR$/NewParameters/GenomeParameters.tsv" afterPath="$PROJECT_DIR$/NewParameters/GenomeParameters.tsv" />
       <change beforePath="$PROJECT_DIR$/NewParameters/SpeciesTreeParameters.tsv" afterPath="$PROJECT_DIR$/NewParameters/SpeciesTreeParameters.tsv" />
       <change beforePath="$PROJECT_DIR$/Runner.py" afterPath="$PROJECT_DIR$/Runner.py" />
-      <change beforePath="$PROJECT_DIR$/SequenceSimulator.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/SimulatorClasses.py" afterPath="$PROJECT_DIR$/GenomeSimulator.py" />
-      <change beforePath="$PROJECT_DIR$/SpeciesTreeClasses.py" afterPath="$PROJECT_DIR$/SpeciesTreeSimulator.py" />
+      <change beforePath="$PROJECT_DIR$/SpeciesTreeSimulator.py" afterPath="$PROJECT_DIR$/SpeciesTreeSimulator.py" />
       <change beforePath="$PROJECT_DIR$/Tests.py" afterPath="$PROJECT_DIR$/Tests.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -30,8 +25,8 @@
       <file leaf-file-name="Tests.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Tests.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="331">
-              <caret line="158" column="122" lean-forward="true" selection-start-line="155" selection-start-column="0" selection-end-line="158" selection-end-column="122" />
+            <state relative-caret-position="238">
+              <caret line="186" column="0" lean-forward="true" selection-start-line="186" selection-start-column="0" selection-end-line="186" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -53,10 +48,23 @@
       <file leaf-file-name="Runner.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Runner.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="108" column="0" lean-forward="true" selection-start-line="108" selection-start-column="0" selection-end-line="108" selection-end-column="0" />
+            <state relative-caret-position="659">
+              <caret line="70" column="25" lean-forward="false" selection-start-line="70" selection-start-column="25" selection-end-line="70" selection-end-column="25" />
               <folding>
                 <element signature="e#0#53#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GenomeClasses.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GenomeClasses.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="299">
+              <caret line="124" column="42" lean-forward="false" selection-start-line="124" selection-start-column="42" selection-end-line="124" selection-end-column="42" />
+              <folding>
+                <element signature="e#0#30#0" expanded="true" />
+                <element signature="e#542#3280#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -65,32 +73,10 @@
       <file leaf-file-name="SpeciesTreeSimulator.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SpeciesTreeSimulator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="825">
-              <caret line="55" column="96" lean-forward="false" selection-start-line="55" selection-start-column="96" selection-end-line="55" selection-end-column="96" />
+            <state relative-caret-position="315">
+              <caret line="73" column="0" lean-forward="true" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
               <folding>
                 <element signature="e#0#30#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SpeciesTreeParameters.tsv" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/NewParameters/SpeciesTreeParameters.tsv">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="10" column="14" lean-forward="false" selection-start-line="10" selection-start-column="14" selection-end-line="10" selection-end-column="14" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AuxiliarFunctions.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/AuxiliarFunctions.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="256">
-              <caret line="125" column="37" lean-forward="false" selection-start-line="125" selection-start-column="37" selection-end-line="125" selection-end-column="37" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -99,8 +85,8 @@
       <file leaf-file-name="GenomeSimulator.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GenomeSimulator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2850">
-              <caret line="228" column="37" lean-forward="false" selection-start-line="228" selection-start-column="37" selection-end-line="228" selection-end-column="37" />
+            <state relative-caret-position="3549">
+              <caret line="750" column="0" lean-forward="false" selection-start-line="750" selection-start-column="0" selection-end-line="750" selection-end-column="0" />
               <folding>
                 <element signature="e#0#30#0" expanded="true" />
               </folding>
@@ -130,6 +116,16 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="SpeciesTreeParameters.tsv" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/NewParameters/SpeciesTreeParameters.tsv">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="135">
+              <caret line="9" column="17" lean-forward="false" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -141,8 +137,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>time_</find>
-      <find>def make_</find>
       <find>Class</find>
       <find>add_c</find>
       <find>def make_ex</find>
@@ -171,6 +165,8 @@
       <find>verbose</find>
       <find>read_para</find>
       <find>read</find>
+      <find>FillG</find>
+      <find>make_orig</find>
     </findStrings>
     <replaceStrings>
       <replace>transfer</replace>
@@ -221,18 +217,18 @@
         <option value="$PROJECT_DIR$/NewTree.py" />
         <option value="$PROJECT_DIR$/Parameters/SpeciesTreeParameters.tsv" />
         <option value="$PROJECT_DIR$/NewGenome.py" />
-        <option value="$PROJECT_DIR$/GenomeClasses.py" />
         <option value="$PROJECT_DIR$/SpeciesTreeClasses.py" />
         <option value="$PROJECT_DIR$/Examples/SimulatorClasses.py" />
         <option value="$PROJECT_DIR$/NewParameters/GeneFamilyParameters.tsv" />
         <option value="$PROJECT_DIR$/GeneFamilySimulator.py" />
-        <option value="$PROJECT_DIR$/Tests.py" />
-        <option value="$PROJECT_DIR$/SpeciesTreeSimulator.py" />
-        <option value="$PROJECT_DIR$/NewParameters/SpeciesTreeParameters.tsv" />
         <option value="$PROJECT_DIR$/AuxiliarFunctions.py" />
-        <option value="$PROJECT_DIR$/NewParameters/GenomeParameters.tsv" />
-        <option value="$PROJECT_DIR$/GenomeSimulator.py" />
+        <option value="$PROJECT_DIR$/SpeciesTreeSimulator.py" />
         <option value="$PROJECT_DIR$/Runner.py" />
+        <option value="$PROJECT_DIR$/Tests.py" />
+        <option value="$PROJECT_DIR$/NewParameters/GenomeParameters.tsv" />
+        <option value="$PROJECT_DIR$/NewParameters/SpeciesTreeParameters.tsv" />
+        <option value="$PROJECT_DIR$/GenomeClasses.py" />
+        <option value="$PROJECT_DIR$/GenomeSimulator.py" />
       </list>
     </option>
   </component>
@@ -308,7 +304,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.GeneFamilySimulator">
+  <component name="RunManager" selected="Python.Tests">
     <configuration name="GeneFamilySimulator" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -408,10 +404,10 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.GeneFamilySimulator" />
-        <item index="1" class="java.lang.String" itemvalue="Python.Runner" />
-        <item index="2" class="java.lang.String" itemvalue="Python.NewGenome" />
-        <item index="3" class="java.lang.String" itemvalue="Python.Tests" />
+        <item index="0" class="java.lang.String" itemvalue="Python.Tests" />
+        <item index="1" class="java.lang.String" itemvalue="Python.GeneFamilySimulator" />
+        <item index="2" class="java.lang.String" itemvalue="Python.Runner" />
+        <item index="3" class="java.lang.String" itemvalue="Python.NewGenome" />
         <item index="4" class="java.lang.String" itemvalue="Python.test_continuoustime" />
       </list>
     </recent_temporary>
@@ -876,34 +872,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GenomeClasses.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="387" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#30#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SpeciesTreeSimulator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="825">
-          <caret line="55" column="96" lean-forward="false" selection-start-line="55" selection-start-column="96" selection-end-line="55" selection-end-column="96" />
-          <folding>
-            <element signature="e#0#30#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/NewParameters/SpeciesTreeParameters.tsv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="14" lean-forward="false" selection-start-line="10" selection-start-column="14" selection-end-line="10" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/AuxiliarFunctions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="256">
@@ -911,6 +879,24 @@
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SpeciesTreeSimulator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="73" column="0" lean-forward="true" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#30#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="186" column="0" lean-forward="true" selection-start-line="186" selection-start-column="0" selection-end-line="186" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -922,18 +908,29 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Tests.py">
+    <entry file="file://$PROJECT_DIR$/NewParameters/SpeciesTreeParameters.tsv">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="331">
-          <caret line="158" column="122" lean-forward="true" selection-start-line="155" selection-start-column="0" selection-end-line="158" selection-end-column="122" />
+        <state relative-caret-position="135">
+          <caret line="9" column="17" lean-forward="false" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GenomeClasses.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="299">
+          <caret line="124" column="42" lean-forward="false" selection-start-line="124" selection-start-column="42" selection-end-line="124" selection-end-column="42" />
+          <folding>
+            <element signature="e#0#30#0" expanded="true" />
+            <element signature="e#542#3280#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/GenomeSimulator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2850">
-          <caret line="228" column="37" lean-forward="false" selection-start-line="228" selection-start-column="37" selection-end-line="228" selection-end-column="37" />
+        <state relative-caret-position="3549">
+          <caret line="750" column="0" lean-forward="false" selection-start-line="750" selection-start-column="0" selection-end-line="750" selection-end-column="0" />
           <folding>
             <element signature="e#0#30#0" expanded="true" />
           </folding>
@@ -942,8 +939,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Runner.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="108" column="0" lean-forward="true" selection-start-line="108" selection-start-column="0" selection-end-line="108" selection-end-column="0" />
+        <state relative-caret-position="659">
+          <caret line="70" column="25" lean-forward="false" selection-start-line="70" selection-start-column="25" selection-end-line="70" selection-end-column="25" />
           <folding>
             <element signature="e#0#53#0" expanded="true" />
           </folding>

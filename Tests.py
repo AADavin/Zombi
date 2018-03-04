@@ -131,35 +131,69 @@ def get_homologous_position(segment, genes):
 
     return positions
 
-# numpy.random.seed(245)
-# random.seed(10)
-# GenomeEvolver()
-# stg = SpeciesTreeGenerator()
-# stg.generate_new_tree()
-# print(stg.whole_species_tree.write(format=1))
+import numpy
 
-myevents = "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/Gillespie/Events.tsv"
-# mytree = "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/Gillespie/WholeTree"
-tree_file = "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/Gillespie/CyanoTree"
-# stg.write_events_file(myevents)
-# stg.write_tree(mytree)
+def select_random_position(genes):
 
-# species_tree_events = list()
-# species_counter = 0
+    return numpy.random.randint(len(genes))
 
-gss = GenomeSimulator(myevents)
-gss.verbose_run()
+def select_random_length(p):
 
-# p = read_parameters("/Users/adriandavin/PycharmProjects/SimuLYON/Parameters/SpeciesTreeParameters.tsv")
-# p = prepare_parameters(p)
+    return numpy.random.geometric(p)
 
-# gss.write_genomes("/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/Gillespie/All/Genomes/")
-# gss.write_gene_family_events("/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/Gillespie/All/Gene_families/")
-gss.write_gene_trees("/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/Gillespie/All/Gene_trees/")
-# gss.write_events_per_branch("/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/Gillespie/All/Events_per_branch")
+def obtain_affected_genes(genes, p_extension):
 
-# for item in gss.all_gene_families["3"].events:
-#    print(item)
+    # Returns the index list of the affected genes
 
-# print(gss.all_gene_families["3"].generate_tree())
-# generate_events(tree_file)
+    position = select_random_position(genes)
+    length = select_random_length(p_extension)
+    print(length, position)
+    total_length = len(genes)
+    affected_genes = list()
+
+    if length >= total_length:
+        affected_genes = [x for x in range(total_length)]
+        return affected_genes
+
+    for i in range(position, position + length):
+        if i >= total_length:
+            affected_genes.append(i - total_length)
+        else:
+            affected_genes.append(i)
+
+    return affected_genes
+
+def invert_segment(genes, affected_genes):
+
+    segment = [genes[x] for x in affected_genes]
+
+    reversed_segment = segment[::-1]
+
+    for i,x in enumerate(affected_genes):
+        genes[x] = reversed_segment[i]
+
+    return genes
+
+def cut_and_paste(genes, affected_genes):
+
+    segment = [genes[x] for x in affected_genes]
+    new_segment = list()
+
+    if len(segment) == len(genes):
+        return 0
+
+    for gene in segment:
+        new_segment.append(genes.pop(genes.index(gene)))
+
+    position = select_random_position()
+    for i, gene in enumerate(new_segment):
+        genes.insert(position + i, gene)
+
+genes = ["A","B","C","D","E","F","G","H"]
+
+affected_genes = obtain_affected_genes(genes,1)
+print([genes[x] for x in affected_genes], affected_genes)
+inverted_genes = invert_segment(genes, affected_genes)
+print(inverted_genes)
+
+
