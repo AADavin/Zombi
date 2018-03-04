@@ -198,63 +198,60 @@ We will not change the default parameters set to simulate DNA sequences.
 
 ##### Mode T
 
-*WholeTree.nwk* The whole species tree including the dead lineages, in newick format
+**WholeTree.nwk** The whole species tree including the dead lineages, in newick format
 
-*ExtantTree.nwk* The surviving species tree, in newick format
+**ExtantTree.nwk** The surviving species tree, in newick format
 
-*Events.tsv*: Events (speciation and extinction) taking place in the species tree
+**Events.tsv**: Events (speciation and extinction) taking place in the species tree
 
 #### Mode G
 
-*Genomes*: A folder with one file per node of the species tree. Each file contains information about the
+**Genomes**: A folder with one file per node of the species tree. Each file contains information about the
 genome composition.  
 
-*Gene_families*: A folder with one file per gene family. Each file contains information about the
+**Gene_families**: A folder with one file per gene family. Each file contains information about the
 events taking place in that gene family. There are 3 fields.  
 
-* **1. Time**: The time at which the event takes place
-* **2. Event**: The type of event that takes place in a given time (S, E, D, T, L, I, C, O and F. F stands for Final, meaning that the gene arrived *alive* till the end of the run)
-* **3. Nodes**: Some more information about the kind of event:
+ **1. Time**: The time at which the event takes place
+ **2. Event**: The type of event that takes place in a given time (S, E, D, T, L, I, C, O and F. F stands for Final, meaning that the gene arrived *alive* till the end of the run)
+ **3. Nodes**: Some more information about the kind of event:
 
+ **S, D and T**: 6 fields separated by semicolons. This can be better understood looking at the picture:
 
-* **S, D and T**: 6 fields separated by semicolons. This can be better understood looking at the picture:
+[nodescode]: https://github.com/AADavin/SimuLyon/blob/master/Images/NodesCode.png "Nodes codes"
 
-[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 2"
+* **L, I, C, O and F**: 2 fields separated by semicolons. First, the species tree branch where the event takes place and second, the identifier of the gene affected
 
-* **L, I, C and O**: 2 fields separated by semicolons. First, the species tree branch where the event takes place and second, the identifier of the gene affected
+**EventsPerBranch**: A folder with one file per branch of the species tree. Each file contains information about the
+events taking place in that branch. The codes are similar to the previously explained, but not the same. There are two main differences (for the sake of clarity). The first one is that transfers are divided into:
 
+* **AT**: Leaving Transfers. Transfers that leave this branch
+* **LT**: Arriving Transfers. Transfers that arrive at this branch.
 
-*EventsPerBranch*: A folder with one file per branch of the species tree. Each file contains information about the
-events taking place in that branch. There are 3 fields. 
+The second difference is that the node of the nodes affected is given by:
 
-1. Time: The time at which the event takes place
-2. Event: The type of event that takes place in a given time (Duplication D, Losses L, ArrivingTransfer AT, LeavingTransfer LT, Inversions I, Translocations C and Originations O)
-3. Nodes: Some more information about the kind of event:
+GeneFamily_GeneIdentifier
 
-* D: Three numbers separated by semicolons, e.g. 14;15;16. Correspond to the identifier of the gene that duplicates, and the identifiers of the new two genes generated
-* L: One number. Corresponds to the identifier of the gene that is lost
-* AT: Five numbers. In order: The branch of the species tree where the transfer leaves, the identifier of the gene that is transferred, the identifier of the gene that remains in the donor genome, the branch of the recipient genome and the identifier of the gene that is inserted in the recipient genome
-* LT: Exactly as AT
-* I: One number. Identifier of the gene affected
-* C: One number. Identifier of the gene affected
-* O: One number. Identifier of the gene appearing (always 1)
+So for example, if we go to the file n2_branchevents and we find the event L affecting at 4_3, means that the gene whose identifier is 3 belonging to the family 4 was lost in that branch in time given by the first column
 
-4. Gene_family. Identifier of the gene family affected by the event
-
-Please notice that in the case of events that affect to several genes, this will be reflected in the first column (several events taking place at the same unit of time)
+Please also notice that in the case of events that affect to several genes, this will be reflected in the first column (several events taking place at the same unit of time)
  
- *GeneTrees*: A folder containing the gene trees corresponding to the evolution of the different families and the gene trees pruned so that only surviving genes are represented.
- Please notice that gene trees with fewer than 2 copies are simply not output
+ **GeneTrees**: A folder containing the gene trees corresponding to the evolution of the different families and the gene trees pruned so that only surviving genes are represented.
+ Please notice that gene trees with 2 or fewer surviving copies are simply not output. Mind that some families can appear at some point and then leave no surviving descendants!
  
- *Profiles*
-  
-#### Mode F
-
-**Not working yet**
-
-*Transfers.tsv*: A complete list of the transfer events, with donor and recipients
-
-#### Mode S
+ There are two types of trees:
+ 
+ * **_wholetree.nwk**: A tree showing the whole evolution of that gene family
+ * **_prunedtree.nwk**: A tree in which the genes that have not survived till the present time have been removed. **Normally you want to use this tree!**
+   
+ **Profiles**
+ 
+ Here there is a file called Profiles.tsv that contains the node of the species tree in the columns and the gene families in the rows.
+ The entries give the number of copies that each gene family has for each node of the species tree.
+ 
+ #### Mode S
+ 
+ **(still working on this!)**
 
 *Sequences*: A folder with one fasta file per gene of the species tree.
 Each fasta alignment contains the simulated sequences obtained at the leaves of the tree, not the internal nodes.
