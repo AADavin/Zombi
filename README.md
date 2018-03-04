@@ -21,11 +21,9 @@ Using ideas, suggestions and comments coming from: (still to fill)
 
 contact to aaredav@gmail.com
 
-----------
-
 Watch out! simuLyon is **unfinished**. The current version can undergo big changes
 
-========================================================================
+----------
 
 ### **Usage** ###
 
@@ -36,17 +34,16 @@ You need **python 3.6** installed with **ETE3** and **numpy**
 There are **three** modes to run simuLyon: **T** (species Tree), **G** (Genomes) and  **S** (Sequences) 
 
 You must run the computations in sequential order. This means that:
-Computing **genomes** requires having computed previously a species tree computed with the mode T
-Computing **sequences** requires having computed previously **genomes**.
+Computing **genomes** requires having computed previously a species tree computed with the mode T. 
+Computing **sequences** requires having computed previously **genomes** with the mode G.
 
 The parameters are read from a .tsv file that it can be modified with any text editor. 
 
 To start using simuLyon right away you can use:
 
-    mkdir ./Output_folder
     python3 simuLyon.py T ./Parameters/SpeciesTreeParameters.tsv ./Output_folder
 
-The Species Tree will be created in the /Output folder, along some other useful files (this is explained in the Output section of this manual)
+The Species Tree will be created in ./Output folder/T, along some other useful files (this is explained in the Output section of this manual)
 
 Then, you can simulate the evolution of genomes in that species tree using:
 
@@ -54,7 +51,7 @@ Then, you can simulate the evolution of genomes in that species tree using:
 
 Make sure that the Output_folder is the same that you were using when you generated the Species Tree! 
 simuLyon will simulate the evolution of genomes inside the whole species tree and it will print a very detailed
-information about them
+information about them in ./Output folder/G
 
 Then, you can simulate the evolution of sequences for each gene in that species tree using:
 
@@ -87,19 +84,19 @@ A genome is an ordered collection of genes. So if we begin with a genome that ha
 
 
 The meaning of this is:
-Position: The position in the genome. The genome is circular, so the position 4 is adjacent to the position 3 and 0
-Gene_family: The identifier of the gene family
-Orientation: The orientation of that gene in the genome
-Id: The identifier of the gene.
+* Position: The position in the genome. The genome is circular, so the position 4 is adjacent to the position 3 and 0
+* Gene_family: The identifier of the gene family
+* Orientation: The orientation of that gene in the genome
+* Id: The identifier of the gene.
 
 Genomes evolve undergoing a series of events:
 
-* D: Duplications. A segment of the genome is duplicated. The new copy is inserted next to the old one
-* L: Losses. A segment of the genome is lost
-* T: Transfers. A segment of the genome is transferred to a contemporary species. The segment is inserted in a random position. For now, replacement transfers are **not implemented**
-* C: Translocations. A segment of the genome changes its position within the genome
-* I: Inversions. A segment of the genome inverts its position
-* O: Originations. A new gene family appears and it is inserted in a random position
+* **D:** **Duplications**. A segment of the genome is duplicated. The new copy is inserted next to the old one
+* **L:** **Losses**. A segment of the genome is lost
+* **T:** **Transfers**. A segment of the genome is transferred to a contemporary species. The segment is inserted in a random position. For now, replacement transfers are **not implemented**
+* **C:** **Translocations**. A segment of the genome changes its position within the genome
+* **I:** **Inversions**. A segment of the genome inverts its position
+* **O:** **Originations**. A new gene family appears and it is inserted in a random position
 
 The rates in this case are **genome-wise**.
 
@@ -115,10 +112,12 @@ Origination of new gene families are always of size 1, meaning that it is not po
 Once that the full evolution of genomes has been simulated, simuLyon prints also the gene trees associated to the different gene families, all the events taking place
 in each gene family, the events taking place in each branch and the genomes of each node in the species tree.
 
-Some other events are do not depend intrinsically on genomes but in the species tree that is used to simulate genome evolution
+There are two other events that do not depend intrinsically on genomes but in the species tree that is used to simulate genome evolution
 
-* S: Speciation. When a genome arrives at a speciation node, the genome is divided and continues to evolve in both descendant branches
-* E: Extinction. When a genome arrives at a extinction event, the genome stop its evolution
+* **S**: **Speciation**. When a genome arrives at a speciation node, the genome is divided and continues to evolve in both descendant branches
+* **E**: **Extinction**. When a genome arrives at a extinction event, the genome stop its evolution
+
+----------
 
 *Some advances details regarding the genes identifiers: You might want to skip this part if you are reading this for the first time*
 
@@ -128,6 +127,8 @@ the two branches will inherit one a gene whose identifier is 2 and the other one
 duplicated genes. When a gene has been transferred, it changes the identifier of the gene remaining in the genome and in the recipient genome.
 This way is easy to track the events that have given rise to different tree topologies. Inversions and translocations do not introduce
 changes in the tree topology and for that reason they do not change the identifier of the affected genes.
+
+----------
 
 ### **Generating sequences (S)** ###
 
@@ -183,7 +184,7 @@ Third, we are going to make inversions and translocations to affect large sectio
 TRANSLOCATION_E = 0.05
 INVERSION_E = 0.05 
 
- Finally, we launch simuLyon using the command
+After that we launch simuLyon using the command
   
      python3 simuLyon.py G ./EXAMPLE_1/GenomeParameters.tsv ./EXAMPLE_1
 
@@ -191,33 +192,40 @@ Once that we have computed gene trees, we can simulate DNA and amino-acid sequen
 We will not change the default parameters set to simulate DNA sequences.
 
      cp ./Parameters/SequenceParameters.tsv ./EXAMPLE_1/SequenceParameters.tsv
-     python3 simuLyon.py S ./EXAMPLE_1/GenomeParameters.tsv ./EXAMPLE_1/
-
+     python3 simuLyon.py S ./EXAMPLE_1/SequenceParameters.tsv ./EXAMPLE_1/
 
 ### **Output** ###
 
 ##### Mode T
 
-*WholeTree:* The whole species tree including the dead lineages, in newick format
+*WholeTree.nwk* The whole species tree including the dead lineages, in newick format
 
-*ExtantTree:* The surviving species tree, in newick format
+*ExtantTree.nwk* The surviving species tree, in newick format
 
-*ParametersLog.tsv*: Parameters used to run the simulation
-
-*SpeciesTreeEvents.tsv*: Events (speciation and extinction) taking place in the species tree
-
-*LineagesInTime.tsv*: Lineages alive in each unit of time (**I have to change the format to make it more efficient**)
+*Events.tsv*: Events (speciation and extinction) taking place in the species tree
 
 #### Mode G
 
-*Complete genomes*: A folder with one file per node of the species tree. Each file contains information about the
-genome composition.
-
-*CompleteGenomes*: A folder with one file per node of the species tree. Each file contains information about the
+*Genomes*: A folder with one file per node of the species tree. Each file contains information about the
 genome composition.  
 
+*Gene_families*: A folder with one file per gene family. Each file contains information about the
+events taking place in that gene family. There are 3 fields.  
+
+* **1. Time**: The time at which the event takes place
+* **2. Event**: The type of event that takes place in a given time (S, E, D, T, L, I, C, O and F. F stands for Final, meaning that the gene arrived *alive* till the end of the run)
+* **3. Nodes**: Some more information about the kind of event:
+
+
+* **S, D and T**: 6 fields separated by semicolons. This can be better understood looking at the picture:
+
+[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 2"
+
+* **L, I, C and O**: 2 fields separated by semicolons. First, the species tree branch where the event takes place and second, the identifier of the gene affected
+
+
 *EventsPerBranch*: A folder with one file per branch of the species tree. Each file contains information about the
-events taking place in that branch. There are 4 fields. 
+events taking place in that branch. There are 3 fields. 
 
 1. Time: The time at which the event takes place
 2. Event: The type of event that takes place in a given time (Duplication D, Losses L, ArrivingTransfer AT, LeavingTransfer LT, Inversions I, Translocations C and Originations O)
@@ -235,8 +243,10 @@ events taking place in that branch. There are 4 fields.
 
 Please notice that in the case of events that affect to several genes, this will be reflected in the first column (several events taking place at the same unit of time)
  
- *EventsPerBranch*: A folder containing the gene trees corresponding to the evolution of the different families and the gene trees pruned so that only surviving genes are represented.
+ *GeneTrees*: A folder containing the gene trees corresponding to the evolution of the different families and the gene trees pruned so that only surviving genes are represented.
  Please notice that gene trees with fewer than 2 copies are simply not output
+ 
+ *Profiles*
   
 #### Mode F
 
