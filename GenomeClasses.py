@@ -257,8 +257,8 @@ class Gene():
 
     def __str__(self):
         #myname = "_".join(map(str,(self.genome, self.orientation, self.gene_family, self.gene_id)))
-        myname = "_".join(map(str, (self.species, self.gene_family, self.gene_id)))
-        #myname = "_".join(map(str, (self.orientation, self.gene_family)))
+        #myname = "_".join(map(str, (self.species, self.gene_family, self.gene_id)))
+        myname = "_".join(map(str, (self.gene_family, self.orientation)))
         return myname
 
 class Chromosome():
@@ -362,79 +362,89 @@ class CircularChromosome(Chromosome):
         return affected_genes
 
 
-    def get_homologous_position(self, segment, genes):
+    def get_homologous_position(self, segment):
+
+        homologous = list()
 
         segment_length = len(segment)
-        positions = list()
-        genes_length = len(genes)
+        genes_length = len(self.genes)
+
+        genes = [x.gene_family + "_" + x.orientation for x in self.genes]
+        mysegment = [x.gene_family + "_" + x.orientation for x in segment]
+
 
         # First we traverse the genome forwards
 
         for i, gene in enumerate(genes):
 
-            # name_gene_in_genome = gene.orientation + "_" + gene.gene_family
-            # name_gene_in_segment = segment[0].orientation + "_" + segment[0].gene_family
-
             length_counter = 0
+            positions = list()
 
             name_gene_in_genome = gene
-            name_gene_in_segment = segment[0]
+            name_gene_in_segment = mysegment[0]
 
             if name_gene_in_genome == name_gene_in_segment:
+
+                positions.append(i)
                 length_counter += 1
-                for j, x in enumerate(segment):
+
+                for j, x in enumerate(mysegment):
                     if length_counter == segment_length:
-                        positions.append(("F", i))
+                        homologous.append(("F", tuple(positions)))
                         break
                     if 1 + i + j >= genes_length:
-                        if genes[(i + j + 1) - genes_length] == segment[j + 1]:
+                        if genes[(i + j + 1) - genes_length] == mysegment[j + 1]:
+                            positions.append(i+j+1 - genes_length)
                             length_counter += 1
                         else:
                             break
                     else:
-                        if genes[i + j + 1] == segment[j + 1]:
+                        if genes[i + j + 1] == mysegment[j + 1]:
+                            positions.append(i + j + 1)
                             length_counter += 1
                         else:
                             break
 
         # Second we traverse the genome backwards
 
-        inverted_genome = list()
+        inverted_segment = list()
 
-        for gene in genes[::-1]:
-            if "+" in gene:
-                name_gene_in_genome = gene.replace("+", "-")
-            elif "-" in gene:
-                name_gene_in_genome = gene.replace("-", "+")
-            inverted_genome.append(name_gene_in_genome)
+        for gene in mysegment[::-1]:
 
-        for i, gene in enumerate(inverted_genome):
+            inverted_segment.append(gene.replace("+","A").replace("-", "+").replace("A", "-"))
 
-            # name_gene_in_genome = gene.orientation + "_" + gene.gene_family
-            # name_gene_in_segment = segment[0].orientation + "_" + segment[0].gene_family
+        print(mysegment)
+        print(inverted_segment)
 
+        for i, gene in enumerate(genes):
+
+            positions = list()
             length_counter = 0
+            name_gene_in_segment = inverted_segment[0]
 
-            name_gene_in_segment = segment[0]
+            if genes[i] == name_gene_in_segment:
 
-            if inverted_genome[i] == name_gene_in_segment:
+                positions.append(i)
                 length_counter += 1
-                for j, x in enumerate(segment):
+
+                for j, x in enumerate(inverted_segment):
                     if length_counter == segment_length:
-                        positions.append(("B", i))
+                        homologous.append(("B", tuple(positions)))
                         break
                     if 1 + i + j >= genes_length:
-                        if inverted_genome[(i + j + 1) - genes_length] == segment[j + 1]:
+                        if genes[(i + j + 1) - genes_length] == inverted_segment[j + 1]:
+                            positions.append(i + j + 1 - genes_length)
                             length_counter += 1
                         else:
                             break
                     else:
-                        if inverted_genome[i + j + 1] == segment[j + 1]:
+                        if genes[i + j + 1] == inverted_segment[j + 1]:
+                            positions.append(i + j + 1)
                             length_counter += 1
                         else:
                             break
 
-        return positions
+        return homologous
 
 
 

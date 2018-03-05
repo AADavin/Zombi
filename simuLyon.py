@@ -62,8 +62,6 @@ class simuLyon():
         gss.write_profiles(profiles_folder)
 
 
-
-
     def S(self, parameters_file, experiment_folder):
 
         import pyvolve

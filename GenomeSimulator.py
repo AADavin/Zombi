@@ -433,7 +433,7 @@ class GenomeSimulator():
 
                     recipient = random.choice(possible_recipients)
                     donor = lineage
-                    self.make_transfer(t_e, donor, recipient, time)
+                    self.make_my_replacement_transfer(t_e, donor, recipient, time)
                     return "T", donor+"->"+recipient
 
                 else:
@@ -689,8 +689,25 @@ class GenomeSimulator():
 
             self.all_gene_families[gene.gene_family].register_event(time, "T", ";".join(map(str, nodes)))
 
-
     def make_replacement_transfer(self, p, donor, recipient, time):
+
+        chromosome1 = self.all_genomes[donor].select_random_chromosome()
+        affected_genes = chromosome1.obtain_affected_genes(p)
+        segment = chromosome1.obtain_segment(affected_genes)
+        possible_positions = list()
+
+        print(donor, recipient, str(time))
+
+        for chromosome in self.all_genomes[recipient]:
+            for position, direction in chromosome.get_homologous_position(segment):
+                #possible_positions.append((position, direction, str(chromosome)))
+                possible_positions.append((position, direction))
+
+        print(possible_positions)
+        print(str(chromosome))
+
+
+    def make_my_replacement_transfer(self, p, donor, recipient, time):
 
 
         chromosome1 = self.all_genomes[donor].select_random_chromosome()
@@ -720,29 +737,64 @@ class GenomeSimulator():
             possible_positions = list()
 
             for chromosome in self.all_genomes[recipient]:
-                for position, direction, chromosome in chromosome.get_homologous_position():
-                    possible_positions.append((position, direction, chromosome))
+                for direction, positions in chromosome.get_homologous_position(segment):
+                    possible_positions.append((direction, positions, chromosome))
+                    print(positions)
 
             if len(possible_positions) != 0:
 
-                position, direction, chromosome = random.choice(possible_positions)
+                direction, positions, chromosome2 = random.choice(possible_positions)
 
-                if position == "F":
 
-                    # I have to remove the old segment
-                    chromosome.insert_segment(position, copied_segment2)
-                elif position == "B":
-                    # I have to remove the old segment
-                    chromosome.insert_segment(position, copied_segment2)
+                if direction == "F":
+
+                    # I replace gene by gene the segment
+
+                    i = 0
+
+                    for position in positions:
+
+                        # First I inactivate the gene
+
+                        gene = chromosome2.genes[position]
+                        gene.active = False
+                        self.all_gene_families[gene.gene_family].register_event(time, "L", ";".join(
+                            map(str, [recipient, gene.gene_id])))
+
+                        # And then I replace
+
+                        chromosome2.genes[position] =  copied_segment2[i]
+
+                        i += 1
+
+                elif direction == "B":
+
+                    # I invert the segment and I replace gene by gene the segment
+
+                    for gene in copied_segment2:
+                        gene.change_sense()
+
+                    i = 0
+
+                    for position in positions:
+                        # First I inactivate the gene
+                        gene = chromosome2.genes[position]
+                        gene.active = False
+                        self.all_gene_families[gene.gene_family].register_event(time, "L", ";".join(
+                            map(str, [recipient, gene.gene_id])))
+
+                        # And then I replace
+
+                        chromosome2.genes[position] = copied_segment2[i]
+
+                        i += 1
+
             else:
                 pass
-            # Replacement transfer
-
         else:
             pass
 
-                # We have to register in the affected gene families that there has been a transfer event
-
+        # We have to register in the affected gene families that there has been a transfer event
         for i, gene in enumerate(segment):
 
             gene.active = False

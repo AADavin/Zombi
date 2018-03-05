@@ -128,8 +128,11 @@ def prepare_genome_parameters(parameters):
 
             parameters[parameter] = obtain_value(value)
 
-        if parameters == "ROOT_GENOME":
+        if parameter == "ROOT_GENOME":
             parameters[parameter] = value.split(";")
+
+        if parameter == "REPLACEMENT_TRANSFER":
+            parameters[parameter] = float(value)
 
     return parameters
 

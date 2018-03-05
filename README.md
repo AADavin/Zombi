@@ -1,6 +1,6 @@
 ﻿
 ## SimuLyon (working name) 
-##### A new tool to simulate genome evolution accounting for dead lineages
+##### A tool to simulate genome evolution accounting for dead lineages
 
 ----------
 
@@ -8,7 +8,8 @@
 
 SimuLyon is a simulator of genome evolution that accounts for extinct lineages. 
 This feature makes it especially interesting for those studying organisms in which there exists Lateral Gene Transfers, since transfer events can take place between lineages that have left no surviving descendants.
-SimuLyon uses a Birth-death model to generate a species tree and then it simulates the evolution of genomes along this species tree. Genomes evolve undergoing events of duplication, transfer, loss, translocation and inversion. 
+SimuLyon uses a Birth-death model to generate a species tree and then it simulates the evolution of genomes along this species tree. Genomes evolve undergoing events of duplication, transfer, loss, translocation and inversion. Each event can
+affect a region of variable length in the genome. 
 
 SimuLyon can be of great interest to those who want to test different evolutionary hypothesis under simulations and need to use a fast and easy to use tool to generate species trees, gene trees and sequences.
 
@@ -121,8 +122,8 @@ There are two other events that do not depend intrinsically on genomes but in th
 *Some advances details regarding the genes identifiers: You might want to skip this part if you are reading this for the first time*
 
 Events that introduce nodes in the topology of the gene tree, change the identifier of the gene.
-For example, let us say that in the root we have a gene whose identifier is 1. If the genome where the gene is speciates,
-the two branches will inherit one a gene whose identifier is 2 and the other one 3. A duplication will change also the identifiers of the
+For example, let us say that in the root we have a gene whose identifier is 1. If the genome where the gene undergoes a speciation,
+the two branches will inherit: one a gene whose identifier is 2 and the other one 3. A duplication will change also the identifiers of the
 duplicated genes. When a gene has been transferred, it changes the identifier of the gene remaining in the genome and in the recipient genome.
 This way is easy to track the events that have given rise to different tree topologies. Inversions and translocations do not introduce
 changes in the tree topology and for that reason they do not change the identifier of the affected genes.
