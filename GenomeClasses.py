@@ -177,7 +177,6 @@ class GeneFamily():
                 gc2.add_feature("is_active", True)
 
             elif event == "T":
-
                 sp, gp, c1, g1, c2, g2 = nodes.split(";")
 
                 myname = sp + "_" + gp
@@ -361,7 +360,6 @@ class CircularChromosome(Chromosome):
 
         return affected_genes
 
-
     def get_homologous_position(self, segment):
 
         homologous = list()
@@ -412,9 +410,6 @@ class CircularChromosome(Chromosome):
         for gene in mysegment[::-1]:
 
             inverted_segment.append(gene.replace("+","A").replace("-", "+").replace("A", "-"))
-
-        print(mysegment)
-        print(inverted_segment)
 
         for i, gene in enumerate(genes):
 

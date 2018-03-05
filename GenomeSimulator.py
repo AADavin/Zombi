@@ -433,7 +433,7 @@ class GenomeSimulator():
 
                     recipient = random.choice(possible_recipients)
                     donor = lineage
-                    self.make_my_replacement_transfer(t_e, donor, recipient, time)
+                    self.make_transfer(t_e, donor, recipient, time)
                     return "T", donor+"->"+recipient
 
                 else:
@@ -657,10 +657,10 @@ class GenomeSimulator():
 
         chromosome1.remove_segment(segment)
 
-        # Now we insert the transfer segment in the recipient genome
+        # Now we insert the transfer segment in the recipientgenome
 
+        chromosome2 = self.all_genomes[recipient].select_random_chromosome()
         position = chromosome2.select_random_position()
-
         chromosome2.insert_segment(position, copied_segment2)
 
         # We have to register in the affected gene families that there has been a transfer event
@@ -689,25 +689,8 @@ class GenomeSimulator():
 
             self.all_gene_families[gene.gene_family].register_event(time, "T", ";".join(map(str, nodes)))
 
-    def make_replacement_transfer(self, p, donor, recipient, time):
 
-        chromosome1 = self.all_genomes[donor].select_random_chromosome()
-        affected_genes = chromosome1.obtain_affected_genes(p)
-        segment = chromosome1.obtain_segment(affected_genes)
-        possible_positions = list()
-
-        print(donor, recipient, str(time))
-
-        for chromosome in self.all_genomes[recipient]:
-            for position, direction in chromosome.get_homologous_position(segment):
-                #possible_positions.append((position, direction, str(chromosome)))
-                possible_positions.append((position, direction))
-
-        print(possible_positions)
-        print(str(chromosome))
-
-
-    def make_my_replacement_transfer(self, p, donor, recipient, time):
+    def make_transfer(self, p, donor, recipient, time):
 
 
         chromosome1 = self.all_genomes[donor].select_random_chromosome()
@@ -715,6 +698,8 @@ class GenomeSimulator():
         segment = chromosome1.obtain_segment(affected_genes)
         new_identifiers1 = self.return_new_identifiers_for_segment(segment)
         new_identifiers2 = self.return_new_identifiers_for_segment(segment)
+
+        inverted = False
 
         # Now we create two segments
 
@@ -739,7 +724,6 @@ class GenomeSimulator():
             for chromosome in self.all_genomes[recipient]:
                 for direction, positions in chromosome.get_homologous_position(segment):
                     possible_positions.append((direction, positions, chromosome))
-                    print(positions)
 
             if len(possible_positions) != 0:
 
@@ -763,38 +747,50 @@ class GenomeSimulator():
 
                         # And then I replace
 
-                        chromosome2.genes[position] =  copied_segment2[i]
+                        chromosome2.genes[position] = copied_segment2[i]
 
                         i += 1
 
                 elif direction == "B":
-
                     # I invert the segment and I replace gene by gene the segment
+                    inverted = True
+
+                    copied_segment2 = copied_segment2[::-1]
 
                     for gene in copied_segment2:
                         gene.change_sense()
 
                     i = 0
-
                     for position in positions:
                         # First I inactivate the gene
                         gene = chromosome2.genes[position]
                         gene.active = False
+
                         self.all_gene_families[gene.gene_family].register_event(time, "L", ";".join(
                             map(str, [recipient, gene.gene_id])))
 
                         # And then I replace
 
                         chromosome2.genes[position] = copied_segment2[i]
-
                         i += 1
-
             else:
-                pass
+
+                # Normal transfers
+                chromosome2 = self.all_genomes[recipient].select_random_chromosome()
+                position = chromosome2.select_random_position()
+                chromosome2.insert_segment(position, copied_segment2)
         else:
-            pass
+            # Normal transfer
+            chromosome2 = self.all_genomes[recipient].select_random_chromosome()
+            position = chromosome2.select_random_position()
+            chromosome2.insert_segment(position, copied_segment2)
 
         # We have to register in the affected gene families that there has been a transfer event
+
+        if inverted == True:
+            # We invert again to store the event
+            copied_segment2 = copied_segment2[::-1]
+
         for i, gene in enumerate(segment):
 
             gene.active = False
@@ -817,6 +813,8 @@ class GenomeSimulator():
                      copied_segment2[i].gene_id]
 
             self.all_gene_families[gene.gene_family].register_event(time, "T", ";".join(map(str,nodes)))
+
+
 
 
     def make_loss(self, p, lineage, time):

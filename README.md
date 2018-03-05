@@ -93,7 +93,7 @@ Genomes evolve undergoing a series of events:
 
 * **D:** **Duplications**. A segment of the genome is duplicated. The new copy is inserted next to the old one
 * **L:** **Losses**. A segment of the genome is lost
-* **T:** **Transfers**. A segment of the genome is transferred to a contemporary species. The segment is inserted in a random position. For now, replacement transfers are **not implemented**
+* **T:** **Transfers**. A segment of the genome is transferred to a contemporary species. The segment is inserted in a random position. Transfers can be replacement transfers 
 * **C:** **Translocations**. A segment of the genome changes its position within the genome
 * **I:** **Inversions**. A segment of the genome inverts its position
 * **O:** **Originations**. A new gene family appears and it is inserted in a random position
@@ -237,6 +237,10 @@ The value for each type of event.
 
 The value of the p parameter of a geometric distribution that determines the extension of the genome (measured in number of genes) 
 affected for event
+
+**REPLACEMENT_TRANSFER**
+
+A number between 0 and 1 controling the probability of replacement transfers (they only happen if there is a homologous position in the recipient genome)
 
 **STEM_FAMILIES**
 
