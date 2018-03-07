@@ -1,4 +1,4 @@
-from SpeciesTreeSimulator import SpeciesTreeGenerator
+from SpeciesTreeSimulator import SpeciesTreeGenerator, EfficientSpeciesTreeGenerator
 from GenomeSimulator import GenomeSimulator
 import AuxiliarFunctions as af
 import os
@@ -13,7 +13,7 @@ class simuLyon():
         self.sequence_parameters = dict()
 
 
-    def T(self, parameters_file, experiment_folder):
+    def ET(self, parameters_file, experiment_folder):
 
         tree_folder = os.path.join(experiment_folder, "T")
 
@@ -29,6 +29,47 @@ class simuLyon():
         stg.write_whole_tree(whole_tree_file)
         stg.write_extant_tree(extant_tree_file)
         stg.write_events_file(events_file)
+
+    def T(self, parameters_file, experiment_folder):
+
+        tree_folder = os.path.join(experiment_folder, "T")
+
+        parameters = af.prepare_species_tree_parameters(af.read_parameters(parameters_file))
+        stg = EfficientSpeciesTreeGenerator(parameters)
+
+        stg.run()
+
+        whole_tree_file = os.path.join(tree_folder, "WholeTree.nwk")
+        extant_tree_file = os.path.join(tree_folder, "ExtantTree.nwk")
+        events_file = os.path.join(tree_folder, "Events.tsv")
+
+        stg.generate_whole_tree()
+        stg.generate_extant_tree()
+
+        stg.write_whole_tree(whole_tree_file)
+        stg.write_extant_tree(extant_tree_file)
+        stg.write_events_file(events_file)
+
+    def T1(self, parameters_file, experiment_folder):
+
+        tree_folder = os.path.join(experiment_folder, "T")
+
+        parameters = af.prepare_species_tree_parameters(af.read_parameters(parameters_file))
+        stg = EfficientSpeciesTreeGenerator(parameters)
+
+        stg.run_1()
+
+        whole_tree_file = os.path.join(tree_folder, "WholeTree.nwk")
+        extant_tree_file = os.path.join(tree_folder, "ExtantTree.nwk")
+        events_file = os.path.join(tree_folder, "Events.tsv")
+
+        stg.generate_whole_tree()
+        #stg.generate_extant_tree()
+
+        stg.write_whole_tree(whole_tree_file)
+        #stg.write_extant_tree(extant_tree_file)
+        stg.write_events_file(events_file)
+
 
 
     def F(self,parameters_file, experiment_folder):
@@ -136,6 +177,16 @@ if __name__ == "__main__":
                 os.mkdir(os.path.join(experiment_folder,"T"))
 
             SL.T(parameters_file, experiment_folder)
+
+        if mode == "T1":
+
+            if not os.path.isdir(experiment_folder):
+                os.mkdir(experiment_folder)
+
+            if not os.path.isdir(os.path.join(experiment_folder,"T")):
+                os.mkdir(os.path.join(experiment_folder,"T"))
+
+            SL.T1(parameters_file, experiment_folder)
 
         elif mode == "G":
 

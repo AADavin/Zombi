@@ -104,8 +104,14 @@ def prepare_species_tree_parameters(parameters):
         if parameter == "EXTINCTION":
             parameters[parameter] = obtain_value(value)
 
+        if parameter == "TURNOVER":
+            parameters[parameter] = obtain_value(value)
+
         if parameter == "TOTAL_TIME":
             parameters[parameter] = float(value)
+
+        if parameter == "POPULATION_SIZES":
+            parameters[parameter] = [tuple([int(j) for j in x.split("-")]) for x in value.split(";")]
 
         if parameter == "SPECIES_EVOLUTION_MODE" or parameter == "N_LINEAGES" or parameter == "MIN_LINEAGES" \
                 or parameter == "TOTAL_LINEAGES" or parameter == "STOPPING_RULE" or parameter == "MAX_LINEAGES":
@@ -178,9 +184,6 @@ def generate_events(tree_file): # I have to round distances
 
     for event in events:
         print(event)
-
-
-
 
 
 def copy_segment(segment, new_identifiers):
