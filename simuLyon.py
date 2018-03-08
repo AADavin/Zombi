@@ -1,4 +1,4 @@
-from SpeciesTreeSimulator import SpeciesTreeGenerator, EfficientSpeciesTreeGenerator
+from SpeciesTreeSimulator import SpeciesTreeGenerator
 from GenomeSimulator import GenomeSimulator
 import AuxiliarFunctions as af
 import os
@@ -35,9 +35,19 @@ class simuLyon():
         tree_folder = os.path.join(experiment_folder, "T")
 
         parameters = af.prepare_species_tree_parameters(af.read_parameters(parameters_file))
-        stg = EfficientSpeciesTreeGenerator(parameters)
+        stg = SpeciesTreeGenerator(parameters)
 
-        stg.run()
+        run_counter = 0
+        success = False
+
+        while success == False and run_counter <= 50:
+            run_counter+=1
+            print("Computing Species Tree. Trial number %s" % str(run_counter))
+            success = stg.run()
+
+        if run_counter >= 50:
+            print("Aborting computation of the Species Tree. Please use other speciation and extinction rates!")
+            return 0
 
         whole_tree_file = os.path.join(tree_folder, "WholeTree.nwk")
         extant_tree_file = os.path.join(tree_folder, "ExtantTree.nwk")
@@ -55,7 +65,7 @@ class simuLyon():
         tree_folder = os.path.join(experiment_folder, "T")
 
         parameters = af.prepare_species_tree_parameters(af.read_parameters(parameters_file))
-        stg = EfficientSpeciesTreeGenerator(parameters)
+        stg = SpeciesTreeGenerator(parameters)
 
         stg.run_1()
 
@@ -93,14 +103,16 @@ class simuLyon():
 
         print("Writing Genomes")
         gss.write_genomes(genomes_folder)
-        print("Writing Gene Families")
-        gss.write_gene_family_events(gene_families_folder)
-        print("Writing Gene Trees")
-        gss.write_gene_trees(gene_trees_folder)
-        print("Writing Events Per Branch")
-        gss.write_events_per_branch(events_per_branch_folder)
         print("Writing Profiles")
         gss.write_profiles(profiles_folder)
+        print("Writing Gene Families")
+        gss.write_gene_family_events(gene_families_folder)
+        print("Writing Events Per Branch")
+        gss.write_events_per_branch(events_per_branch_folder)
+        print("Writing Gene Trees")
+        gss.write_gene_trees(gene_trees_folder)
+
+
 
 
     def S(self, parameters_file, experiment_folder):
@@ -162,7 +174,7 @@ if __name__ == "__main__":
 
     if len(args) != 3:
         print("Incorrect usage. Please read the manual. The usual way to run this script is:")
-        print("python oldsimuLyon.py T Parameters_file.tsv /Output_folder")
+        print("python simuLyon.py T Parameters_file.tsv /Output_folder")
     else:
         mode, parameters_file, experiment_folder = args
 
@@ -178,7 +190,7 @@ if __name__ == "__main__":
 
             SL.T(parameters_file, experiment_folder)
 
-        if mode == "T1":
+        elif mode == "T1":
 
             if not os.path.isdir(experiment_folder):
                 os.mkdir(experiment_folder)

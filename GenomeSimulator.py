@@ -333,7 +333,7 @@ class GenomeSimulator():
 
             # We check that we are not exactly in the same span of time WRITE THIS!!
 
-            time_to_next_genome_event = self.get_time_to_next_event(len(self.active_genomes), d, t, l, i, c, o)
+            time_to_next_genome_event = self.get_time_to_next_event(len(self.active_genomes), d, t, l, i, c, o) # Correct this! Check that the total weight of events is not zero
 
             elapsed_time = float(current_time) - elapsed_time
 
@@ -474,8 +474,12 @@ class GenomeSimulator():
         total = 0.0
         for j in range(n):
             total += sum((d, t, l, i, c, o))
-        time = numpy.random.exponential(1/total)
-        return time
+
+        if total == 0:
+            return 1000000000000000 # We sent an arbitrarily big number. Probably not the most elegant thing to do
+        else:
+            time = numpy.random.exponential(1/total)
+            return time
 
     def increase_distances(self, time_to_next_event, active_lineages):
 
