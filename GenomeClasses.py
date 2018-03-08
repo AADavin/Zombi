@@ -237,7 +237,7 @@ class Gene():
         self.gene_id = ""
         self.sequence = ""
         self.species = ""
-        self.selection_coefficient = ""
+        self.selection_coefficient = 0
 
     def determine_orientation(self):
 

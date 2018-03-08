@@ -39,7 +39,7 @@ class EfficientSpeciesTreeGenerator():
         time = 0
         success = False
 
-        n_lineages_alive = len(self.active_lineages)
+        n_lineages_alive = 1
 
         while True:
 
@@ -52,7 +52,6 @@ class EfficientSpeciesTreeGenerator():
                 self.increase_distances(time_to_next_event)
                 print("All dead")
                 return success
-
 
             elif stopping_rule == 0 and time + time_to_next_event >= total_time:
 
@@ -85,11 +84,13 @@ class EfficientSpeciesTreeGenerator():
 
                 if event == "S":
                     self._get_speciated(lineage, time)
+                    n_lineages_alive += 1
 
                 elif event == "E":
                     self._get_extinct(lineage, time)
+                    n_lineages_alive -= 1
 
-            n_lineages_alive = len(self.active_lineages)
+
 
     def run_1(self):
 
@@ -108,7 +109,7 @@ class EfficientSpeciesTreeGenerator():
         success = False
         action = 0
 
-        n_lineages_alive = len(self.active_lineages)
+        n_lineages_alive = 1
 
         while True:
 
@@ -159,13 +160,15 @@ class EfficientSpeciesTreeGenerator():
 
                     lineage = random.sample(self.active_lineages, 1)[0]
                     self._get_speciated(lineage, time)
+                    n_lineages_alive += 1
 
                 elif action == 2:
 
                     lineage = random.sample(self.active_lineages, 1)[0]
                     self._get_extinct(lineage, time)
+                    n_lineages_alive -= 1
 
-            n_lineages_alive = len(self.active_lineages)
+
 
 
     def increase_distances(self, time):
@@ -216,20 +219,29 @@ class EfficientSpeciesTreeGenerator():
 
     def generate_whole_tree(self):
 
+        # We create a hash of nodes for quicker access
+
+        all_nodes = dict()
+
         root = self.whole_tree.get_tree_root()
         root.name = "Root"
+        all_nodes[root.name] = root
 
         for time, event, nodes in self.events:
             if event == "S":
                 p,c1name,c2name = nodes.split(";")
 
-                node = self.whole_tree & p
+                node = all_nodes[p]
 
                 c1 = node.add_child(dist=self.distances[c1name])
                 c2 = node.add_child(dist=self.distances[c2name])
 
                 c1.name = c1name
                 c2.name = c2name
+
+                all_nodes[c1name] = c1
+                all_nodes[c2name] = c2
+
 
     def generate_extant_tree(self):
 

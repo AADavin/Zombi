@@ -128,6 +128,9 @@ def prepare_genome_parameters(parameters):
                 parameter == "INVERSION" or parameter == "TRANSLOCATION" or parameter == "ORIGINATION":
             parameters[parameter] = obtain_value(value)
 
+        if parameter == "P_ESSENTIAL_GENE":
+            parameters[parameter] = obtain_value(value)
+
         if parameter == "DUPLICATION_EXTENSION" or parameter == "TRANSFER_EXTENSION" \
                 or parameter == "LOSS_EXTENSION" or parameter == "INVERSION_EXTENSION" or \
                 parameter == "TRANSLOCATION_EXTENSION" or parameter == "ORIGINATION_EXTENSION":

@@ -206,6 +206,7 @@ class GenomeSimulator():
 
         stem_families = self.parameters["STEM_FAMILIES"].split(";")
         shape = self.parameters["CHROMOSOME_SHAPE"]
+        p_essential = self.parameters["P_ESSENTIAL_GENE"]
 
         for n_genes in stem_families:
 
@@ -220,6 +221,10 @@ class GenomeSimulator():
                 # We fill the chromosomes and we create also the gene families
 
                 gene, gene_family = self.make_origination(genome.species, time)
+
+                if numpy.random.uniform(0,1) <= p_essential:
+                    gene.selection_coefficient = 1
+
                 chromosome.genes.append(gene)
                 self.all_gene_families[str(self.gene_families_counter)] = gene_family
 
@@ -815,8 +820,6 @@ class GenomeSimulator():
             self.all_gene_families[gene.gene_family].register_event(time, "T", ";".join(map(str,nodes)))
 
 
-
-
     def make_loss(self, p, lineage, time):
 
         chromosome = self.all_genomes[lineage].select_random_chromosome()
@@ -826,6 +829,10 @@ class GenomeSimulator():
         # Now we check we are not under the minimum size
 
         if len(chromosome) - len(affected_genes) <= 0:
+            return 0
+
+        importance = sum([gene.selection_coefficient for gene in segment])
+        if importance != 0:
             return 0
 
         chromosome.remove_segment(segment)
