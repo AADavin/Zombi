@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="59ba90f0-ee1f-4701-b72e-68f3e4c50e55" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/GenomeSimulator.py" afterPath="$PROJECT_DIR$/GenomeSimulator.py" />
-      <change beforePath="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" afterPath="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" />
-      <change beforePath="$PROJECT_DIR$/Parameters/SpeciesTreeParameters.tsv" afterPath="$PROJECT_DIR$/Parameters/SpeciesTreeParameters.tsv" />
-      <change beforePath="$PROJECT_DIR$/SpeciesTreeSimulator.py" afterPath="$PROJECT_DIR$/SpeciesTreeSimulator.py" />
-      <change beforePath="$PROJECT_DIR$/simuLyon.py" afterPath="$PROJECT_DIR$/simuLyon.py" />
+      <change beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -32,7 +28,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GenomeSimulator.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="GenomeSimulator.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GenomeSimulator.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="6526">
@@ -64,12 +60,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
+      <file leaf-file-name="README.md" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="389">
-                <caret line="242" column="152" lean-forward="false" selection-start-line="242" selection-start-column="152" selection-end-line="242" selection-end-column="152" />
+              <first_editor relative-caret-position="200">
+                <caret line="174" column="5" lean-forward="false" selection-start-line="174" selection-start-column="5" selection-end-line="174" selection-end-column="5" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -206,7 +202,6 @@
         <option value="$PROJECT_DIR$/old_functions/oldmanual" />
         <option value="$PROJECT_DIR$/old_functions/examples" />
         <option value="$PROJECT_DIR$/NewParameters/SpeciesTreeParameters.tsv" />
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/NewParameters/GenomeParameters.tsv" />
         <option value="$PROJECT_DIR$/Examples/advanced_functions" />
         <option value="$PROJECT_DIR$/GenomeClasses.py" />
@@ -217,6 +212,7 @@
         <option value="$PROJECT_DIR$/Parameters/SpeciesTreeParameters.tsv" />
         <option value="$PROJECT_DIR$/SpeciesTreeSimulator.py" />
         <option value="$PROJECT_DIR$/GenomeSimulator.py" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -869,17 +865,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="389">
-            <caret line="242" column="152" lean-forward="false" selection-start-line="242" selection-start-column="152" selection-end-line="242" selection-end-column="152" />
-            <folding />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Parameters/GenomeParameters.tsv">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
@@ -937,6 +922,17 @@
           <folding>
             <element signature="e#0#30#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="200">
+            <caret line="174" column="5" lean-forward="false" selection-start-line="174" selection-start-column="5" selection-end-line="174" selection-end-column="5" />
+            <folding />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>

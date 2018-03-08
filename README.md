@@ -171,8 +171,8 @@ events taking place in that gene family. There are 3 fields.
 **EventsPerBranch**: A folder with one file per branch of the species tree. Each file contains information about the
 events taking place in that branch. The codes are similar to the previously explained, but not the same. There are two main differences (for the sake of clarity). The first one is that transfers are divided into:
 
-* **AT**: Leaving Transfers. Transfers that leave this branch
-* **LT**: Arriving Transfers. Transfers that arrive at this branch.
+* **LT**: Leaving Transfers. Transfers that leave this branch
+* **AT**: Arriving Transfers. Transfers that arrive at this branch.
 
 The second difference is that the node of the nodes affected is given by:
 
