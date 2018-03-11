@@ -2,8 +2,8 @@ import ete3
 
 species_tree = ete3.Tree()
 
-profiles = "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/ANIKET/TEST3/G/Profiles/Profiles.tsv"
-extant_tree_file = "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/ANIKET/TEST3/T/ExtantTree.nwk"
+profiles = "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/ANIKET/WITH/G/Profiles/Profiles.tsv"
+extant_tree_file = "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/Cedric/ANIKET/WITH/T/ExtantTree.nwk"
 
 with open(extant_tree_file) as f:
     tree = ete3.Tree(f.readline().strip(), format=1)

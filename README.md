@@ -31,11 +31,14 @@ You need **python 3.6** installed with **ETE3** and **numpy**
 
     pip3 install ete3 numpy
 
-There are **three** modes to run simuLyon: **T** (species Tree), **G** (Genomes) and  **S** (Sequences) 
+There are **three main modes** to run simuLyon: **T** (species Tree), **G** (Genomes) and  **S** (Sequences) 
 
 You must run the computations in sequential order. This means that:
 Computing **genomes** requires having computed previously a species tree computed with the mode T. 
 Computing **sequences** requires having computed previously **genomes** with the mode G.
+
+Each main mode has different advanced options. For example, it is possible to account for the variability in the rates of genome
+evolution with the modes Ga or Gb. 
 
 The parameters are read from a .tsv file that it can be modified with any text editor. 
 
@@ -98,7 +101,7 @@ Genomes evolve undergoing a series of events:
 * **I:** **Inversions**. A segment of the genome inverts its position
 * **O:** **Originations**. A new gene family appears and it is inserted in a random position
 
-The rates in this case are **genome-wise**.
+The rates in this case are **genome-wise**. For instance, a duplication rate of 3 means 3 duplication events per genome per unit of time.
 
 There is also an additional rate for each event. This is called the **extension_rate**. This number (between 0 and 1) is
 the p parameters of a **geometric distribution** that controls the length of the affected segment.
@@ -138,6 +141,65 @@ This method can simulate non-coding DNA sequences, coding DNA sequences and amin
 This module requires Pyvolve (https://github.com/sjspielman/pyvolve), to install it use the command:
 
     pip3 install pyvolve
+    
+----------
+    
+### Advanced modes  (Not ready yet)
+
+####Advanced modes for simulating species tree
+
+##### Mode Ta - Autocorrelation of extinction and speciation rates
+
+In this model, speciation and extinction rates are specific for each branch. Each time one new lineage emerges, a new value for
+its extinction and speciation rates its sampled from a user defined distribution (normal or lognormal), in which the mean corresponds
+to the value of the parent branch and the variance to the branch length
+
+##### Mode Tb - Branch-wise extinction and speciation rates
+
+In this model, speciation and extinction rates are specific for each branch. Each time one new lineage emerges, a new value for
+its extinction and speciation rates its sampled from a user defined distribution (normal or lognormal). The difference with the previous model
+it is that rates are independently sample each time a new lineage emerge.
+
+##### Mode Tp - Fine control of population
+
+This model allows the user to fine control the size of the population
+
+##### Mode Ti - Preparing SimuLyon with an input tree by the user
+
+This model allows the user to input a species tree
+
+####Advanced modes for simulating genomes
+
+##### Mode TG - Simultaneous evolution of species tree and genomes
+
+This models simulates simulatenously the evolution of the species tree and the evolution of genomes
+
+##### Mode Ga - Autocorrelation of genome rates
+
+In this model, genome event rates are specific for each branch of the species tree. Each time one new lineage emerges, a new value for
+its genome events rates its sampled from a user defined distribution (normal or lognormal), in which the mean corresponds
+to the value of the parent branch and the variance to the branch length
+
+##### Mode Gb - Branch-wise genome rates
+
+In this model, genome event rates are specific for each branch of the species tree. Each time one new lineage emerges, a new value for
+its genome events rates its sampled from a user defined distribution (normal or lognormal), in which the mean corresponds
+to the value of the parent branch and the variance to the branch length
+
+##### Mode Gs - Selection model genome rates
+
+This model allows the user to take into account the importance of genes
+
+##### Mode Gu - User control of genome rates
+
+This model allows the user to fine control the genome rates
+
+####Advanced modes for simulating sequences
+
+##### Mode Sa - Autocorrelated sequence rates
+##### Mode Sb - Branch-wise sequence rates
+##### Mode Su - User control of sequence rates
+    
 
 ### **Output** ###
 
@@ -168,7 +230,7 @@ events taking place in that gene family. There are 3 fields.
 
 * **L, I, C, O and F**: 2 fields separated by semicolons. First, the species tree branch where the event takes place and second, the identifier of the gene affected
 
-**EventsPerBranch**: A folder with one file per branch of the species tree. Each file contains information about the
+**EventsPerBranch**: (Not output by default) A folder with one file per branch of the species tree. Each file contains information about the
 events taking place in that branch. The codes are similar to the previously explained, but not the same. There are two main differences (for the sake of clarity). The first one is that transfers are divided into:
 
 * **LT**: Leaving Transfers. Transfers that leave this branch
@@ -182,7 +244,7 @@ So for example, if we go to the file n2_branchevents and we find the event L aff
 
 Please also notice that in the case of events that affect to several genes, this will be reflected in the first column (several events taking place at the same unit of time)
  
- **GeneTrees**: A folder containing the gene trees corresponding to the evolution of the different families and the gene trees pruned so that only surviving genes are represented.
+ **GeneTrees**: (Not output by default) A folder containing the gene trees corresponding to the evolution of the different families and the gene trees pruned so that only surviving genes are represented.
  Please notice that gene trees with 2 or fewer surviving copies are simply not output. Mind that some families can appear at some point and then leave no surviving descendants!
  
  There are two types of trees:
@@ -190,9 +252,7 @@ Please also notice that in the case of events that affect to several genes, this
  * **_wholetree.nwk**: A tree showing the whole evolution of that gene family
  * **_prunedtree.nwk**: A tree in which the genes that have not survived till the present time have been removed. **Normally you want to use this tree!**
    
- **Profiles**
- 
- Here there is a file called Profiles.tsv that contains the node of the species tree in the columns and the gene families in the rows.
+ **Profiles**: (Not output by default) Here there is a file called Profiles.tsv that contains the node of the species tree in the columns and the gene families in the rows.
  The entries give the number of copies that each gene family has for each node of the species tree.
  
  #### Mode S
@@ -201,6 +261,11 @@ Please also notice that in the case of events that affect to several genes, this
 
 *Sequences*: A folder with one fasta file per gene of the species tree.
 Each fasta alignment contains the simulated sequences obtained at the leaves of the tree, not the internal nodes.
+
+### Examples (Not ready yet)
+#### Example 1 - Simulating genomes for reconciliations
+#### Example 2 - Simulating a massive extinction event
+#### Example 3 - Simulating sequences for whatever
 
 ### Parameters ###
 
@@ -250,4 +315,5 @@ Number of gene families present in the ancestral genome at the root
 
 The minimal size for a given genome. Smaller genomes will not be affected by losses events
 
+#### Sequence evolution (S) ####
 
