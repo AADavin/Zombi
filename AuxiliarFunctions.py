@@ -2,8 +2,6 @@ import ete3
 import numpy
 import copy
 
-
-
 def normalize(array):
     total = numpy.sum(array)
     return (array/total)

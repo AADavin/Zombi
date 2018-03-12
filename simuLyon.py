@@ -1,6 +1,7 @@
 from SpeciesTreeSimulator import SpeciesTreeGenerator
 from GenomeSimulator import GenomeSimulator
 import AuxiliarFunctions as af
+import argparse
 import os
 import sys
 
@@ -13,24 +14,7 @@ class simuLyon():
         self.sequence_parameters = dict()
 
 
-    def ET(self, parameters_file, experiment_folder):
-
-        tree_folder = os.path.join(experiment_folder, "T")
-
-        parameters = af.prepare_species_tree_parameters(af.read_parameters(parameters_file))
-        stg = SpeciesTreeGenerator(parameters)
-
-        stg.run()
-
-        whole_tree_file = os.path.join(tree_folder,"WholeTree.nwk")
-        extant_tree_file = os.path.join(tree_folder, "ExtantTree.nwk")
-        events_file = os.path.join(tree_folder, "Events.tsv")
-
-        stg.write_whole_tree(whole_tree_file)
-        stg.write_extant_tree(extant_tree_file)
-        stg.write_events_file(events_file)
-
-    def T(self, parameters_file, experiment_folder):
+    def T(self, parameters_file, experiment_folder, advanced_mode):
 
         tree_folder = os.path.join(experiment_folder, "T")
 
@@ -43,7 +27,16 @@ class simuLyon():
         while success == False and run_counter <= 50:
             run_counter+=1
             print("Computing Species Tree. Trial number %s" % str(run_counter))
-            success = stg.run()
+            if advanced_mode == "0":
+                success = stg.run()
+            if advanced_mode == "a":
+                success = stg.run()
+            if advanced_mode == "b":
+                success = stg.run()
+            if advanced_mode == "i":
+                success = stg.run()
+            if advanced_mode == "p":
+                success = stg.run_p()
 
         if run_counter >= 50:
             print("Aborting computation of the Species Tree. Please use other speciation and extinction rates!")
@@ -52,38 +45,12 @@ class simuLyon():
         whole_tree_file = os.path.join(tree_folder, "WholeTree.nwk")
         extant_tree_file = os.path.join(tree_folder, "ExtantTree.nwk")
         events_file = os.path.join(tree_folder, "Events.tsv")
-
         stg.generate_whole_tree()
         stg.generate_extant_tree()
-
         stg.write_whole_tree(whole_tree_file)
         stg.write_extant_tree(extant_tree_file)
         stg.write_events_file(events_file)
 
-    def T1(self, parameters_file, experiment_folder):
-
-        tree_folder = os.path.join(experiment_folder, "T")
-
-        parameters = af.prepare_species_tree_parameters(af.read_parameters(parameters_file))
-        stg = SpeciesTreeGenerator(parameters)
-
-        stg.run_1()
-
-        whole_tree_file = os.path.join(tree_folder, "WholeTree.nwk")
-        extant_tree_file = os.path.join(tree_folder, "ExtantTree.nwk")
-        events_file = os.path.join(tree_folder, "Events.tsv")
-
-        stg.generate_whole_tree()
-        #stg.generate_extant_tree()
-
-        stg.write_whole_tree(whole_tree_file)
-        #stg.write_extant_tree(extant_tree_file)
-        stg.write_events_file(events_file)
-
-
-
-    def F(self,parameters_file, experiment_folder):
-        pass
 
     def G(self,parameters_file, experiment_folder):
 
@@ -111,8 +78,6 @@ class simuLyon():
         gss.write_events_per_branch(events_per_branch_folder)
         print("Writing Gene Trees")
         gss.write_gene_trees(gene_trees_folder)
-
-
 
 
     def S(self, parameters_file, experiment_folder):
@@ -170,53 +135,53 @@ class simuLyon():
 
 if __name__ == "__main__":
 
-    args = sys.argv[1:]
 
-    if len(args) != 3:
-        print("Incorrect usage. Please read the manual. The usual way to run this script is:")
-        print("python simuLyon.py T Parameters_file.tsv /Output_folder")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("mode", type=str, choices=["T","Ti","Ta","Tb","Tp","S","G"], help="Mode")
+    parser.add_argument("params",  type=str, help="Parameters file")
+    parser.add_argument("output", type=str, help="Name of the experiment folder")
+
+    args = parser.parse_args()
+
+    mode, parameters_file, experiment_folder =  args.mode, args.params, args.output
+
+    if len(mode) == 1:
+        main_mode = mode[0]
+        advanced_mode = "0"
+
+    elif len(mode) == 2:
+        main_mode = mode[0]
+        advanced_mode = mode[1]
+
     else:
-        mode, parameters_file, experiment_folder = args
+        print ("Incorrect value for mode")
 
-        SL = simuLyon()
+    SL = simuLyon()
 
-        if mode == "T":
+    if main_mode == "T":
 
-            if not os.path.isdir(experiment_folder):
-                os.mkdir(experiment_folder)
+        if not os.path.isdir(experiment_folder):
+            os.mkdir(experiment_folder)
 
-            if not os.path.isdir(os.path.join(experiment_folder,"T")):
-                os.mkdir(os.path.join(experiment_folder,"T"))
+        if not os.path.isdir(os.path.join(experiment_folder,"T")):
+            os.mkdir(os.path.join(experiment_folder,"T"))
 
-            SL.T(parameters_file, experiment_folder)
+        SL.T(parameters_file, experiment_folder, advanced_mode)
 
-        elif mode == "T1":
+    elif main_mode == "G":
 
-            if not os.path.isdir(experiment_folder):
-                os.mkdir(experiment_folder)
+        genome_folder = os.path.join(experiment_folder, "G")
 
-            if not os.path.isdir(os.path.join(experiment_folder,"T")):
-                os.mkdir(os.path.join(experiment_folder,"T"))
+        if not os.path.isdir(genome_folder):
+            os.mkdir(genome_folder)
 
-            SL.T1(parameters_file, experiment_folder)
+        SL.G(parameters_file, experiment_folder, advanced_mode)
 
-        elif mode == "G":
+    elif main_mode == "S":
 
-            genome_folder = os.path.join(experiment_folder, "G")
+        SL.obtain_sequences(parameters_file, experiment_folder, advanced_mode)
 
-            if not os.path.isdir(genome_folder):
-                os.mkdir(genome_folder)
 
-            SL.G(parameters_file, experiment_folder)
-
-        elif mode == "F":
-
-            SL.F()
-
-        elif mode == "S":
-
-            SL.obtain_sequences(parameters_file, experiment_folder)
-
-        else:
-            print("Incorrect usage. Please select a mode: T, G or S")
+    else:
+        print("Incorrect usage. Please select a mode: T, G or S")
 

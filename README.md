@@ -146,59 +146,59 @@ This module requires Pyvolve (https://github.com/sjspielman/pyvolve), to install
     
 ### Advanced modes  (Not ready yet)
 
-####Advanced modes for simulating species tree
+###Advanced modes for simulating species tree
 
-##### Mode Ta - Autocorrelation of extinction and speciation rates
+#### Mode Ta - Autocorrelation of extinction and speciation rates
 
 In this model, speciation and extinction rates are specific for each branch. Each time one new lineage emerges, a new value for
 its extinction and speciation rates its sampled from a user defined distribution (normal or lognormal), in which the mean corresponds
 to the value of the parent branch and the variance to the branch length
 
-##### Mode Tb - Branch-wise extinction and speciation rates
+#### Mode Tb - Branch-wise extinction and speciation rates
 
 In this model, speciation and extinction rates are specific for each branch. Each time one new lineage emerges, a new value for
 its extinction and speciation rates its sampled from a user defined distribution (normal or lognormal). The difference with the previous model
 it is that rates are independently sample each time a new lineage emerge.
 
-##### Mode Tp - Fine control of population
+#### Mode Tp - Fine control of population
 
 This model allows the user to fine control the size of the population
 
-##### Mode Ti - Preparing SimuLyon with an input tree by the user
+#### Mode Ti - Preparing SimuLyon with an input tree by the user
 
 This model allows the user to input a species tree
 
-####Advanced modes for simulating genomes
+### Advanced modes for simulating genomes
 
-##### Mode TG - Simultaneous evolution of species tree and genomes
+#### Mode TG - Simultaneous evolution of species tree and genomes
 
 This models simulates simulatenously the evolution of the species tree and the evolution of genomes
 
-##### Mode Ga - Autocorrelation of genome rates
+#### Mode Ga - Autocorrelation of genome rates
 
 In this model, genome event rates are specific for each branch of the species tree. Each time one new lineage emerges, a new value for
 its genome events rates its sampled from a user defined distribution (normal or lognormal), in which the mean corresponds
 to the value of the parent branch and the variance to the branch length
 
-##### Mode Gb - Branch-wise genome rates
+#### Mode Gb - Branch-wise genome rates
 
 In this model, genome event rates are specific for each branch of the species tree. Each time one new lineage emerges, a new value for
 its genome events rates its sampled from a user defined distribution (normal or lognormal), in which the mean corresponds
 to the value of the parent branch and the variance to the branch length
 
-##### Mode Gs - Selection model genome rates
+#### Mode Gs - Selection model genome rates
 
 This model allows the user to take into account the importance of genes
 
-##### Mode Gu - User control of genome rates
+#### Mode Gu - User control of genome rates
 
 This model allows the user to fine control the genome rates
 
-####Advanced modes for simulating sequences
+### Advanced modes for simulating sequences
 
-##### Mode Sa - Autocorrelated sequence rates
-##### Mode Sb - Branch-wise sequence rates
-##### Mode Su - User control of sequence rates
+#### Mode Sa - Autocorrelated sequence rates
+#### Mode Sb - Branch-wise sequence rates
+#### Mode Su - User control of sequence rates
     
 
 ### **Output** ###

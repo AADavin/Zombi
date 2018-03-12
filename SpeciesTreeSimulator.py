@@ -89,16 +89,14 @@ class SpeciesTreeGenerator():
                     self._get_extinct(lineage, time)
                     n_lineages_alive -= 1
 
-    def run_1(self):
-
-        # Write niceliy
+    def run_p(self):
 
         self._start()
+        print("Computing tree with fine control of the population size")
 
         speciation = self.parameters["SPECIATION"]
         extinction = self.parameters["EXTINCTION"]
         turnover = self.parameters["TURNOVER"]
-
 
         time_slices = self.parameters["POPULATION_SIZES"]
         total_time = time_slices[-1][0]
