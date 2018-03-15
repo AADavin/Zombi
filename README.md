@@ -148,12 +148,6 @@ This module requires Pyvolve (https://github.com/sjspielman/pyvolve), to install
 
 ###Advanced modes for simulating species tree
 
-#### Mode Ta - Autocorrelation of extinction and speciation rates
-
-In this model, speciation and extinction rates are specific for each branch. Each time one new lineage emerges, a new value for
-its extinction and speciation rates its sampled from a user defined distribution (normal or lognormal), in which the mean corresponds
-to the value of the parent branch and the variance to the branch length
-
 #### Mode Tb - Branch-wise extinction and speciation rates
 
 In this model, speciation and extinction rates are specific for each branch. Each time one new lineage emerges, a new value for
@@ -164,21 +158,7 @@ it is that rates are independently sample each time a new lineage emerge.
 
 This model allows the user to fine control the size of the population
 
-#### Mode Ti - Preparing SimuLyon with an input tree by the user (Not ready yet)
-
-This model allows the user to input a species tree
-
 ### Advanced modes for simulating genomes
-
-#### Mode TG - Simultaneous evolution of species tree and genomes
-
-This models simulates simulatenously the evolution of the species tree and the evolution of genomes
-
-#### Mode Ga - Autocorrelation of genome rates
-
-In this model, genome event rates are specific for each branch of the species tree. Each time one new lineage emerges, a new value for
-its genome events rates its sampled from a user defined distribution (normal or lognormal), in which the mean corresponds
-to the value of the parent branch and the variance to the branch length
 
 #### Mode Gb - Branch-wise genome rates
 
@@ -196,9 +176,42 @@ This model allows the user to fine control the genome rates
 
 ### Advanced modes for simulating sequences
 
-#### Mode Sa - Autocorrelated sequence rates
 #### Mode Sb - Branch-wise sequence rates
+#### Mode Sf - Family-wise sequence rates
 #### Mode Su - User control of sequence rates    
+
+## Experimental modes  
+
+The experimental modes are not ready to use yet
+
+###Experimental modes for simulating species tree
+
+#### Mode Ta - Autocorrelation of extinction and speciation rates
+
+In this model, speciation and extinction rates are specific for each branch. Each time one new lineage emerges, a new value for
+its extinction and speciation rates its sampled from a user defined distribution (normal or lognormal), in which the mean corresponds
+to the value of the parent branch and the variance to the branch length
+
+#### Mode Ti - Preparing SimuLyon with an input tree by the user 
+
+This model allows the user to input a species tree
+
+###Experimental modes for simulating genomes
+
+#### Mode GT - Simultaneous evolution of species tree and genomes
+
+This models simulates simulatenously the evolution of the species tree and the evolution of genomes
+
+#### Mode Ga - Autocorrelation of genome rates
+
+In this model, genome event rates are specific for each branch of the species tree. Each time one new lineage emerges, a new value for
+its genome events rates its sampled from a user defined distribution (normal or lognormal), in which the mean corresponds
+to the value of the parent branch and the variance to the branch length
+
+### Advanced modes for simulating sequences
+
+#### Mode Sa - Autocorrelated sequence rates
+
 
 ### **Output** ###
 
@@ -255,8 +268,7 @@ Please also notice that in the case of events that affect to several genes, this
  The entries give the number of copies that each gene family has for each node of the species tree.
  
  #### Mode S
- 
- **(still working on this!)**
+
 
 *Sequences*: A folder with one fasta file per gene of the species tree.
 Each fasta alignment contains the simulated sequences obtained at the leaves of the tree, not the internal nodes.

@@ -41,3 +41,10 @@ ALPHA	1.0
 BETA	0.5
 # corresponds to the transition/transversion ratio (positive value)
 KAPPA	1.0
+#
+#
+#
+#
+#
+# *REQUIRED* parameters if mode == Sa or mode == Sb
+RATE_MULTIPLIERS n:0.7;0.2
