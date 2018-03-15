@@ -156,14 +156,17 @@ class simuLyon():
 
             log_folder = os.path.join(sequence_folder, "Log")
 
-            if not os.path.isdir(sequences_folder):
-                os.mkdir(sequences_folder)
+            if not os.path.isdir(log_folder):
+                os.mkdir(log_folder)
+            ss.write_rates(os.path.join(log_folder,"Rates.tsv"))
+            ss.write_rates_tree(experiment_folder + "/T/WholeTree.nwk", os.path.join(log_folder, "RatesTree.nwk"))
 
-            ss.write_rates_multiplier(os.path.join(log_folder,"Rates.tsv"))
+            whole_trees = [x.replace("_pruned", "_whole") for x in os.listdir(gene_trees_folder) if "pruned" in x]
 
-
-
-
+            for tree_file in whole_trees:
+                tree_path = os.path.join(gene_trees_folder, tree_file)
+                print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
+                ss.run_b(tree_path, fasta_folder)
 
         elif advanced_mode == "u":
             ss.run_u()
@@ -177,7 +180,7 @@ if __name__ == "__main__":
 
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("mode", type=str, choices=["T","Ti","Ta","Tb","Tp","S","G"], help="Mode")
+    parser.add_argument("mode", type=str, choices=["T","Ti","Ta","Tb","Tp","S","Sb","G"], help="Mode")
     parser.add_argument("params",  type=str, help="Parameters file")
     parser.add_argument("output", type=str, help="Name of the experiment folder")
 

@@ -146,7 +146,7 @@ This module requires Pyvolve (https://github.com/sjspielman/pyvolve), to install
     
 ## Advanced modes  
 
-###Advanced modes for simulating species tree
+### Advanced modes for simulating species tree
 
 #### Mode Tb - Branch-wise extinction and speciation rates
 
@@ -184,7 +184,7 @@ This model allows the user to fine control the genome rates
 
 The experimental modes are not ready to use yet
 
-###Experimental modes for simulating species tree
+### Experimental modes for simulating species tree
 
 #### Mode Ta - Autocorrelation of extinction and speciation rates
 
@@ -196,7 +196,7 @@ to the value of the parent branch and the variance to the branch length
 
 This model allows the user to input a species tree
 
-###Experimental modes for simulating genomes
+### Experimental modes for simulating genomes
 
 #### Mode GT - Simultaneous evolution of species tree and genomes
 
@@ -213,9 +213,9 @@ to the value of the parent branch and the variance to the branch length
 #### Mode Sa - Autocorrelated sequence rates
 
 
-### **Output** ###
+## **Output** ###
 
-##### Mode T
+#### Mode T
 
 **WholeTree.nwk** The whole species tree including the dead lineages, in newick format
 
@@ -268,7 +268,6 @@ Please also notice that in the case of events that affect to several genes, this
  The entries give the number of copies that each gene family has for each node of the species tree.
  
  #### Mode S
-
 
 *Sequences*: A folder with one fasta file per gene of the species tree.
 Each fasta alignment contains the simulated sequences obtained at the leaves of the tree, not the internal nodes.
