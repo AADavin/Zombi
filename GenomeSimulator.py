@@ -301,6 +301,147 @@ class GenomeSimulator():
 
                 self.evolve_genomes(d, t, l, i, c, o, current_time)
 
+    def run_b(self):
+
+
+        d, t, l, i, c, o = self.parameters["DUPLICATION"], self.parameters["TRANSFER"], self.parameters["LOSS"], \
+                           self.parameters["INVERSION"], self.parameters["TRANSLOCATION"], self.parameters[
+                               "ORIGINATION"]
+
+        # First we prepare the first genome
+
+        genome = self._FillGenome()
+        self.active_genomes.add(genome.species)
+        self.all_genomes["Root"] = genome
+
+        current_species_tree_event = 0
+        current_time = 0.0
+        all_species_tree_events = len(self.tree_events)
+        # Second, we compute the time to the next event:
+
+        elapsed_time = 0.0
+
+        while current_species_tree_event < all_species_tree_events:
+
+            time_of_next_species_tree_event, event, nodes = self.tree_events[current_species_tree_event]
+            time_of_next_species_tree_event = float(time_of_next_species_tree_event)
+
+            print("Simulating genomes. Time %s" % str(current_time))
+
+            # We check that we are not exactly in the same span of time WRITE THIS!!
+
+            time_to_next_genome_event = self.get_time_to_next_event(len(self.active_genomes), d, t, l, i, c, o)
+
+            elapsed_time = float(current_time) - elapsed_time
+
+            if time_to_next_genome_event + current_time >= float(time_of_next_species_tree_event):
+
+                current_species_tree_event +=1
+                current_time = time_of_next_species_tree_event
+
+                if event == "S":
+
+                    sp,c1,c2 = nodes.split(";")
+
+                    # First we keep track of the active and inactive genomes
+
+                    self.active_genomes.discard(sp)
+                    self.active_genomes.add(c1)
+                    self.active_genomes.add(c2)
+
+                    # Second, we speciate the genomes
+
+                    genome_c1, genome_c2 = self.make_speciation(sp, c1, c2, current_time)
+
+                    self.all_genomes[c1] = genome_c1
+                    self.all_genomes[c2] = genome_c2
+
+                elif event == "E":
+                    self.make_extinction(nodes, current_time)
+                    self.active_genomes.discard(nodes)
+
+                elif event == "F":
+                    self.make_end(current_time)
+
+            else:
+
+                current_time += time_to_next_genome_event
+
+                self.evolve_genomes(d, t, l, i, c, o, current_time)
+
+
+    def run_a(self):
+
+
+        d, t, l, i, c, o = self.parameters["DUPLICATION"], self.parameters["TRANSFER"], self.parameters["LOSS"], \
+                           self.parameters["INVERSION"], self.parameters["TRANSLOCATION"], self.parameters[
+                               "ORIGINATION"]
+
+        # First we prepare the first genome
+
+        genome = self._FillGenome()
+        self.active_genomes.add(genome.species)
+        self.all_genomes["Root"] = genome
+
+        current_species_tree_event = 0
+        current_time = 0.0
+        all_species_tree_events = len(self.tree_events)
+        # Second, we compute the time to the next event:
+
+        elapsed_time = 0.0
+
+        while current_species_tree_event < all_species_tree_events:
+
+            time_of_next_species_tree_event, event, nodes = self.tree_events[current_species_tree_event]
+            time_of_next_species_tree_event = float(time_of_next_species_tree_event)
+
+            print("Simulating genomes. Time %s" % str(current_time))
+
+            # We check that we are not exactly in the same span of time WRITE THIS!!
+
+            time_to_next_genome_event = self.get_time_to_next_event(len(self.active_genomes), d, t, l, i, c, o)
+
+            elapsed_time = float(current_time) - elapsed_time
+
+            if time_to_next_genome_event + current_time >= float(time_of_next_species_tree_event):
+
+                current_species_tree_event +=1
+                current_time = time_of_next_species_tree_event
+
+                if event == "S":
+
+                    sp,c1,c2 = nodes.split(";")
+
+                    # First we keep track of the active and inactive genomes
+
+                    self.active_genomes.discard(sp)
+                    self.active_genomes.add(c1)
+                    self.active_genomes.add(c2)
+
+                    # Second, we speciate the genomes
+
+                    genome_c1, genome_c2 = self.make_speciation(sp, c1, c2, current_time)
+
+                    self.all_genomes[c1] = genome_c1
+                    self.all_genomes[c2] = genome_c2
+
+                elif event == "E":
+                    self.make_extinction(nodes, current_time)
+                    self.active_genomes.discard(nodes)
+
+                elif event == "F":
+                    self.make_end(current_time)
+
+            else:
+
+                current_time += time_to_next_genome_event
+
+                self.evolve_genomes(d, t, l, i, c, o, current_time)
+
+
+
+
+
 
     def verbose_run(self):
 

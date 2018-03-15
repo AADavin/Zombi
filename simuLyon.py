@@ -1,5 +1,6 @@
 from SpeciesTreeSimulator import SpeciesTreeGenerator
 from GenomeSimulator import GenomeSimulator
+from SequenceSimulator import SequenceSimulator
 import AuxiliarFunctions as af
 import argparse
 import os
@@ -79,7 +80,7 @@ class simuLyon():
             stg.write_rates(rates_file)
 
 
-    def G(self,parameters_file, experiment_folder):
+    def G(self,parameters_file, experiment_folder, advanced_mode):
 
         parameters = af.prepare_genome_parameters(af.read_parameters(parameters_file))
         events_file = os.path.join(experiment_folder, "T/Events.tsv")
@@ -93,7 +94,16 @@ class simuLyon():
 
         gss = GenomeSimulator(parameters, events_file)
 
-        gss.run()
+        if advanced_mode == "0":
+            gss.run()
+        elif advanced_mode == "a":
+            gss.run_a()
+        elif advanced_mode == "b":
+            gss.run_b()
+        elif advanced_mode == "s":
+            gss.run_s()
+        elif advanced_mode == "u":
+            gss.run_u()
 
         print("Writing Genomes")
         gss.write_genomes(genomes_folder)
@@ -107,57 +117,31 @@ class simuLyon():
         gss.write_gene_trees(gene_trees_folder)
 
 
-    def S(self, parameters_file, experiment_folder):
+    def S(self, parameters_file, experiment_folder, advanced_mode):
 
-        import pyvolve
-        from ete3 import Tree
 
-        genome_folder = os.path.join(experiment_folder, "Genomes")
-        gene_trees_folder = os.path.join(genome_folder, "GeneTrees")
-        sequences_folder = os.path.join(experiment_folder, "Sequences")
+        gene_trees_folder = os.path.join(experiment_folder, "G/Gene_trees")
+        sequences_folder = os.path.join(experiment_folder, "S/Sequences")
 
         if not os.path.isdir(sequences_folder):
             os.mkdir(sequences_folder)
 
-        self.read_parameters(parameters_file, self.sequence_parameters)
-        size = int(self.sequence_parameters["SEQUENCE_SIZE"])
-        sequence = self.sequence_parameters["SEQUENCE"]
-        sequence_type = "The type of sequence be either 'nucleotide', 'amino-acid' or 'codon'"
-        assert sequence in ['nucleotide', 'amino-acid', 'codon'], sequence_type
+        parameters = af.prepare_sequence_parameters(af.read_parameters(parameters_file))
 
-        if sequence == 'nucleotide':
-            nucleotides = ['A', 'C', 'G', 'T']
-            state_freqs = []
-            custom_mu = {}
+        print("Preparing simulator of sequences")
 
-            for source in nucleotides:
-                state_freqs.append(float(self.sequence_parameters[source]))
-                for target in nucleotides:
-                    if source != target:
-                        pair = source + target
-                        custom_mu[pair] = float(self.sequence_parameters[pair])
-            assert abs(sum(state_freqs) - 1) < 1e-6, "Equilibrium frequencies of nucleotides must sum to 1.0"
+        ss = SequenceSimulator(parameters)
 
-            model = pyvolve.Model("nucleotide", {"mu": custom_mu, "state_freqs": state_freqs})
-        elif sequence == 'amino-acid':
+        whole_trees = [x.replace("_pruned","_whole") for x in os.listdir(gene_trees_folder) if "pruned" in x]
 
-            model = pyvolve.Model(self.sequence_parameters['AA_MODEL'])
-        else:
-            codon_params = {}
-            for param in ["ALPHA", "BETA", "KAPPA"]:
-                codon_params[param.lower()] = float(self.sequence_parameters[param])
+        for tree_file in whole_trees:
 
-            model = pyvolve.Model(self.sequence_parameters['CODON_MODEL'], codon_params, neutral_scaling=True)
-
-        for tree_file in os.listdir(gene_trees_folder):
             tree_path = os.path.join(gene_trees_folder, tree_file)
-            ete_tree = Tree(tree_path)
-            if len(ete_tree) != 1:
-                tree = pyvolve.read_tree(tree=ete_tree.write(format=5))
-                partition = pyvolve.Partition(models=model, size=size)
-                evolver = pyvolve.Evolver(tree=tree, partitions=partition)
-                fasta_file = tree_file.replace(".txt", "_") + sequence + ".fasta"
-                evolver(seqfile=os.path.join(sequences_folder, fasta_file), ratefile=None, infofile=None)
+
+            print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
+
+            ss.run(tree_path, sequence_folder)
+
 
 
 if __name__ == "__main__":
@@ -206,7 +190,12 @@ if __name__ == "__main__":
 
     elif main_mode == "S":
 
-        SL.obtain_sequences(parameters_file, experiment_folder, advanced_mode)
+        sequence_folder = os.path.join(experiment_folder, "S")
+
+        if not os.path.isdir(sequence_folder):
+            os.mkdir(sequence_folder)
+
+        SL.S(parameters_file, experiment_folder, advanced_mode)
 
 
     else:

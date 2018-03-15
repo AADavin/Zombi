@@ -144,7 +144,7 @@ This module requires Pyvolve (https://github.com/sjspielman/pyvolve), to install
     
 ----------
     
-### Advanced modes  (Not ready yet)
+## Advanced modes  
 
 ###Advanced modes for simulating species tree
 
@@ -164,7 +164,7 @@ it is that rates are independently sample each time a new lineage emerge.
 
 This model allows the user to fine control the size of the population
 
-#### Mode Ti - Preparing SimuLyon with an input tree by the user
+#### Mode Ti - Preparing SimuLyon with an input tree by the user (Not ready yet)
 
 This model allows the user to input a species tree
 
@@ -198,8 +198,7 @@ This model allows the user to fine control the genome rates
 
 #### Mode Sa - Autocorrelated sequence rates
 #### Mode Sb - Branch-wise sequence rates
-#### Mode Su - User control of sequence rates
-    
+#### Mode Su - User control of sequence rates    
 
 ### **Output** ###
 

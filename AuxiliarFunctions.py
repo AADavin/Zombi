@@ -93,6 +93,15 @@ def prepare_gene_familiy_parameters(parameters):
 
     return parameters
 
+def prepare_sequence_parameters(parameters):
+
+    for parameter, value in parameters.items():
+
+        if parameter == "SEQUENCE_SIZE":
+            parameters[parameter] = int(value)
+
+    return parameters
+
 
 def prepare_species_tree_parameters(parameters):
 
