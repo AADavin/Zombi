@@ -151,7 +151,7 @@ This module requires Pyvolve (https://github.com/sjspielman/pyvolve), to install
 #### Mode Tb - Branch-wise extinction and speciation rates
 
 In this model, speciation and extinction rates are specific for each branch. Each time one new lineage emerges, a new value for
-its extinction and speciation rates its sampled from a user defined distribution (normal or lognormal). The difference with the previous model
+its extinction and speciation rates its sampled from a user defined distribution (uniform, normal or lognormal). The difference with the previous model
 it is that rates are independently sample each time a new lineage emerge.
 
 #### Mode Tp - Fine control of population
@@ -165,10 +165,6 @@ This model allows the user to fine control the size of the population
 In this model, genome event rates are specific for each branch of the species tree. Each time one new lineage emerges, a new value for
 its genome events rates its sampled from a user defined distribution (normal or lognormal), in which the mean corresponds
 to the value of the parent branch and the variance to the branch length
-
-#### Mode Gs - Selection model genome rates
-
-This model allows the user to take into account the importance of genes
 
 #### Mode Gu - User control of genome rates
 
@@ -206,7 +202,11 @@ In this model, genome event rates are specific for each branch of the species tr
 its genome events rates its sampled from a user defined distribution (normal or lognormal), in which the mean corresponds
 to the value of the parent branch and the variance to the branch length
 
-### Advanced modes for simulating sequences
+#### Mode Gs - Selection model genome rates
+
+This model allows the user to take into account the importance of genes
+
+### Experimental modes for simulating sequences
 
 #### Mode Sa - Autocorrelated sequence rates
 #### Mode Sf - Family-wise sequence rates
@@ -272,12 +272,8 @@ Please also notice that in the case of events that affect to several genes, this
  #### Mode S
 
 *Sequences*: A folder with one fasta file per gene of the species tree.
-Each fasta alignment contains the simulated sequences obtained at the leaves of the tree, not the internal nodes.
+each fasta alignment contains the simulated sequences obtained at the leaves of the tree, not the internal nodes.
 
-### Examples (Not ready yet)
-#### Example 1 - Simulating genomes for reconciliations
-#### Example 2 - Simulating a massive extinction event
-#### Example 3 - Simulating sequences for whatever
 
 ### Parameters ###
 

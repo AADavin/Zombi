@@ -59,15 +59,20 @@ def obtain_value(value):
         # Fixed value
         value =  float(handle[1])
 
-    if handle[0] == "n":
+    elif handle[0] == "n":
         # normal distribution
         params = handle[1].split(";")
         value = abs(numpy.random.normal(float(params[0]), float(params[1])))
 
-    if handle[0] == "l":
+    elif handle[0] == "l":
         # lognormal distribution
         params = handle[1].split(";")
         value = abs(numpy.random.lognormal(float(params[0]), float(params[1])))
+
+    elif handle[0] == "u":
+        # uniform distribution
+        params = handle[1].split(";")
+        value = abs(numpy.random.uniform(float(params[0]), float(params[1])))
 
     return value
 

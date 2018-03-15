@@ -4,7 +4,6 @@
     <list default="true" id="59ba90f0-ee1f-4701-b72e-68f3e4c50e55" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/AuxiliarFunctions.py" afterPath="$PROJECT_DIR$/AuxiliarFunctions.py" />
       <change beforePath="$PROJECT_DIR$/GenomeSimulator.py" afterPath="$PROJECT_DIR$/GenomeSimulator.py" />
-      <change beforePath="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" afterPath="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" />
       <change beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
       <change beforePath="$PROJECT_DIR$/simuLyon.py" afterPath="$PROJECT_DIR$/simuLyon.py" />
     </list>
@@ -23,8 +22,8 @@
       <file leaf-file-name="simuLyon.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/simuLyon.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="860">
-              <caret line="95" column="8" lean-forward="true" selection-start-line="95" selection-start-column="8" selection-end-line="95" selection-end-column="8" />
+            <state relative-caret-position="106">
+              <caret line="103" column="0" lean-forward="true" selection-start-line="103" selection-start-column="0" selection-end-line="103" selection-end-column="0" />
               <folding>
                 <element signature="e#0#53#0" expanded="true" />
               </folding>
@@ -45,8 +44,8 @@
       <file leaf-file-name="GenomeSimulator.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GenomeSimulator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="489" column="0" lean-forward="true" selection-start-line="489" selection-start-column="0" selection-end-line="489" selection-end-column="0" />
+            <state relative-caret-position="293">
+              <caret line="539" column="41" lean-forward="true" selection-start-line="539" selection-start-column="41" selection-end-line="539" selection-end-column="41" />
               <folding>
                 <element signature="e#0#30#0" expanded="true" />
               </folding>
@@ -67,8 +66,8 @@
       <file leaf-file-name="SpeciesTreeSimulator.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SpeciesTreeSimulator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="217">
-              <caret line="477" column="20" lean-forward="false" selection-start-line="474" selection-start-column="0" selection-end-line="487" selection-end-column="29" />
+            <state relative-caret-position="410">
+              <caret line="171" column="69" lean-forward="true" selection-start-line="163" selection-start-column="16" selection-end-line="171" selection-end-column="69" />
               <folding />
             </state>
           </provider>
@@ -78,8 +77,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="239">
-                <caret line="261" column="25" lean-forward="true" selection-start-line="261" selection-start-column="25" selection-end-line="261" selection-end-column="25" />
+              <first_editor relative-caret-position="247">
+                <caret line="153" column="95" lean-forward="false" selection-start-line="153" selection-start-column="95" selection-end-line="153" selection-end-column="95" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -90,8 +89,8 @@
       <file leaf-file-name="AuxiliarFunctions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/AuxiliarFunctions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="453">
-              <caret line="145" column="0" lean-forward="false" selection-start-line="145" selection-start-column="0" selection-end-line="145" selection-end-column="0" />
+            <state relative-caret-position="667">
+              <caret line="74" column="41" lean-forward="false" selection-start-line="74" selection-start-column="41" selection-end-line="74" selection-end-column="41" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -122,9 +121,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>self.all_gene_families</find>
-      <find>Gene_family</find>
-      <find>Class Ge</find>
       <find>duplication</find>
       <find>homol</find>
       <find>.genome</find>
@@ -152,6 +148,9 @@
       <find>Genera</find>
       <find>get_homo</find>
       <find>choose</find>
+      <find>TRASLOCATION</find>
+      <find>branch_rates</find>
+      <find>evolve</find>
     </findStrings>
     <replaceStrings>
       <replace>transfer</replace>
@@ -161,6 +160,7 @@
       <replace>self.gene_family</replace>
       <replace>af.obtain_value(</replace>
       <replace>genome</replace>
+      <replace>TRANSLOCATION</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -215,8 +215,8 @@
         <option value="$PROJECT_DIR$/SpeciesTreeSimulator.py" />
         <option value="$PROJECT_DIR$/Parameters/SequenceParameters.tsv" />
         <option value="$PROJECT_DIR$/SequenceSimulator.py" />
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" />
+        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/AuxiliarFunctions.py" />
         <option value="$PROJECT_DIR$/simuLyon.py" />
         <option value="$PROJECT_DIR$/GenomeSimulator.py" />
@@ -878,10 +878,41 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/SpeciesTreeSimulator.py">
+    <entry file="file://$PROJECT_DIR$/SequenceSimulator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="217">
-          <caret line="477" column="20" lean-forward="false" selection-start-line="474" selection-start-column="0" selection-end-line="487" selection-end-column="29" />
+        <state relative-caret-position="267">
+          <caret line="81" column="0" lean-forward="true" selection-start-line="81" selection-start-column="0" selection-end-line="92" selection-end-column="29" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AuxiliarFunctions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="667">
+          <caret line="74" column="41" lean-forward="false" selection-start-line="74" selection-start-column="41" selection-end-line="74" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="247">
+            <caret line="153" column="95" lean-forward="false" selection-start-line="153" selection-start-column="95" selection-end-line="153" selection-end-column="95" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Parameters/GenomeParameters.tsv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="12" lean-forward="true" selection-start-line="4" selection-start-column="12" selection-end-line="4" selection-end-column="12" />
           <folding />
         </state>
       </provider>
@@ -894,59 +925,28 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/SequenceSimulator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="267">
-          <caret line="81" column="0" lean-forward="true" selection-start-line="81" selection-start-column="0" selection-end-line="92" selection-end-column="29" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="239">
-            <caret line="261" column="25" lean-forward="true" selection-start-line="261" selection-start-column="25" selection-end-line="261" selection-end-column="25" />
-            <folding />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AuxiliarFunctions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="453">
-          <caret line="145" column="0" lean-forward="false" selection-start-line="145" selection-start-column="0" selection-end-line="145" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Parameters/GenomeParameters.tsv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="12" lean-forward="true" selection-start-line="4" selection-start-column="12" selection-end-line="4" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/simuLyon.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="860">
-          <caret line="95" column="8" lean-forward="true" selection-start-line="95" selection-start-column="8" selection-end-line="95" selection-end-column="8" />
+        <state relative-caret-position="106">
+          <caret line="103" column="0" lean-forward="true" selection-start-line="103" selection-start-column="0" selection-end-line="103" selection-end-column="0" />
           <folding>
             <element signature="e#0#53#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/SpeciesTreeSimulator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="410">
+          <caret line="171" column="69" lean-forward="true" selection-start-line="163" selection-start-column="16" selection-end-line="171" selection-end-column="69" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/GenomeSimulator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="489" column="0" lean-forward="true" selection-start-line="489" selection-start-column="0" selection-end-line="489" selection-end-column="0" />
+        <state relative-caret-position="293">
+          <caret line="539" column="41" lean-forward="true" selection-start-line="539" selection-start-column="41" selection-end-line="539" selection-end-column="41" />
           <folding>
             <element signature="e#0#30#0" expanded="true" />
           </folding>

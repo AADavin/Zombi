@@ -263,8 +263,6 @@ class GenomeSimulator():
 
             print("Simulating genomes. Time %s" % str(current_time))
 
-            # We check that we are not exactly in the same span of time WRITE THIS!!
-
             time_to_next_genome_event = self.get_time_to_next_event(len(self.active_genomes), d, t, l, i, c, o)
 
             elapsed_time = float(current_time) - elapsed_time
@@ -303,6 +301,17 @@ class GenomeSimulator():
                 current_time += time_to_next_genome_event
 
                 self.evolve_genomes(d, t, l, i, c, o, current_time)
+
+    def generate_new_rates(self):
+
+        d = af.obtain_value(self.parameters["DUPLICATION"])
+        t = af.obtain_value(self.parameters["TRANSFER"])
+        l = af.obtain_value(self.parameters["LOSS"])
+        i = af.obtain_value(self.parameters["INVERSION"])
+        c = af.obtain_value(self.parameters["TRANSLOCATION"])
+        o = af.obtain_value(self.parameters["ORIGINATION"])
+
+        return d,t,l,i,c,o
 
     def run_b(self):
 
@@ -313,16 +322,18 @@ class GenomeSimulator():
         c = af.obtain_value(self.parameters["TRANSLOCATION"])
         o = af.obtain_value(self.parameters["ORIGINATION"])
 
+        self.branch_rates = dict()
+
         # First we prepare the rates per genome
 
         genome = self._FillGenome()
         self.active_genomes.add(genome.species)
         self.all_genomes["Root"] = genome
+        self.branch_rates["Root"] = (d,t,l,i,c,o)
 
         current_species_tree_event = 0
         current_time = 0.0
         all_species_tree_events = len(self.tree_events)
-        # Second, we compute the time to the next event:
 
         elapsed_time = 0.0
 
@@ -333,9 +344,7 @@ class GenomeSimulator():
 
             print("Simulating genomes. Time %s" % str(current_time))
 
-            # We check that we are not exactly in the same span of time WRITE THIS!!
-
-            time_to_next_genome_event = self.get_time_to_next_event(len(self.active_genomes), d, t, l, i, c, o)
+            time_to_next_genome_event = self.get_time_to_next_event_advanced_modes()
 
             elapsed_time = float(current_time) - elapsed_time
 
@@ -361,6 +370,12 @@ class GenomeSimulator():
                     self.all_genomes[c1] = genome_c1
                     self.all_genomes[c2] = genome_c2
 
+                    # Third, we store the new rates
+
+                    self.branch_rates[c1] = self.generate_new_rates()
+                    self.branch_rates[c2] = self.generate_new_rates()
+
+
                 elif event == "E":
                     self.make_extinction(nodes, current_time)
                     self.active_genomes.discard(nodes)
@@ -372,7 +387,7 @@ class GenomeSimulator():
 
                 current_time += time_to_next_genome_event
 
-                self.evolve_genomes(d, t, l, i, c, o, current_time)
+                self.advanced_evolve_genomes(current_time)
 
 
     def choose_event(self, duplication, transfer, loss, inversion, translocation, origination):
@@ -391,7 +406,6 @@ class GenomeSimulator():
 
     def evolve_genomes(self, duplication, transfer, loss, inversion, translocation, origination, time):
 
-        total_probability_of_event = duplication + transfer + loss + inversion + translocation + origination
 
         d_e = self.parameters["DUPLICATION_EXTENSION"]
         t_e = self.parameters["TRANSFER_EXTENSION"]
@@ -399,55 +413,113 @@ class GenomeSimulator():
         i_e = self.parameters["INVERSION_EXTENSION"]
         c_e = self.parameters["TRANSLOCATION_EXTENSION"]
 
-        if numpy.random.uniform(0, 1) <= total_probability_of_event:  # An event takes place
+        lineage = random.choice(list(self.active_genomes))
+        event = self.choose_event(duplication, transfer, loss, inversion, translocation, origination)
 
-            lineage = random.choice(list(self.active_genomes))
-            event = self.choose_event(duplication, transfer, loss, inversion, translocation, origination)
+        if event == "D":
+            self.make_duplication(d_e, lineage, time)
+            return "D", lineage
 
-            if event == "D":
-                self.make_duplication(d_e, lineage, time)
-                return "D", lineage
+        elif event == "T":
 
-            elif event == "T":
+            # We choose a recipient
 
-                # We choose a recipient
+            possible_recipients = [x for x in self.active_genomes if x != lineage]
 
-                possible_recipients = [x for x in self.active_genomes if x != lineage]
+            if len(possible_recipients) > 0:
 
-                if len(possible_recipients) > 0:
+                recipient = random.choice(possible_recipients)
+                donor = lineage
+                self.make_transfer(t_e, donor, recipient, time)
+                return "T", donor+"->"+recipient
 
-                    recipient = random.choice(possible_recipients)
-                    donor = lineage
-                    self.make_transfer(t_e, donor, recipient, time)
-                    return "T", donor+"->"+recipient
+            else:
+                return None
 
-                else:
-                    return None
+        elif event == "L":
 
-            elif event == "L":
+            self.make_loss(l_e, lineage, time)
+            return "L", lineage
 
-                self.make_loss(l_e, lineage, time)
-                return "L", lineage
+        elif event == "I":
+            self.make_inversion(i_e, lineage, time)
+            return "I", lineage
 
-            elif event == "I":
-                self.make_inversion(i_e, lineage, time)
-                return "I", lineage
+        elif event == "C":
+            self.make_translocation(c_e, lineage, time)
+            return "C",lineage
 
-            elif event == "C":
-                self.make_translocation(c_e, lineage, time)
-                return "C",lineage
+        elif event == "O":
 
-            elif event == "O":
+            gene, gene_family = self.make_origination(lineage, time)
 
-                gene, gene_family = self.make_origination(lineage, time)
+            chromosome = self.all_genomes[lineage].select_random_chromosome()
+            position = chromosome.select_random_position()
+            segment = [gene]
+            chromosome.insert_segment(position, segment)
 
-                chromosome = self.all_genomes[lineage].select_random_chromosome()
-                position = chromosome.select_random_position()
-                segment = [gene]
-                chromosome.insert_segment(position, segment)
+            return "O", lineage
 
-                return "O", lineage
 
+    def advanced_evolve_genomes(self, time):
+
+        d_e = self.parameters["DUPLICATION_EXTENSION"]
+        t_e = self.parameters["TRANSFER_EXTENSION"]
+        l_e = self.parameters["LOSS_EXTENSION"]
+        i_e = self.parameters["INVERSION_EXTENSION"]
+        c_e = self.parameters["TRANSLOCATION_EXTENSION"]
+
+        active_genomes = list(self.active_genomes)
+        lineage = numpy.random.choice(active_genomes, 1, p=af.normalize(
+            [sum(self.branch_rates[x]) for x in active_genomes]))[0]
+
+        d,t,l,i,c,o = self.branch_rates[lineage]
+
+        event = self.choose_event(d,t,l,i,c,o)
+
+        if event == "D":
+            self.make_duplication(d_e, lineage, time)
+            return "D", lineage
+
+        elif event == "T":
+
+            # We choose a recipient
+
+            possible_recipients = [x for x in self.active_genomes if x != lineage]
+
+            if len(possible_recipients) > 0:
+
+                recipient = random.choice(possible_recipients)
+                donor = lineage
+                self.make_transfer(t_e, donor, recipient, time)
+                return "T", donor+"->"+recipient
+
+            else:
+                return None
+
+        elif event == "L":
+
+            self.make_loss(l_e, lineage, time)
+            return "L", lineage
+
+        elif event == "I":
+            self.make_inversion(i_e, lineage, time)
+            return "I", lineage
+
+        elif event == "C":
+            self.make_translocation(c_e, lineage, time)
+            return "C",lineage
+
+        elif event == "O":
+
+            gene, gene_family = self.make_origination(lineage, time)
+
+            chromosome = self.all_genomes[lineage].select_random_chromosome()
+            position = chromosome.select_random_position()
+            segment = [gene]
+            chromosome.insert_segment(position, segment)
+
+            return "O", lineage
 
     def get_time_to_next_event(self, n, d, t, l ,i , c, o):
 
@@ -461,11 +533,18 @@ class GenomeSimulator():
             time = numpy.random.exponential(1/total)
             return time
 
+    def get_time_to_next_event_advanced_modes(self):
+        # To obtain the time to next event in case that we have different rates per branch
+        total = 0.0
+        for lineage in self.active_genomes:
+            total += sum(self.branch_rates[lineage])
+        time = numpy.random.exponential(1 / total)
+        return time
+
     def increase_distances(self, time_to_next_event, active_lineages):
 
         for node in active_lineages:
             node.dist += time_to_next_event
-
 
     def obtain_rates_per_branch(self, tree_file):
 
@@ -501,7 +580,6 @@ class GenomeSimulator():
 
                 line = "\t".join(map(str,[lineage, d,t,l,i,c,o])) + "\n"
                 f.write(line)
-
 
 
     def make_origination(self, species_tree_node, time):
