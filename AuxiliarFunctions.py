@@ -61,11 +61,13 @@ def obtain_value(value):
 
     if handle[0] == "n":
         # normal distribution
-        value =  float(handle[1])
+        params = handle[1].split(";")
+        value = abs(numpy.random.normal(float(params[0]), float(params[1])))
 
     if handle[0] == "l":
         # lognormal distribution
-        value =  float(handle[1])
+        params = handle[1].split(";")
+        value = abs(numpy.random.lognormal(float(params[0]), float(params[1])))
 
     return value
 
@@ -95,12 +97,6 @@ def prepare_gene_familiy_parameters(parameters):
 def prepare_species_tree_parameters(parameters):
 
     for parameter, value in parameters.items():
-
-        if parameter == "SPECIATION":
-            parameters[parameter] = obtain_value(value)
-
-        if parameter == "EXTINCTION":
-            parameters[parameter] = obtain_value(value)
 
         if parameter == "TURNOVER":
             parameters[parameter] = obtain_value(value)
@@ -143,48 +139,51 @@ def prepare_genome_parameters(parameters):
 
     return parameters
 
-def generate_events(tree_file): # I have to round distances
+def generate_events(tree_file):
 
     events = []
-    lineage_counter = 0
 
     with open(tree_file) as f:
-
         tree = ete3.Tree(f.readline().strip(), format=1)
 
     root = tree.get_tree_root()
     root.name = "Root"
-    nodes = [(x, int(round(x.get_distance(root)))) for x in tree.traverse()]
+    total_time = root.get_farthest_leaf()[1]
 
-    # We get the time for present time
+    # There might be slighlty variations in the branch length that we have to account for. So all nodes
+    # that are at 0.1% distance of the farthes leaf will be considered to be alive
 
-    total_time = int(round(root.get_farthest_leaf()[1]))
+    error_margin = total_time * 0.001
+
+    nodes = list()
+
+    for node in tree.traverse():
+
+        node_dist = node.get_distance(root)
+        if node.is_leaf():
+            if  total_time <= node_dist + error_margin  and total_time >= node_dist - error_margin:
+                nodes.append((node, "A", node_dist))
+            else:
+                nodes.append((node, "E", node_dist))
+        else:
+            nodes.append((node, "S", node_dist))
 
     # We order the events # This can be more efficient. But who cares
-    sorted(nodes, key = lambda x: x[1])
-    for node, time in nodes:
-        lineage_counter += 1
-        if not node.is_leaf():
-            node.name = "n" + str(lineage_counter)
 
-    for node, time in nodes:
+    nodes = sorted(nodes, key = lambda x: x[2])
 
-        if node.is_leaf():
+    for node, estate, time in nodes:
 
-            if time == total_time:
-                event = "F"
-            elif time != total_time:
-                event = "E"
-            else:
-                event = "ERROR"
-            events.append((str(time), event, node.name))
-        else:
+        if estate == "A":
+            events.append((str(time), "F", node.name))
+            break
+        elif estate == "E":
+            events.append((str(time), "E", node.name))
+        elif estate == "S":
             c1, c2 = node.get_children()
-            event = "S"
-            events.append((str(time), event, ";".join((node.name,c1.name,c2.name))))
+            events.append((str(time), "S", ";".join((node.name, c1.name, c2.name))))
 
-    for event in events:
-        print(event)
+    return events
 
 
 def copy_segment(segment, new_identifiers):
@@ -197,5 +196,6 @@ def copy_segment(segment, new_identifiers):
         new_segment.append(new_gene)
 
     return new_segment
+
 
 

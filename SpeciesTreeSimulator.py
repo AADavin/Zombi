@@ -7,11 +7,9 @@ class SpeciesTreeGenerator():
 
     def __init__(self, parameters):
 
-
         self.parameters = parameters
 
-
-    def _start(self):
+    def start(self):
 
         self.whole_tree = ete3.Tree()
 
@@ -24,14 +22,16 @@ class SpeciesTreeGenerator():
 
         self.active_lineages.add("Root")
         self.distances["Root"] = 0.0
-        self._get_speciated("Root", 0.0)
+        c1, c2 = self._get_speciated("Root", 0.0)
+
+        return c1, c2
 
     def run(self):
 
-        self._start()
+        self.start()
 
-        speciation = self.parameters["SPECIATION"]
-        extinction = self.parameters["EXTINCTION"]
+        speciation = af.obtain_value(self.parameters["SPECIATION"])
+        extinction = af.obtain_value(self.parameters["EXTINCTION"])
         stopping_rule = self.parameters["STOPPING_RULE"]
         total_time = self.parameters["TOTAL_TIME"]
         total_lineages = self.parameters["TOTAL_LINEAGES"]
@@ -89,13 +89,221 @@ class SpeciesTreeGenerator():
                     self._get_extinct(lineage, time)
                     n_lineages_alive -= 1
 
+    def run_b(self):
+
+        # Speciation and extinction rates are branch-wise
+        # Each time I create a new lineage, I have to generate new number for its rates
+        # We create a dictionary to store the rates
+
+        speciation = af.obtain_value(self.parameters["SPECIATION"])
+        extinction = af.obtain_value(self.parameters["EXTINCTION"])
+
+        self.branchwise_rates = dict()
+        self.branchwise_rates["Root"] = (speciation, extinction)
+
+        c1, c2 = self.start()
+
+        self.branchwise_rates[c1] = (
+            af.obtain_value(self.parameters["SPECIATION"]),
+            af.obtain_value(self.parameters["EXTINCTION"]))
+        self.branchwise_rates[c2] = (
+            af.obtain_value(self.parameters["SPECIATION"]),
+            af.obtain_value(self.parameters["EXTINCTION"]))
+
+        stopping_rule = self.parameters["STOPPING_RULE"]
+        total_time = self.parameters["TOTAL_TIME"]
+        total_lineages = self.parameters["TOTAL_LINEAGES"]
+        max_lineages = self.parameters["MAX_LINEAGES"]
+
+        time = 0
+
+        n_lineages_alive = 2
+
+
+        while True:
+
+            if n_lineages_alive == 0:
+
+                print("All dead")
+                success = False
+                return success
+
+            print("Time: %s ; Number of lineages alive: %s" % (str(time), str(n_lineages_alive)))
+
+            time_to_next_event = self.get_time_to_next_event_advanced_modes()
+
+            if stopping_rule == 0 and time + time_to_next_event >= total_time:
+
+                self.increase_distances(total_time - time)
+                self.events.append((total_time, "F", "None"))
+                success = True
+                return success
+
+            elif stopping_rule == 1 and n_lineages_alive == total_lineages:
+
+                self.increase_distances(time_to_next_event)
+                self.events.append((time+time_to_next_event, "F", "None"))
+                success = True
+                return success
+
+            elif n_lineages_alive >= max_lineages:
+
+                print("Aborting. Max n of lineages attained")
+                success = True
+                return success
+
+            else:
+                # In this case we do the normal the computation
+
+                time += time_to_next_event
+                self.increase_distances(time_to_next_event)
+
+                # Now we have to choose the lineage doing the event. This will be proportional to the value of the rates
+                ###
+
+                active_lineages = list(self.active_lineages)
+
+                lineage = numpy.random.choice(active_lineages, 1, p=af.normalize(
+                    [sum((self.branchwise_rates[x][0], self.branchwise_rates[x][1])) for x in active_lineages]))[0]
+
+                myspeciation = self.branchwise_rates[lineage][0]
+                myextinction = self.branchwise_rates[lineage][1]
+
+                event = self.choose_event(myspeciation, myextinction)
+
+                if event == "S":
+                    c1,c2 = self._get_speciated(lineage, time)
+                    n_lineages_alive += 1
+
+                    self.branchwise_rates[c1] = (
+                        af.obtain_value(self.parameters["SPECIATION"]),
+                        af.obtain_value(self.parameters["EXTINCTION"]))
+                    self.branchwise_rates[c2] = (
+                        af.obtain_value(self.parameters["SPECIATION"]),
+                        af.obtain_value(self.parameters["EXTINCTION"]))
+
+                elif event == "E":
+                    self._get_extinct(lineage, time)
+                    n_lineages_alive -= 1
+
+
+    def run_a(self):
+
+        # Speciation and extinction rates are time autocorrelated
+        # Each time I create a new lineage, I have to generate new number for its rates
+        # We create a dictionary to store the rates
+
+        speciation = af.obtain_value(self.parameters["SPECIATION"])
+        extinction = af.obtain_value(self.parameters["EXTINCTION"])
+
+        self.branchwise_rates = dict()
+        self.branchwise_rates["Root"] = (speciation, extinction)
+
+        c1, c2 = self.start()
+
+        self.branchwise_rates[c1] = (
+            af.obtain_value(self.parameters["SPECIATION"]),
+            af.obtain_value(self.parameters["EXTINCTION"]))
+        self.branchwise_rates[c2] = (
+            af.obtain_value(self.parameters["SPECIATION"]),
+            af.obtain_value(self.parameters["EXTINCTION"]))
+
+        stopping_rule = self.parameters["STOPPING_RULE"]
+        total_time = self.parameters["TOTAL_TIME"]
+        total_lineages = self.parameters["TOTAL_LINEAGES"]
+        max_lineages = self.parameters["MAX_LINEAGES"]
+
+        time = 0
+
+        n_lineages_alive = 2
+
+        while True:
+
+            if n_lineages_alive == 0:
+
+                print("All dead")
+                success = False
+                return success
+
+            print("Time: %s ; Number of lineages alive: %s" % (str(time), str(n_lineages_alive)))
+
+            time_to_next_event = self.get_time_to_next_event_advanced_modes()
+
+            if stopping_rule == 0 and time + time_to_next_event >= total_time:
+
+                self.increase_distances(total_time - time)
+                self.events.append((total_time, "F", "None"))
+                success = True
+                return success
+
+            elif stopping_rule == 1 and n_lineages_alive == total_lineages:
+
+                self.increase_distances(time_to_next_event)
+                self.events.append((time+time_to_next_event, "F", "None"))
+                success = True
+                return success
+
+            elif n_lineages_alive >= max_lineages:
+
+                print("Aborting. Max n of lineages attained")
+                success = True
+                return success
+
+            else:
+                # In this case we do the normal the computation
+
+                time += time_to_next_event
+                self.increase_distances(time_to_next_event)
+
+                # Now we have to choose the lineage doing the event. This will be proportional to the value of the rates
+                ###
+
+                active_lineages = list(self.active_lineages)
+
+                lineage = numpy.random.choice(active_lineages, 1, p=af.normalize(
+                    [sum((self.branchwise_rates[x][0], self.branchwise_rates[x][1])) for x in active_lineages]))[0]
+
+                myspeciation = self.branchwise_rates[lineage][0]
+                myextinction = self.branchwise_rates[lineage][1]
+
+                event = self.choose_event(myspeciation, myextinction)
+
+                if event == "S":
+                    c1, c2 = self._get_speciated(lineage, time)
+                    n_lineages_alive += 1
+
+                    variance = str(self.distances[lineage] * 0.01)
+
+                    mean_s = str(self.branchwise_rates[lineage][0])
+                    mean_e = str(self.branchwise_rates[lineage][1])
+                    probability_type_s = self.parameters["SPECIATION"].split(":")[0]
+                    probability_type_e = self.parameters["EXTINCTION"].split(":")[0]
+
+                    self.branchwise_rates[c1] = (af.obtain_value(probability_type_s + ":" + mean_s + ";" + variance),
+                                                 af.obtain_value(probability_type_e + ":" + mean_e + ";" + variance))
+
+                    print(af.obtain_value(probability_type_s + ":" + mean_s + ";" + variance))
+
+                    mean_s = str(self.branchwise_rates[lineage][0])
+                    mean_e = str(self.branchwise_rates[lineage][1])
+
+                    probability_type_s = self.parameters["SPECIATION"].split(":")[0]
+                    probability_type_e = self.parameters["EXTINCTION"].split(":")[0]
+
+                    self.branchwise_rates[c2] = (af.obtain_value(probability_type_s + ":" + mean_s + ";" + variance),
+                                                 af.obtain_value(probability_type_e + ":" + mean_e + ";" + variance))
+
+                elif event == "E":
+                    self._get_extinct(lineage, time)
+                    n_lineages_alive -= 1
+
     def run_p(self):
 
-        self._start()
+        self.start()
         print("Computing tree with fine control of the population size")
 
-        speciation = self.parameters["SPECIATION"]
-        extinction = self.parameters["EXTINCTION"]
+        speciation = af.obtain_value(self.parameters["SPECIATION"])
+        extinction = af.obtain_value(self.parameters["EXTINCTION"])
         turnover = self.parameters["TURNOVER"]
 
         time_slices = self.parameters["POPULATION_SIZES"]
@@ -164,9 +372,6 @@ class SpeciesTreeGenerator():
                     self._get_extinct(lineage, time)
                     n_lineages_alive -= 1
 
-
-
-
     def increase_distances(self, time):
 
         for lineage in self.active_lineages:
@@ -180,6 +385,16 @@ class SpeciesTreeGenerator():
                 total += event
         time = numpy.random.exponential(1/total)
         return time
+
+    def get_time_to_next_event_advanced_modes(self):
+        # To obtain the time to next event in case that we have different rates per branch
+        total = 0.0
+        for lineage in self.active_lineages:
+            total += self.branchwise_rates[lineage][0]
+            total += self.branchwise_rates[lineage][1]
+        time = numpy.random.exponential(1 / total)
+        return time
+
 
     def _get_speciated(self, lineage, time):
 
@@ -198,6 +413,8 @@ class SpeciesTreeGenerator():
         self.active_lineages.discard(lineage)
 
         self.events.append((time,"S", ";".join((lineage, c1name, c2name))))  # Store the event
+
+        return c1name, c2name
 
     def _get_extinct(self, lineage, time):
 
@@ -220,12 +437,15 @@ class SpeciesTreeGenerator():
         all_nodes = dict()
 
         root = self.whole_tree.get_tree_root()
+
         root.name = "Root"
         all_nodes[root.name] = root
 
         for time, event, nodes in self.events:
+
             if event == "S":
-                p,c1name,c2name = nodes.split(";")
+
+                p, c1name, c2name = nodes.split(";")
 
                 node = all_nodes[p]
 
@@ -253,6 +473,20 @@ class SpeciesTreeGenerator():
                 line = "\t".join(map(str,item)) + "\n"
                 f.write(line)
 
+    def write_rates(self, rates_file):
+
+        with open(rates_file, "w") as f:
+
+            line = "\t".join(["lineage", "speciation", "extinction"]) + "\n"
+            f.write(line)
+
+            for lineage, values in self.branchwise_rates.items():
+
+                speciation, extinction = values
+
+                line = "\t".join(map(str,[lineage, speciation, extinction])) + "\n"
+                f.write(line)
+
     def write_whole_tree(self, tree_file):
 
         with open(tree_file, "w") as f:
@@ -262,5 +496,4 @@ class SpeciesTreeGenerator():
 
         with open(tree_file, "w") as f:
             f.write(self.extant_tree.write(format=1))
-
 

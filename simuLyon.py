@@ -18,8 +18,33 @@ class simuLyon():
 
         tree_folder = os.path.join(experiment_folder, "T")
 
-        parameters = af.prepare_species_tree_parameters(af.read_parameters(parameters_file))
-        stg = SpeciesTreeGenerator(parameters)
+        if advanced_mode == "i":
+
+            # In this case the input is a tree file
+            tree_file = parameters_file
+            print("Generate events for input file %s" % tree_file)
+
+            stg = SpeciesTreeGenerator({})
+            stg.start()
+            stg.events = af.generate_events(tree_file)
+
+            whole_tree_file = os.path.join(tree_folder, "WholeTree.nwk")
+            #extant_tree_file = os.path.join(tree_folder, "ExtantTree.nwk")
+            events_file = os.path.join(tree_folder, "Events.tsv")
+
+            stg.generate_whole_tree()
+            #stg.generate_extant_tree()
+
+            #stg.write_whole_tree(whole_tree_file)
+            #stg.write_extant_tree(extant_tree_file)
+            stg.write_events_file(events_file)
+
+            return 0
+
+        else:
+
+            parameters = af.prepare_species_tree_parameters(af.read_parameters(parameters_file))
+            stg = SpeciesTreeGenerator(parameters)
 
         run_counter = 0
         success = False
@@ -30,11 +55,9 @@ class simuLyon():
             if advanced_mode == "0":
                 success = stg.run()
             if advanced_mode == "a":
-                success = stg.run()
+                success = stg.run_a()
             if advanced_mode == "b":
-                success = stg.run()
-            if advanced_mode == "i":
-                success = stg.run()
+                success = stg.run_b()
             if advanced_mode == "p":
                 success = stg.run_p()
 
@@ -50,6 +73,10 @@ class simuLyon():
         stg.write_whole_tree(whole_tree_file)
         stg.write_extant_tree(extant_tree_file)
         stg.write_events_file(events_file)
+
+        if advanced_mode == "b" or advanced_mode == "a":
+            rates_file = os.path.join(tree_folder, "Rates.tsv")
+            stg.write_rates(rates_file)
 
 
     def G(self,parameters_file, experiment_folder):
@@ -164,7 +191,7 @@ if __name__ == "__main__":
             os.mkdir(experiment_folder)
 
         if not os.path.isdir(os.path.join(experiment_folder,"T")):
-            os.mkdir(os.path.join(experiment_folder,"T"))
+            os.mkdir(os.path.join(experiment_folder, "T"))
 
         SL.T(parameters_file, experiment_folder, advanced_mode)
 

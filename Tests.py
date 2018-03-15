@@ -189,11 +189,6 @@ def cut_and_paste(genes, affected_genes):
     for i, gene in enumerate(new_segment):
         genes.insert(position + i, gene)
 
-genes = ["A","B","C","D","E","F","G","H"]
 
-affected_genes = obtain_affected_genes(genes,1)
-print([genes[x] for x in affected_genes], affected_genes)
-inverted_genes = invert_segment(genes, affected_genes)
-print(inverted_genes)
 
 
