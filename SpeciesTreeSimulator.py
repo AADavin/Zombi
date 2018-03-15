@@ -458,6 +458,34 @@ class SpeciesTreeGenerator():
                 all_nodes[c1name] = c1
                 all_nodes[c2name] = c2
 
+    def efficient_pruning_tree(self):
+
+        # We create a hash of nodes for quicker access
+
+        all_nodes = dict()
+
+        root = self.whole_tree.get_tree_root()
+
+        root.name = "Root"
+        all_nodes[root.name] = root
+
+        for time, event, nodes in self.events[::-1]:
+
+            if event == "S":
+
+                p, c1name, c2name = nodes.split(";")
+
+                node = all_nodes[p]
+
+                c1 = node.add_child(dist=self.distances[c1name])
+                c2 = node.add_child(dist=self.distances[c2name])
+
+                c1.name = c1name
+                c2.name = c2name
+
+                all_nodes[c1name] = c1
+                all_nodes[c2name] = c2
+
 
     def generate_extant_tree(self):
 

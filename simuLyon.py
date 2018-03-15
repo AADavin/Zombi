@@ -93,6 +93,10 @@ class simuLyon():
 
         if advanced_mode == "0":
             gss.run()
+
+        elif advanced_mode == "s":
+            gss.run_s()
+
         elif advanced_mode == "b":
             gss.obtain_rates_per_branch(experiment_folder + "/T/WholeTree.nwk")
             # And we save it

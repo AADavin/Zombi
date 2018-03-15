@@ -112,6 +112,96 @@ class GeneFamily():
 
         return whole_tree, pruned_tree
 
+    def generate_pruned_tree(self):
+
+        # Eric's algorithm
+
+        tree = ete3.Tree()
+        current_time, event, nodes = self.events[0]
+
+        sp = tree.get_tree_root()
+        sp.name = nodes + "_1"
+        sp.add_feature("is_active", True)
+
+        elapsed_time = float(current_time)
+
+        for current_time, event, nodes in self.events[::-1]:
+
+            elapsed_time = float(current_time) - elapsed_time
+            active_nodes = [x for x in tree.get_leaves() if x.is_active == True]
+            for node in active_nodes:
+                node.dist += elapsed_time
+            elapsed_time = float(current_time)
+
+            if event == "S":
+
+                sp, gp, c1, g1, c2, g2 = nodes.split(";")
+
+                myname = sp + "_" + gp
+                mynode = tree & myname
+                mynode.is_active = False
+
+                gc1 = mynode.add_child(dist=0)
+                gc1.name = c1 + "_" + g1
+                gc1.add_feature("is_active", True)
+
+                gc2 = mynode.add_child(dist=0)
+                gc2.name = c2 + "_" + g2
+                gc2.add_feature("is_active", True)
+
+            elif event == "E":
+                sp, gp = nodes.split(";")
+                myname = sp + "_" + gp
+                mynode = tree & myname
+                mynode.is_active = False
+
+            elif event == "L":
+                sp, gp = nodes.split(";")
+                myname = sp + "_" + gp
+                mynode = tree & myname
+                mynode.is_active = False
+
+            elif event == "D":
+
+                sp, gp, c1, g1, c2, g2 = nodes.split(";")
+                myname = sp + "_" + gp
+                mynode = tree & myname
+
+                mynode.is_active = False
+
+                gc1 = mynode.add_child(dist=0)
+                gc1.name = c1 + "_" + g1
+                gc1.add_feature("is_active", True)
+
+                gc2 = mynode.add_child(dist=0)
+                gc2.name = c2 + "_" + g2
+                gc2.add_feature("is_active", True)
+
+            elif event == "T":
+                sp, gp, c1, g1, c2, g2 = nodes.split(";")
+
+                myname = sp + "_" + gp
+
+                mynode = tree & myname
+                mynode.is_active = False
+
+                gc1 = mynode.add_child(dist=0)
+                gc1.name = c1 + "_" + g1
+                gc1.add_feature("is_active", True)
+
+                gc2 = mynode.add_child(dist=0)
+                gc2.name = c2 + "_" + g2
+                gc2.add_feature("is_active", True)
+
+            elif event == "F":
+                break
+
+        whole_tree = tree.write(format=1)
+        active_nodes = [x for x in tree.get_leaves() if x.is_active == True]
+
+
+
+
     def generate_tree(self):
 
         tree = ete3.Tree()
@@ -237,7 +327,7 @@ class Gene():
         self.gene_id = ""
         self.sequence = ""
         self.species = ""
-        self.selection_coefficient = 0
+        self.importance = 0
 
     def determine_orientation(self):
 
