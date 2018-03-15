@@ -88,37 +88,37 @@ class simuLyon():
 
         genomes_folder = os.path.join(genome_folder, "Genomes")
         gene_families_folder = os.path.join(genome_folder, "Gene_families")
-        gene_trees_folder = os.path.join(genome_folder, "Gene_trees")
-        events_per_branch_folder = os.path.join(genome_folder, "Events_per_branch")
-        profiles_folder = os.path.join(genome_folder, "Profiles")
 
         gss = GenomeSimulator(parameters, events_file)
 
         if advanced_mode == "0":
             gss.run()
-        elif advanced_mode == "a":
-            gss.run_a()
         elif advanced_mode == "b":
             gss.run_b()
-        elif advanced_mode == "s":
-            gss.run_s()
-        elif advanced_mode == "u":
-            gss.run_u()
+
+        # We write the output
 
         print("Writing Genomes")
         gss.write_genomes(genomes_folder)
-        print("Writing Profiles")
-        gss.write_profiles(profiles_folder)
         print("Writing Gene Families")
         gss.write_gene_family_events(gene_families_folder)
-        print("Writing Events Per Branch")
-        gss.write_events_per_branch(events_per_branch_folder)
-        print("Writing Gene Trees")
-        gss.write_gene_trees(gene_trees_folder)
 
+        if parameters["PROFILES"] == 1:
+            print("Writing Profiles")
+            profiles_folder = os.path.join(genome_folder, "Profiles")
+            gss.write_profiles(profiles_folder)
+
+        if parameters["EVENTS_PER_BRANCH"] == 1:
+            print("Writing Events Per Branch")
+            events_per_branch_folder = os.path.join(genome_folder, "Events_per_branch")
+            gss.write_events_per_branch(events_per_branch_folder)
+
+        if parameters["GENE_TREES"] == 1:
+            print("Writing Gene Trees")
+            gene_trees_folder = os.path.join(genome_folder, "Gene_trees")
+            gss.write_gene_trees(gene_trees_folder)
 
     def S(self, parameters_file, experiment_folder, advanced_mode):
-
 
         gene_trees_folder = os.path.join(experiment_folder, "G/Gene_trees")
         sequences_folder = os.path.join(experiment_folder, "S/Sequences")
@@ -144,7 +144,6 @@ class simuLyon():
                 tree_path = os.path.join(gene_trees_folder, tree_file)
                 print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
                 ss.run(tree_path, fasta_folder)
-
 
         elif advanced_mode == "b":
 

@@ -1,4 +1,5 @@
 import AuxiliarFunctions as af
+import ete3
 import numpy
 import copy
 import random
@@ -235,10 +236,12 @@ class GenomeSimulator():
 
     def run(self):
 
-
-        d, t, l, i, c, o = self.parameters["DUPLICATION"], self.parameters["TRANSFER"], self.parameters["LOSS"], \
-                           self.parameters["INVERSION"], self.parameters["TRANSLOCATION"], self.parameters[
-                               "ORIGINATION"]
+        d = af.obtain_value(self.parameters["DUPLICATION"])
+        t = af.obtain_value(self.parameters["TRANSFER"])
+        l = af.obtain_value(self.parameters["LOSS"])
+        i = af.obtain_value(self.parameters["INVERSION"])
+        c = af.obtain_value(self.parameters["TRANSLOCATION"])
+        o = af.obtain_value(self.parameters["ORIGINATION"])
 
         # First we prepare the first genome
 
@@ -303,81 +306,14 @@ class GenomeSimulator():
 
     def run_b(self):
 
+        d = af.obtain_value(self.parameters["DUPLICATION"])
+        t = af.obtain_value(self.parameters["TRANSFER"])
+        l = af.obtain_value(self.parameters["LOSS"])
+        i = af.obtain_value(self.parameters["INVERSION"])
+        c = af.obtain_value(self.parameters["TRANSLOCATION"])
+        o = af.obtain_value(self.parameters["ORIGINATION"])
 
-        d, t, l, i, c, o = self.parameters["DUPLICATION"], self.parameters["TRANSFER"], self.parameters["LOSS"], \
-                           self.parameters["INVERSION"], self.parameters["TRANSLOCATION"], self.parameters[
-                               "ORIGINATION"]
-
-        # First we prepare the first genome
-
-        genome = self._FillGenome()
-        self.active_genomes.add(genome.species)
-        self.all_genomes["Root"] = genome
-
-        current_species_tree_event = 0
-        current_time = 0.0
-        all_species_tree_events = len(self.tree_events)
-        # Second, we compute the time to the next event:
-
-        elapsed_time = 0.0
-
-        while current_species_tree_event < all_species_tree_events:
-
-            time_of_next_species_tree_event, event, nodes = self.tree_events[current_species_tree_event]
-            time_of_next_species_tree_event = float(time_of_next_species_tree_event)
-
-            print("Simulating genomes. Time %s" % str(current_time))
-
-            # We check that we are not exactly in the same span of time WRITE THIS!!
-
-            time_to_next_genome_event = self.get_time_to_next_event(len(self.active_genomes), d, t, l, i, c, o)
-
-            elapsed_time = float(current_time) - elapsed_time
-
-            if time_to_next_genome_event + current_time >= float(time_of_next_species_tree_event):
-
-                current_species_tree_event +=1
-                current_time = time_of_next_species_tree_event
-
-                if event == "S":
-
-                    sp,c1,c2 = nodes.split(";")
-
-                    # First we keep track of the active and inactive genomes
-
-                    self.active_genomes.discard(sp)
-                    self.active_genomes.add(c1)
-                    self.active_genomes.add(c2)
-
-                    # Second, we speciate the genomes
-
-                    genome_c1, genome_c2 = self.make_speciation(sp, c1, c2, current_time)
-
-                    self.all_genomes[c1] = genome_c1
-                    self.all_genomes[c2] = genome_c2
-
-                elif event == "E":
-                    self.make_extinction(nodes, current_time)
-                    self.active_genomes.discard(nodes)
-
-                elif event == "F":
-                    self.make_end(current_time)
-
-            else:
-
-                current_time += time_to_next_genome_event
-
-                self.evolve_genomes(d, t, l, i, c, o, current_time)
-
-
-    def run_a(self):
-
-
-        d, t, l, i, c, o = self.parameters["DUPLICATION"], self.parameters["TRANSFER"], self.parameters["LOSS"], \
-                           self.parameters["INVERSION"], self.parameters["TRANSLOCATION"], self.parameters[
-                               "ORIGINATION"]
-
-        # First we prepare the first genome
+        # First we prepare the rates per genome
 
         genome = self._FillGenome()
         self.active_genomes.add(genome.species)
@@ -437,104 +373,6 @@ class GenomeSimulator():
                 current_time += time_to_next_genome_event
 
                 self.evolve_genomes(d, t, l, i, c, o, current_time)
-
-
-
-
-
-
-    def verbose_run(self):
-
-        # Only for debugging purposes
-
-        detailed_genomes = list()
-
-        d, t, l, i, c, o = self.parameters["DUPLICATION"], self.parameters["TRANSFER"], self.parameters["LOSS"], \
-                           self.parameters["INVERSION"], self.parameters["TRANSLOCATION"], self.parameters[
-                               "ORIGINATION"]
-
-        # First we prepare the first genome
-
-        genome = self._FillGenome()
-        self.active_genomes.add(genome.species)
-        self.all_genomes["Root"] = genome
-
-        detailed_genomes.append((0, genome.species, copy.deepcopy(genome)))
-
-        current_species_tree_event = 0
-        current_time = 0.0
-        all_species_tree_events = len(self.tree_events)
-        # Second, we compute the time to the next event:
-
-        elapsed_time = 0.0
-
-        while current_species_tree_event < all_species_tree_events:
-
-            time_of_next_species_tree_event, event, nodes = self.tree_events[current_species_tree_event]
-            time_of_next_species_tree_event = float(time_of_next_species_tree_event)
-
-            # We check that we are not exactly in the same span of time WRITE THIS!!
-
-            time_to_next_genome_event = self.get_time_to_next_event(len(self.active_genomes), d, t, l, i, c, o) # Correct this! Check that the total weight of events is not zero
-
-            elapsed_time = float(current_time) - elapsed_time
-
-            if time_to_next_genome_event + current_time >= float(time_of_next_species_tree_event):
-
-                current_species_tree_event +=1
-                current_time = time_of_next_species_tree_event
-
-                if event == "S":
-
-                    sp,c1,c2 = nodes.split(";")
-
-                    # First we keep track of the active and inactive genomes
-
-                    self.active_genomes.discard(sp)
-                    self.active_genomes.add(c1)
-                    self.active_genomes.add(c2)
-
-                    # Second, we speciate the genomes
-
-                    genome_c1, genome_c2 = self.make_speciation(sp, c1, c2, current_time)
-
-                    self.all_genomes[c1] = genome_c1
-                    self.all_genomes[c2] = genome_c2
-
-                    detailed_genomes.append((current_time, c1, copy.deepcopy(genome_c1)))
-                    detailed_genomes.append((current_time, c2,  copy.deepcopy(genome_c2)))
-
-
-                elif event == "E":
-                    self.make_extinction(nodes, current_time)
-                    self.active_genomes.discard(nodes)
-
-                    detailed_genomes.append((current_time, nodes, copy.deepcopy(self.all_genomes[nodes])))
-
-                elif event == "F":
-                    self.make_end(current_time)
-
-            else:
-
-                current_time += time_to_next_genome_event
-                genome_event, affected_linage = self.evolve_genomes(d, t, l, i, c, o, current_time)
-                if genome_event == "T":
-
-                    donor, recipient = affected_linage.split("->")
-
-                    detailed_genomes.append((current_time, donor + ";" + "LT",
-                                             copy.deepcopy(self.all_genomes[donor])))
-
-                    detailed_genomes.append((current_time, recipient + ";" + "AT",
-                                             copy.deepcopy(self.all_genomes[recipient])))
-
-                else:
-                    detailed_genomes.append((current_time, affected_linage + ";" + genome_event,
-                                             copy.deepcopy(self.all_genomes[affected_linage])))
-
-
-        for time, lineage, genome in detailed_genomes:
-            print(time, lineage, genome)
 
 
     def choose_event(self, duplication, transfer, loss, inversion, translocation, origination):
@@ -627,6 +465,44 @@ class GenomeSimulator():
 
         for node in active_lineages:
             node.dist += time_to_next_event
+
+
+    def obtain_rates_per_branch(self, tree_file):
+
+        with open(tree_file) as f:
+            mytree = ete3.Tree(f.readline().strip(), format=1)
+
+        root = mytree.get_tree_root()
+        root.name = "Root"
+
+        self.branch_rates = dict()
+
+        for node in mytree.traverse():
+
+            d = af.obtain_value(self.parameters["DUPLICATION"])
+            t = af.obtain_value(self.parameters["TRANSFER"])
+            l = af.obtain_value(self.parameters["LOSS"])
+            i = af.obtain_value(self.parameters["INVERSION"])
+            c = af.obtain_value(self.parameters["TRANSLOCATION"])
+            o = af.obtain_value(self.parameters["ORIGINATION"])
+
+            self.branch_rates[node.name] = (d,t,l,i,c,o)
+
+    def write_rates(self, rates_file):
+
+        with open(rates_file, "w") as f:
+
+            line = "\t".join(["lineage","D","T","L","I","C","O"]) + "\n"
+            f.write(line)
+
+            for lineage, values in self.branch_rates.items():
+
+                d,t,l,i,c,o = values
+
+                line = "\t".join(map(str,[lineage, d,t,l,i,c,o])) + "\n"
+                f.write(line)
+
+
 
     def make_origination(self, species_tree_node, time):
 

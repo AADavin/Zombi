@@ -102,7 +102,6 @@ def prepare_sequence_parameters(parameters):
 
     return parameters
 
-
 def prepare_species_tree_parameters(parameters):
 
     for parameter, value in parameters.items():
@@ -127,10 +126,6 @@ def prepare_genome_parameters(parameters):
 
     for parameter, value in parameters.items():
 
-        if parameter == "DUPLICATION" or parameter == "TRANSFER" or parameter == "LOSS" or \
-                parameter == "INVERSION" or parameter == "TRANSLOCATION" or parameter == "ORIGINATION":
-            parameters[parameter] = obtain_value(value)
-
         if parameter == "P_ESSENTIAL_GENE":
             parameters[parameter] = obtain_value(value)
 
@@ -145,6 +140,11 @@ def prepare_genome_parameters(parameters):
 
         if parameter == "REPLACEMENT_TRANSFER":
             parameters[parameter] = float(value)
+
+        if parameter == "PROFILES" or parameter == "EVENTS_PER_BRANCH" or parameter == "GENE_TREES" \
+                or parameter == "PRUNE_TREES":
+
+            parameters[parameter] = int(value)
 
     return parameters
 

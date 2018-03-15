@@ -177,9 +177,7 @@ This model allows the user to fine control the genome rates
 ### Advanced modes for simulating sequences
 
 #### Mode Sb - Branch-wise sequence rates
-#### Mode Sf - Family-wise sequence rates
-#### Mode Su - User control of sequence rates    
-
+ 
 ## Experimental modes  
 
 The experimental modes are not ready to use yet
@@ -211,6 +209,8 @@ to the value of the parent branch and the variance to the branch length
 ### Advanced modes for simulating sequences
 
 #### Mode Sa - Autocorrelated sequence rates
+#### Mode Sf - Family-wise sequence rates
+#### Mode Su - User control of sequence rates   
 
 
 ## **Output** ###
@@ -242,6 +242,15 @@ events taking place in that gene family. There are 3 fields.
 
 * **L, I, C, O and F**: 2 fields separated by semicolons. First, the species tree branch where the event takes place and second, the identifier of the gene affected
 
+**GeneTrees**: A folder containing the gene trees corresponding to the evolution of the different families and the gene trees pruned so that only surviving genes are represented.
+ Please notice that gene trees with 2 or fewer surviving copies are simply not output. Mind that some families can appear at some point and then leave no surviving descendants!
+ 
+ There are two types of trees:
+ 
+ * **_wholetree.nwk**: A tree showing the whole evolution of that gene family
+ * **_prunedtree.nwk**: A tree in which the genes that have not survived till the present time have been removed. **Normally you want to use this tree!**
+
+
 **EventsPerBranch**: (Not output by default) A folder with one file per branch of the species tree. Each file contains information about the
 events taking place in that branch. The codes are similar to the previously explained, but not the same. There are two main differences (for the sake of clarity). The first one is that transfers are divided into:
 
@@ -255,14 +264,7 @@ GeneFamily_GeneIdentifier
 So for example, if we go to the file n2_branchevents and we find the event L affecting at 4_3, means that the gene whose identifier is 3 belonging to the family 4 was lost in that branch in time given by the first column
 
 Please also notice that in the case of events that affect to several genes, this will be reflected in the first column (several events taking place at the same unit of time)
- 
- **GeneTrees**: (Not output by default) A folder containing the gene trees corresponding to the evolution of the different families and the gene trees pruned so that only surviving genes are represented.
- Please notice that gene trees with 2 or fewer surviving copies are simply not output. Mind that some families can appear at some point and then leave no surviving descendants!
- 
- There are two types of trees:
- 
- * **_wholetree.nwk**: A tree showing the whole evolution of that gene family
- * **_prunedtree.nwk**: A tree in which the genes that have not survived till the present time have been removed. **Normally you want to use this tree!**
+  
    
  **Profiles**: (Not output by default) Here there is a file called Profiles.tsv that contains the node of the species tree in the columns and the gene families in the rows.
  The entries give the number of copies that each gene family has for each node of the species tree.
