@@ -1,62 +1,4 @@
 
-
-def test_TreeGenerator():
-
-    parameters_file = "/Users/adriandavin/PycharmProjects/SimuLYON/Parameters_file.tsv"
-    tg = TreeGenerator(parameters_file)
-    tg.generate_tree_mode_0()
-    outpath = "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/NEWTEST"
-    tg.store_log(outpath)
-
-def test_GeneFamilySimulator():
-
-    parameters_file = "/Users/adriandavin/PycharmProjects/SimuLYON/Parameters_file.tsv"
-    events_file = "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/NEWTEST/SpeciesTreeEvents.tsv"
-    lineages_file = "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/NEWTEST/LineagesInTime.tsv"
-
-    gf = GeneFamilySimulator(parameters_file,events_file, lineages_file)
-    gf.origination("Root",0,0)
-    gf.run(0)
-    gf.origination("6", 800, 1)
-    gf.run(1)
-
-    print(gf.gene_families[0]["Gene_tree"].write(format=1))
-    print(gf.gene_families[1]["Gene_tree"].write(format=1))
-
-def test_FamilyOriginator():
-
-     fo = FamilyOriginator("/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/NEWTEST/WholeTree")
-     for i in range (500):
-         print(fo.create_families(2))
-
-def test_GenomeSimulator():
-
-    parameters_file = "/Users/adriandavin/PycharmProjects/SimuLYON/Parameters_file.tsv"
-    events_file = "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/NEWTEST/SpeciesTreeEvents.tsv"
-    lineages_file = "/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/NEWTEST/LineagesInTime.tsv"
-
-    gf = GeneFamilySimulator(parameters_file, events_file, lineages_file)
-    fo = FamilyOriginator("/Users/adriandavin/Desktop/Bioinformatics/SimuLyon/NEWTEST/WholeTree")
-
-    for i in range(20000):
-        node, time = fo.create_families(2)
-        gf.origination(node, time, i)
-        gf.run(i)
-
-        print(node, time, i)
-        #print(gf.gene_families[i]["Gene_tree"].write(format=1))
-
-def complete_test():
-
-    #test_TreeGenerator()
-    #test_GeneFamilySimulator()
-    #test_FamilyOriginator()
-    test_GenomeSimulator()
-
-#complete_test()
-#import numpy
-#print(numpy.random.exponential(100))
-
 def get_homologous_position(segment, genes):
 
     segment_length = len(segment)
@@ -66,9 +8,6 @@ def get_homologous_position(segment, genes):
     # First we traverse the genome forwards
 
     for i, gene in enumerate(genes):
-
-        #name_gene_in_genome = gene.orientation + "_" + gene.gene_family
-        #name_gene_in_segment = segment[0].orientation + "_" + segment[0].gene_family
 
         length_counter = 0
 
@@ -104,9 +43,6 @@ def get_homologous_position(segment, genes):
         inverted_genome.append(name_gene_in_genome)
 
     for i, gene in enumerate(inverted_genome):
-
-        # name_gene_in_genome = gene.orientation + "_" + gene.gene_family
-        # name_gene_in_segment = segment[0].orientation + "_" + segment[0].gene_family
 
         length_counter = 0
 
@@ -189,6 +125,155 @@ def cut_and_paste(genes, affected_genes):
     for i, gene in enumerate(new_segment):
         genes.insert(position + i, gene)
 
+import ete3
 
+def efficient_generator(events):
+
+    # Eric's algorithm
+
+    # First we will iterate the events from the end
+
+    surviving_nodes = dict()
+    times = dict()
+
+    for current_time, event, nodes in events[::-1]:
+
+        if event == "F":
+
+            times[nodes] = float(current_time)
+            surviving_nodes[nodes] = {"state": 1, "descendant": "None"}
+
+        elif event == "E":
+
+            times[nodes] = float(current_time)
+            surviving_nodes[nodes] = {"state": 0,  "descendant": "None"}
+
+        elif event == "S":
+
+            p, c1, c2 = nodes.split(";")
+
+            times[p] = float(current_time)
+
+            if surviving_nodes[c1]["state"] == 1 and surviving_nodes [c2]["state"] == 1:
+
+                surviving_nodes[p] = {"state": 1, "descendant": c1 + ";" + c2}
+
+            elif surviving_nodes[c1]["state"] == 0 and surviving_nodes [c2]["state"] == 0:
+
+                surviving_nodes[p] = {"state": 0,  "descendant": "None"}
+
+            elif surviving_nodes[c1]["state"] == -1 and surviving_nodes[c2]["state"] == -1:
+
+                mynode1 = find_descendant(surviving_nodes, c1)
+                mynode2 = find_descendant(surviving_nodes, c2)
+
+                surviving_nodes[p] = {"state": 1,  "descendant": mynode1 + ";" + mynode2}
+
+
+            elif surviving_nodes[c1]["state"] == 1 and surviving_nodes[c2]["state"] == 0:
+
+                surviving_nodes[p] = {"state": -1, "descendant": c1}
+
+            elif surviving_nodes[c1]["state"] == 0 and surviving_nodes[c2]["state"] == 1:
+
+                surviving_nodes[p] = {"state": -1, "descendant": c2}
+
+
+            elif surviving_nodes[c1]["state"] == 1 and surviving_nodes[c2]["state"] == -1:
+
+                mynode = find_descendant(surviving_nodes, c2)
+                surviving_nodes[p] = {"state": 1, "descendant": c1 + ";" + mynode}
+
+            elif surviving_nodes[c1]["state"] == -1 and surviving_nodes[c2]["state"] == 1:
+
+                mynode = find_descendant(surviving_nodes, c1)
+                surviving_nodes[p] = {"state": 1,  "descendant": mynode + ";" + c2}
+
+
+            elif surviving_nodes[c1]["state"] == -1 and surviving_nodes[c2]["state"] == 0:
+
+                mynode = find_descendant(surviving_nodes, c1)
+                surviving_nodes[p] = {"state": -1, "descendant": mynode}
+
+            elif surviving_nodes[c1]["state"] == 0 and surviving_nodes[c2]["state"] == -1:
+
+                mynode = find_descendant(surviving_nodes, c2)
+                surviving_nodes[p] = {"state": -1, "descendant": mynode}
+
+    extanttree = ete3.Tree()
+    wholetree = ete3.Tree()
+    eroot = extanttree.get_tree_root()
+    eroot.name = ""
+    wroot = wholetree.get_tree_root()
+    wroot.name = "Root"
+
+    t = (len(events))
+
+    wquick_nodes = dict()
+    equick_nodes = dict()
+
+    wquick_nodes["Root"] = wroot
+
+
+    for i, values in enumerate(events):
+
+        current_time, event, nodes = values
+
+        if event == "S":
+
+            p, c1, c2 = nodes.split(";")
+
+            mynode = wquick_nodes[p]
+            myc1 = mynode.add_child()
+            myc2 = mynode.add_child()
+            myc1.name = c1
+            myc2.name = c2
+            myc1.dist = times[c1] - times[p]
+            myc2.dist = times[c2] - times[p]
+
+            wquick_nodes[c1] = myc1
+            wquick_nodes[c2] = myc2
+
+            state = surviving_nodes[p]["state"]
+
+            if state == 1: # Now the extant tree
+
+                c1name, c2name = surviving_nodes[p]["descendant"].split(";")
+
+                if eroot.name == "":
+                    eroot.name = p
+                    equick_nodes[p] = eroot
+
+                mynode = equick_nodes[p]
+
+                myc1 = mynode.add_child()
+                myc2 = mynode.add_child()
+
+                myc1.name = c1name
+                myc2.name = c2name
+
+                myc1.dist = times[c1name] - times[p]
+                myc2.dist = times[c2name] - times[p]
+
+                equick_nodes[c1name] = myc1
+                equick_nodes[c2name] = myc2
+
+
+    return wholetree.write(format=1), extanttree.write(format=1)
+
+
+def find_descendant(surviving_nodes, node):
+
+    found = 0
+    mynode = surviving_nodes[node]["descendant"]
+
+    while found == 0:
+
+        if surviving_nodes[mynode]["state"] == 1:
+            found = 1
+        else:
+            mynode = surviving_nodes[mynode]["descendant"]
+
+    return mynode
 
 

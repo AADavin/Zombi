@@ -18,191 +18,166 @@ class GeneFamily():
 
         self.events.append((time, event, genes))
 
-    def generate_old_tree(self):
+    def generate_tree(self):
 
-        tree = ete3.Tree()
+        def find_descendant(surviving_nodes, node):
 
-        sp = tree.get_tree_root()
-        sp.name = "Root_1"
-        sp.add_feature("is_active", True)
+            found = 0
+            mynode = surviving_nodes[node]["descendant"]
 
-        elapsed_time = 0
+            while found == 0:
 
-        for current_time, event, nodes in self.events:
+                if surviving_nodes[mynode]["state"] == 1:
+                    found = 1
+                else:
+                    mynode = surviving_nodes[mynode]["descendant"]
 
-            elapsed_time = float(current_time) - elapsed_time
-            active_nodes = [x for x in tree.get_leaves() if x.is_active == True]
-            for node in active_nodes:
-                node.dist += elapsed_time
-            elapsed_time = float(current_time)
-
-            if event == "S":
-
-                sp, gp, c1, g1, c2, g2 = nodes.split(";")
-
-                myname = sp + "_" + gp
-                mynode = tree&myname
-                mynode.is_active = False
-
-                gc1 = mynode.add_child(dist=0)
-                gc1.name = c1 + "_" + g1
-                gc1.add_feature("is_active",True)
-
-                gc2 = mynode.add_child(dist=0)
-                gc2.name = c2 + "_" + g2
-                gc2.add_feature("is_active", True)
-
-            elif event == "E":
-                sp, gp = nodes.split(";")
-                myname = sp + "_" + gp
-                mynode = tree & myname
-                mynode.is_active = False
-
-            elif event == "L":
-                sp, gp = nodes.split(";")
-                myname = sp + "_" + gp
-                mynode = tree & myname
-                mynode.is_active = False
-
-            elif event == "D":
-
-                sp, gp, c1, g1, c2, g2 = nodes.split(";")
-                myname = sp + "_" + gp
-                mynode = tree & myname
-
-                mynode.is_active = False
-
-                gc1 = mynode.add_child(dist=0)
-                gc1.name = c1 + "_" + g1
-                gc1.add_feature("is_active", True)
-
-                gc2 = mynode.add_child(dist=0)
-                gc2.name = c2 + "_" + g2
-                gc2.add_feature("is_active", True)
-
-            elif event == "T":
-
-                sp, gp, c1, g1, c2, g2 = nodes.split(";")
-
-                myname = sp + "_" + gp
-
-                mynode = tree & myname
-                mynode.is_active = False
-
-                gc1 = mynode.add_child(dist=0)
-                gc1.name = c1 + "_" + g1
-                gc1.add_feature("is_active", True)
-
-                gc2 = mynode.add_child(dist=0)
-                gc2.name = c2 + "_" + g2
-                gc2.add_feature("is_active", True)
-
-            elif event == "F":
-                break
-
-        whole_tree = tree.write(format=1)
-        active_nodes = [x for x in tree.get_leaves() if x.is_active == True]
-
-        if len(active_nodes) < 3:
-            pruned_tree = None
-
-        else:
-            tree.prune(active_nodes, preserve_branch_length=True)
-            pruned_tree = tree.write(format=1)
-
-        return whole_tree, pruned_tree
-
-    def generate_pruned_tree(self):
+            return mynode
 
         # Eric's algorithm
 
-        tree = ete3.Tree()
-        current_time, event, nodes = self.events[0]
+        # First we will iterate the events from the end
 
-        sp = tree.get_tree_root()
-        sp.name = nodes + "_1"
-        sp.add_feature("is_active", True)
+        events = self.events
 
-        elapsed_time = float(current_time)
+        surviving_nodes = dict()
+        times = dict()
 
-        for current_time, event, nodes in self.events[::-1]:
+        for current_time, event, nodes in events[::-1]:
 
-            elapsed_time = float(current_time) - elapsed_time
-            active_nodes = [x for x in tree.get_leaves() if x.is_active == True]
-            for node in active_nodes:
-                node.dist += elapsed_time
-            elapsed_time = float(current_time)
+            if event == "F":
 
-            if event == "S":
+                nodename = nodes.replace(";","_")
 
-                sp, gp, c1, g1, c2, g2 = nodes.split(";")
+                times[nodename] = float(current_time)
+                surviving_nodes[nodename] = {"state": 1, "descendant": "None"}
 
-                myname = sp + "_" + gp
-                mynode = tree & myname
-                mynode.is_active = False
+            elif event == "E" or event == "L":
 
-                gc1 = mynode.add_child(dist=0)
-                gc1.name = c1 + "_" + g1
-                gc1.add_feature("is_active", True)
+                nodename = nodes.replace(";", "_")
 
-                gc2 = mynode.add_child(dist=0)
-                gc2.name = c2 + "_" + g2
-                gc2.add_feature("is_active", True)
+                times[nodename] = float(current_time)
+                surviving_nodes[nodename] = {"state": 0, "descendant": "None"}
 
-            elif event == "E":
-                sp, gp = nodes.split(";")
-                myname = sp + "_" + gp
-                mynode = tree & myname
-                mynode.is_active = False
+            elif event == "S" or event == "D" or event == "T":
 
-            elif event == "L":
-                sp, gp = nodes.split(";")
-                myname = sp + "_" + gp
-                mynode = tree & myname
-                mynode.is_active = False
+                p, g0, c1, g1, c2, g2 = nodes.split(";")
 
-            elif event == "D":
+                pnodename = p + "_" + g0
+                c1nodename = c1 + "_" + g1
+                c2nodename = c2 + "_" + g2
 
-                sp, gp, c1, g1, c2, g2 = nodes.split(";")
-                myname = sp + "_" + gp
-                mynode = tree & myname
+                times[pnodename] = float(current_time)
 
-                mynode.is_active = False
+                if surviving_nodes[c1nodename]["state"] == 1 and surviving_nodes[c2nodename]["state"] == 1:
 
-                gc1 = mynode.add_child(dist=0)
-                gc1.name = c1 + "_" + g1
-                gc1.add_feature("is_active", True)
+                    surviving_nodes[pnodename] = {"state": 1, "descendant": c1nodename + ";" + c2nodename}
 
-                gc2 = mynode.add_child(dist=0)
-                gc2.name = c2 + "_" + g2
-                gc2.add_feature("is_active", True)
+                elif surviving_nodes[c1nodename]["state"] == 0 and surviving_nodes[c2nodename]["state"] == 0:
 
-            elif event == "T":
-                sp, gp, c1, g1, c2, g2 = nodes.split(";")
+                    surviving_nodes[pnodename] = {"state": 0, "descendant": "None"}
 
-                myname = sp + "_" + gp
+                elif surviving_nodes[c1nodename]["state"] == -1 and surviving_nodes[c2nodename]["state"] == -1:
 
-                mynode = tree & myname
-                mynode.is_active = False
+                    mynode1 = find_descendant(surviving_nodes, c1nodename)
+                    mynode2 = find_descendant(surviving_nodes, c2nodename)
 
-                gc1 = mynode.add_child(dist=0)
-                gc1.name = c1 + "_" + g1
-                gc1.add_feature("is_active", True)
+                    surviving_nodes[pnodename] = {"state": 1, "descendant": mynode1 + ";" + mynode2}
 
-                gc2 = mynode.add_child(dist=0)
-                gc2.name = c2 + "_" + g2
-                gc2.add_feature("is_active", True)
+                elif surviving_nodes[c1nodename]["state"] == 1 and surviving_nodes[c2nodename]["state"] == 0:
 
-            elif event == "F":
-                break
+                    surviving_nodes[pnodename] = {"state": -1, "descendant": c1nodename}
 
-        whole_tree = tree.write(format=1)
-        active_nodes = [x for x in tree.get_leaves() if x.is_active == True]
+                elif surviving_nodes[c1nodename]["state"] == 0 and surviving_nodes[c2nodename]["state"] == 1:
+
+                    surviving_nodes[pnodename] = {"state": -1, "descendant": c2nodename}
 
 
+                elif surviving_nodes[c1nodename]["state"] == 1 and surviving_nodes[c2nodename]["state"] == -1:
+
+                    mynode = find_descendant(surviving_nodes, c2nodename)
+                    surviving_nodes[pnodename] = {"state": 1, "descendant": c1nodename + ";" + mynode}
+
+                elif surviving_nodes[c1nodename]["state"] == -1 and surviving_nodes[c2nodename]["state"] == 1:
+
+                    mynode = find_descendant(surviving_nodes, c1nodename)
+                    surviving_nodes[pnodename] = {"state": 1, "descendant": mynode + ";" + c2nodename}
 
 
-    def generate_tree(self):
+                elif surviving_nodes[c1nodename]["state"] == -1 and surviving_nodes[c2nodename]["state"] == 0:
+
+                    mynode = find_descendant(surviving_nodes, c1nodename)
+                    surviving_nodes[pnodename] = {"state": -1, "descendant": mynode}
+
+                elif surviving_nodes[c1nodename]["state"] == 0 and surviving_nodes[c2nodename]["state"] == -1:
+
+                    mynode = find_descendant(surviving_nodes, c2nodename)
+                    surviving_nodes[pnodename] = {"state": -1, "descendant": mynode}
+
+        extanttree = ete3.Tree()
+        wholetree = ete3.Tree()
+        eroot = extanttree.get_tree_root()
+        eroot.name = ""
+
+        wquick_nodes = dict()
+        equick_nodes = dict()
+
+        for i, values in enumerate(events):
+
+            current_time, event, nodes = values
+
+            if event == "O":
+
+                wroot = wholetree.get_tree_root()
+                wroot.name = nodes + "_1"
+                wquick_nodes[wroot.name] = wroot
+
+            if event == "S" or event == "D" or event == "T":
+
+                p, g0, c1, g1, c2, g2 = nodes.split(";")
+                pnodename = p + "_" + g0
+                c1nodename = c1 + "_" + g1
+                c2nodename = c2 + "_" + g2
+
+                mynode = wquick_nodes[pnodename]
+                myc1 = mynode.add_child()
+                myc2 = mynode.add_child()
+                myc1.name = c1nodename
+                myc2.name = c2nodename
+                myc1.dist = times[c1nodename] - times[pnodename]
+                myc2.dist = times[c2nodename] - times[pnodename]
+
+                wquick_nodes[c1nodename] = myc1
+                wquick_nodes[c2nodename] = myc2
+
+                state = surviving_nodes[pnodename]["state"]
+
+                if state == 1:  # Now the extant tree
+
+                    c1name, c2name = surviving_nodes[pnodename]["descendant"].split(";")
+
+                    if eroot.name == "":
+                        eroot.name = pnodename
+                        equick_nodes[pnodename] = eroot
+
+                    mynode = equick_nodes[pnodename]
+
+                    myc1 = mynode.add_child()
+                    myc2 = mynode.add_child()
+
+                    myc1.name = c1name
+                    myc2.name = c2name
+
+                    myc1.dist = times[c1name] - times[pnodename]
+                    myc2.dist = times[c2name] - times[pnodename]
+
+                    equick_nodes[c1name] = myc1
+                    equick_nodes[c2name] = myc2
+
+        return wholetree.write(format=1), extanttree.write(format=1)
+
+
+    def generate_oldtree(self):
 
         tree = ete3.Tree()
 

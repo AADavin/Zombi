@@ -29,19 +29,6 @@ class simuLyon():
             stg.start()
             stg.events = af.generate_events(tree_file)
 
-            whole_tree_file = os.path.join(tree_folder, "WholeTree.nwk")
-            #extant_tree_file = os.path.join(tree_folder, "ExtantTree.nwk")
-            events_file = os.path.join(tree_folder, "Events.tsv")
-
-            stg.generate_whole_tree()
-            #stg.generate_extant_tree()
-
-            #stg.write_whole_tree(whole_tree_file)
-            #stg.write_extant_tree(extant_tree_file)
-            stg.write_events_file(events_file)
-
-            return 0
-
         else:
 
             parameters = af.prepare_species_tree_parameters(af.read_parameters(parameters_file))
@@ -66,14 +53,19 @@ class simuLyon():
             print("Aborting computation of the Species Tree. Please use other speciation and extinction rates!")
             return 0
 
+        events_file = os.path.join(tree_folder, "Events.tsv")
+        stg.write_events_file(events_file)
+
         whole_tree_file = os.path.join(tree_folder, "WholeTree.nwk")
         extant_tree_file = os.path.join(tree_folder, "ExtantTree.nwk")
-        events_file = os.path.join(tree_folder, "Events.tsv")
-        stg.generate_whole_tree()
-        stg.generate_extant_tree()
-        stg.write_whole_tree(whole_tree_file)
-        stg.write_extant_tree(extant_tree_file)
-        stg.write_events_file(events_file)
+
+        whole_tree, extant_tree = stg.generate_newick_trees()
+
+        with open(whole_tree_file, "w") as f:
+            f.write(whole_tree)
+
+        with open(extant_tree_file, "w") as f:
+            f.write(extant_tree)
 
         if advanced_mode == "b" or advanced_mode == "a":
             rates_file = os.path.join(tree_folder, "Rates.tsv")

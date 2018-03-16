@@ -55,14 +55,16 @@ class SpeciesTreeGenerator():
             if stopping_rule == 0 and time + time_to_next_event >= total_time:
 
                 self.increase_distances(total_time - time)
-                self.events.append((total_time, "F", "None"))
+                for lineage in self.active_lineages:
+                    self.events.append((total_time, "F", lineage))
                 success = True
                 return success
 
             elif stopping_rule == 1 and n_lineages_alive == total_lineages:
 
                 self.increase_distances(time_to_next_event)
-                self.events.append((time+time_to_next_event, "F", "None"))
+                for lineage in self.active_lineages:
+                    self.events.append((time + time_to_next_event, "F", lineage))
                 success = True
                 return success
 
@@ -135,14 +137,16 @@ class SpeciesTreeGenerator():
             if stopping_rule == 0 and time + time_to_next_event >= total_time:
 
                 self.increase_distances(total_time - time)
-                self.events.append((total_time, "F", "None"))
+                for lineage in self.active_lineages:
+                    self.events.append((total_time, "F", lineage))
                 success = True
                 return success
 
             elif stopping_rule == 1 and n_lineages_alive == total_lineages:
 
                 self.increase_distances(time_to_next_event)
-                self.events.append((time+time_to_next_event, "F", "None"))
+                for lineage in self.active_lineages:
+                    self.events.append((time + time_to_next_event, "F", lineage))
                 success = True
                 return success
 
@@ -232,14 +236,16 @@ class SpeciesTreeGenerator():
             if stopping_rule == 0 and time + time_to_next_event >= total_time:
 
                 self.increase_distances(total_time - time)
-                self.events.append((total_time, "F", "None"))
+                for lineage in self.active_lineages:
+                    self.events.append((total_time, "F", lineage))
                 success = True
                 return success
 
             elif stopping_rule == 1 and n_lineages_alive == total_lineages:
 
                 self.increase_distances(time_to_next_event)
-                self.events.append((time+time_to_next_event, "F", "None"))
+                for lineage in self.active_lineages:
+                    self.events.append((time + time_to_next_event, "F", lineage))
                 success = True
                 return success
 
@@ -341,7 +347,8 @@ class SpeciesTreeGenerator():
             elif time + time_to_next_event >= total_time:
 
                 self.increase_distances(total_time - time)
-                self.events.append((total_time, "F", "None"))
+                for lineage in self.active_lineages:
+                    self.events.append((total_time, "F", lineage))
                 success = True
                 return success
 
@@ -429,70 +436,153 @@ class SpeciesTreeGenerator():
         else:
             return "E"
 
+    def generate_newick_trees(self):
 
-    def generate_whole_tree(self):
+        def find_descendant(surviving_nodes, node):
 
-        # We create a hash of nodes for quicker access
+            found = 0
+            mynode = surviving_nodes[node]["descendant"]
 
-        all_nodes = dict()
+            while found == 0:
 
-        root = self.whole_tree.get_tree_root()
+                if surviving_nodes[mynode]["state"] == 1:
+                    found = 1
+                else:
+                    mynode = surviving_nodes[mynode]["descendant"]
 
-        root.name = "Root"
-        all_nodes[root.name] = root
+            return mynode
 
-        for time, event, nodes in self.events:
+        # Eric's algorithm
+
+        # First we will iterate the events from the end
+
+        events = self.events
+
+        surviving_nodes = dict()
+        times = dict()
+
+        for current_time, event, nodes in events[::-1]:
+
+            if event == "F":
+
+                times[nodes] = float(current_time)
+                surviving_nodes[nodes] = {"state": 1, "descendant": "None"}
+
+            elif event == "E":
+
+                times[nodes] = float(current_time)
+                surviving_nodes[nodes] = {"state": 0, "descendant": "None"}
+
+            elif event == "S":
+
+                p, c1, c2 = nodes.split(";")
+
+                times[p] = float(current_time)
+
+                if surviving_nodes[c1]["state"] == 1 and surviving_nodes[c2]["state"] == 1:
+
+                    surviving_nodes[p] = {"state": 1, "descendant": c1 + ";" + c2}
+
+                elif surviving_nodes[c1]["state"] == 0 and surviving_nodes[c2]["state"] == 0:
+
+                    surviving_nodes[p] = {"state": 0, "descendant": "None"}
+
+                elif surviving_nodes[c1]["state"] == -1 and surviving_nodes[c2]["state"] == -1:
+
+                    mynode1 = find_descendant(surviving_nodes, c1)
+                    mynode2 = find_descendant(surviving_nodes, c2)
+
+                    surviving_nodes[p] = {"state": 1, "descendant": mynode1 + ";" + mynode2}
+
+
+                elif surviving_nodes[c1]["state"] == 1 and surviving_nodes[c2]["state"] == 0:
+
+                    surviving_nodes[p] = {"state": -1, "descendant": c1}
+
+                elif surviving_nodes[c1]["state"] == 0 and surviving_nodes[c2]["state"] == 1:
+
+                    surviving_nodes[p] = {"state": -1, "descendant": c2}
+
+
+                elif surviving_nodes[c1]["state"] == 1 and surviving_nodes[c2]["state"] == -1:
+
+                    mynode = find_descendant(surviving_nodes, c2)
+                    surviving_nodes[p] = {"state": 1, "descendant": c1 + ";" + mynode}
+
+                elif surviving_nodes[c1]["state"] == -1 and surviving_nodes[c2]["state"] == 1:
+
+                    mynode = find_descendant(surviving_nodes, c1)
+                    surviving_nodes[p] = {"state": 1, "descendant": mynode + ";" + c2}
+
+
+                elif surviving_nodes[c1]["state"] == -1 and surviving_nodes[c2]["state"] == 0:
+
+                    mynode = find_descendant(surviving_nodes, c1)
+                    surviving_nodes[p] = {"state": -1, "descendant": mynode}
+
+                elif surviving_nodes[c1]["state"] == 0 and surviving_nodes[c2]["state"] == -1:
+
+                    mynode = find_descendant(surviving_nodes, c2)
+                    surviving_nodes[p] = {"state": -1, "descendant": mynode}
+
+        extanttree = ete3.Tree()
+        wholetree = ete3.Tree()
+        eroot = extanttree.get_tree_root()
+        eroot.name = ""
+        wroot = wholetree.get_tree_root()
+        wroot.name = "Root"
+
+        t = (len(events))
+
+        wquick_nodes = dict()
+        equick_nodes = dict()
+
+        wquick_nodes["Root"] = wroot
+
+        for i, values in enumerate(events):
+
+            current_time, event, nodes = values
 
             if event == "S":
 
-                p, c1name, c2name = nodes.split(";")
+                p, c1, c2 = nodes.split(";")
 
-                node = all_nodes[p]
+                mynode = wquick_nodes[p]
+                myc1 = mynode.add_child()
+                myc2 = mynode.add_child()
+                myc1.name = c1
+                myc2.name = c2
+                myc1.dist = times[c1] - times[p]
+                myc2.dist = times[c2] - times[p]
 
-                c1 = node.add_child(dist=self.distances[c1name])
-                c2 = node.add_child(dist=self.distances[c2name])
+                wquick_nodes[c1] = myc1
+                wquick_nodes[c2] = myc2
 
-                c1.name = c1name
-                c2.name = c2name
+                state = surviving_nodes[p]["state"]
 
-                all_nodes[c1name] = c1
-                all_nodes[c2name] = c2
+                if state == 1:  # Now the extant tree
 
-    def efficient_pruning_tree(self):
+                    c1name, c2name = surviving_nodes[p]["descendant"].split(";")
 
-        # We create a hash of nodes for quicker access
+                    if eroot.name == "":
+                        eroot.name = p
+                        equick_nodes[p] = eroot
 
-        all_nodes = dict()
+                    mynode = equick_nodes[p]
 
-        root = self.whole_tree.get_tree_root()
+                    myc1 = mynode.add_child()
+                    myc2 = mynode.add_child()
 
-        root.name = "Root"
-        all_nodes[root.name] = root
+                    myc1.name = c1name
+                    myc2.name = c2name
 
-        for time, event, nodes in self.events[::-1]:
+                    myc1.dist = times[c1name] - times[p]
+                    myc2.dist = times[c2name] - times[p]
 
-            if event == "S":
+                    equick_nodes[c1name] = myc1
+                    equick_nodes[c2name] = myc2
 
-                p, c1name, c2name = nodes.split(";")
-
-                node = all_nodes[p]
-
-                c1 = node.add_child(dist=self.distances[c1name])
-                c2 = node.add_child(dist=self.distances[c2name])
-
-                c1.name = c1name
-                c2.name = c2name
-
-                all_nodes[c1name] = c1
-                all_nodes[c2name] = c2
-
-
-    def generate_extant_tree(self):
-
-        leaves_alive = [x.name for x in self.whole_tree.get_leaves() if x.name in self.active_lineages]
-
-        self.extant_tree = ete3.Tree(self.whole_tree.write(format=1), format=1)
-        self.extant_tree.prune(leaves_alive, preserve_branch_length=True)
+        return wholetree.write(format=1), extanttree.write(format=1)
 
     def write_events_file(self, events_file):
 
@@ -515,13 +605,4 @@ class SpeciesTreeGenerator():
                 line = "\t".join(map(str,[lineage, speciation, extinction])) + "\n"
                 f.write(line)
 
-    def write_whole_tree(self, tree_file):
-
-        with open(tree_file, "w") as f:
-            f.write(self.whole_tree.write(format=1))
-
-    def write_extant_tree(self, tree_file):
-
-        with open(tree_file, "w") as f:
-            f.write(self.extant_tree.write(format=1))
 

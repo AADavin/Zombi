@@ -289,6 +289,7 @@ class GenomeSimulator():
 
                 elif event == "F":
                     self.make_end(current_time)
+                    break
 
             else:
 
@@ -364,6 +365,7 @@ class GenomeSimulator():
 
                 elif event == "F":
                     self.make_end(current_time)
+                    break
 
             else:
 
@@ -451,6 +453,7 @@ class GenomeSimulator():
 
                 elif event == "F":
                     self.make_end(current_time)
+                    break
 
             else:
 
@@ -528,6 +531,7 @@ class GenomeSimulator():
 
                 elif event == "F":
                     self.make_end(current_time)
+                    break
 
             else:
 
@@ -846,8 +850,8 @@ class GenomeSimulator():
                 new_gene1.orientation = gene.orientation
                 new_gene2.orientation = gene.orientation
 
-                new_gene1.selection_coefficient = gene.selection_coefficient
-                new_gene2.selection_coefficient = gene.selection_coefficient
+                #new_gene1.selection_coefficient = gene.selection_coefficient
+                #new_gene2.selection_coefficient = gene.selection_coefficient
 
                 gene_family = self.all_gene_families[gene.gene_family]
                 gene_family.genes.append(new_gene1)
@@ -1100,7 +1104,8 @@ class GenomeSimulator():
 
         importance = sum([gene.importance for gene in segment])
         if importance >= 0:
-            if numpy.random.exponential()
+            if numpy.random.exponential():
+                pass
 
             return 0
 
