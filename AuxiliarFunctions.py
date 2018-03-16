@@ -190,7 +190,7 @@ def generate_events(tree_file):
 
         if estate == "A":
             events.append((str(time), "F", node.name))
-            break
+            
         elif estate == "E":
             events.append((str(time), "E", node.name))
         elif estate == "S":

@@ -1,6 +1,6 @@
 ﻿
 ## SimuLyon (working name) 
-##### A tool to simulate genome evolution accounting for dead lineages
+##### A benchmark to test hypotheses on genome evolution
 
 ----------
 
@@ -13,8 +13,6 @@ affect a region of variable length in the genome.
 
 SimuLyon can be of great interest to those who want to test different evolutionary hypothesis under simulations and need to use a fast and easy to use tool to generate species trees, gene trees and sequences.
 
-Please,**read the manual before using it!** 
-
 Writen by Adrián A. Davín 
 
 Using ideas, suggestions and comments coming from: (still to fill) 
@@ -26,6 +24,8 @@ Watch out! simuLyon is **unfinished**. The current version can undergo big chang
 ----------
 
 ### **Usage** ###
+
+Please,**read the manual in the wiki before using it!** 
 
 You need **python 3.6** installed with **ETE3**, **numpy** and pyvolve
 

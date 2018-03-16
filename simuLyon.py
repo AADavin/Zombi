@@ -26,8 +26,26 @@ class simuLyon():
             print("Generate events for input file %s" % tree_file)
 
             stg = SpeciesTreeGenerator({})
+
             stg.start()
+
             stg.events = af.generate_events(tree_file)
+
+            events_file = os.path.join(tree_folder, "Events.tsv")
+            stg.write_events_file(events_file)
+
+            whole_tree_file = os.path.join(tree_folder, "WholeTree.nwk")
+            extant_tree_file = os.path.join(tree_folder, "ExtantTree.nwk")
+
+            whole_tree, extant_tree = stg.generate_newick_trees()
+
+            with open(whole_tree_file, "w") as f:
+                f.write(whole_tree)
+
+            with open(extant_tree_file, "w") as f:
+                f.write(extant_tree)
+
+            return 0
 
         else:
 
