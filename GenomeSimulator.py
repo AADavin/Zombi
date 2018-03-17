@@ -20,6 +20,8 @@ class GenomeSimulator():
         self.gene_families_counter = 0
         self.active_genomes = set()
 
+        if self.parameters["TRANSFER_PREFERENCE"] == 1:
+            self.get_vector_of_distances(events_file.replace("Events.tsv","WholeTree.nwk"))
 
     def write_genomes(self, genome_folder):
 
@@ -370,7 +372,6 @@ class GenomeSimulator():
             else:
 
                 current_time += time_to_next_genome_event
-
                 self.evolve_genomes_selection(d, t, l, i, c, o, current_time)
 
     def generate_new_rates(self):
@@ -458,7 +459,6 @@ class GenomeSimulator():
             else:
 
                 current_time += time_to_next_genome_event
-
                 self.advanced_evolve_genomes(current_time)
 
 
@@ -578,10 +578,20 @@ class GenomeSimulator():
 
             if len(possible_recipients) > 0:
 
-                recipient = random.choice(possible_recipients)
-                donor = lineage
-                self.make_transfer(t_e, donor, recipient, time)
-                return "T", donor+"->"+recipient
+                if self.parameters["TRANSFER_PREFERENCE"] == 0:
+
+                    recipient = random.choice(possible_recipients)
+                    donor = lineage
+                    self.make_transfer(t_e, donor, recipient, time)
+                    return "T", donor+"->"+recipient
+
+                elif self.parameters["TRANSFER_PREFERENCE"] == 1:
+
+                    # In this case the transfers occur proportionally to the logarithm of the distance
+                    recipient = self.choose_advanced_recipient(time, possible_recipients, lineage)
+                    donor = lineage
+                    self.make_transfer(t_e, donor, recipient, time)
+                    return "T", donor + "->" + recipient
 
             else:
                 return None
@@ -610,62 +620,6 @@ class GenomeSimulator():
 
             return "O", lineage
 
-
-    def evolve_genomes_selection(self, duplication, transfer, loss, inversion, translocation, origination, time):
-
-
-        d_e = self.parameters["DUPLICATION_EXTENSION"]
-        t_e = self.parameters["TRANSFER_EXTENSION"]
-        l_e = self.parameters["LOSS_EXTENSION"]
-        i_e = self.parameters["INVERSION_EXTENSION"]
-        c_e = self.parameters["TRANSLOCATION_EXTENSION"]
-
-        lineage = random.choice(list(self.active_genomes))
-        event = self.choose_event(duplication, transfer, loss, inversion, translocation, origination)
-
-        if event == "D":
-            self.make_duplication(d_e, lineage, time)
-            return "D", lineage
-
-        elif event == "T":
-
-            # We choose a recipient
-
-            possible_recipients = [x for x in self.active_genomes if x != lineage]
-
-            if len(possible_recipients) > 0:
-
-                recipient = random.choice(possible_recipients)
-                donor = lineage
-                self.make_transfer(t_e, donor, recipient, time)
-                return "T", donor+"->"+recipient
-
-            else:
-                return None
-
-        elif event == "L":
-
-            self.make_loss(l_e, lineage, time)
-            return "L", lineage
-
-        elif event == "I":
-            self.make_inversion(i_e, lineage, time)
-            return "I", lineage
-
-        elif event == "C":
-            self.make_translocation(c_e, lineage, time)
-            return "C",lineage
-
-        elif event == "O":
-
-            gene, gene_family = self.make_origination(lineage, time)
-
-            chromosome = self.all_genomes[lineage].select_random_chromosome()
-            position = chromosome.select_random_position()
-            segment = [gene]
-            chromosome.insert_segment(position, segment)
-
-            return "O", lineage
 
     def advanced_evolve_genomes(self, time):
 
@@ -945,6 +899,37 @@ class GenomeSimulator():
             gene.active = False
 
             self.all_gene_families[gene.gene_family].register_event(time, "D", ";".join(map(str, nodes)))
+
+    def get_vector_of_distances(self, tree_file):
+
+        self.distances_to_root = dict()
+
+        with open(tree_file) as f:
+            self.mytree = ete3.Tree(f.readline().strip(), format=1)
+            root = self.mytree.get_tree_root()
+            root.name = "Root"
+            for node in self.mytree.traverse():
+                if node.is_root():
+                    continue
+                self.distances_to_root[node.name] = (node, node.get_distance(root))
+
+    def choose_advanced_recipient(self, time, possible_recipients, donor):
+
+        # Chooses and advanced recipient according to the logarithm of the phylogenetic distance
+
+        weights = list()
+        mydonor = self.distances_to_root[donor][0]
+
+        for recipient in possible_recipients:
+        
+            myrecipient = self.distances_to_root[recipient][0]
+            phylo_d = mydonor.get_distance(myrecipient)
+            td = phylo_d + (2 * time) - self.distances_to_root[donor][1] - self.distances_to_root[recipient][1]
+            weights.append(td)
+
+        draw = numpy.random.choice(possible_recipients, 1, p=af.normalize(weights))[0]
+
+        return draw
 
     def make_transfer(self, p, donor, recipient, time):
 

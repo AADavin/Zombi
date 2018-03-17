@@ -77,26 +77,7 @@ def obtain_value(value):
     return value
 
 
-def prepare_gene_familiy_parameters(parameters):
 
-    for parameter, value in parameters.items():
-
-        if parameter == "STEM_FAMILIES":
-            parameters[parameter] = int(value)
-
-        if parameter == "N_FAMILIES":
-
-            parameters[parameter] = int(value)
-
-            if parameters["STEM_FAMILIES"] > parameters["N_FAMILIES"]:
-
-                print("Error. More families in the stem than the total number of families")
-                return None
-
-        if parameter == "DUPLICATION" or parameter == "TRANSFER" or parameter == "LOSS":
-            parameters[parameter] = obtain_value(value)
-
-    return parameters
 
 def prepare_sequence_parameters(parameters):
 
@@ -147,7 +128,7 @@ def prepare_genome_parameters(parameters):
             parameters[parameter] = float(value)
 
         if parameter == "PROFILES" or parameter == "EVENTS_PER_BRANCH" or parameter == "GENE_TREES" \
-                or parameter == "PRUNE_TREES":
+                or parameter == "PRUNE_TREES" or parameter == "TRANSFER_PREFERENCE":
 
             parameters[parameter] = int(value)
 
@@ -190,7 +171,7 @@ def generate_events(tree_file):
 
         if estate == "A":
             events.append((str(time), "F", node.name))
-            
+
         elif estate == "E":
             events.append((str(time), "E", node.name))
         elif estate == "S":
@@ -210,6 +191,46 @@ def copy_segment(segment, new_identifiers):
         new_segment.append(new_gene)
 
     return new_segment
+
+
+def return_vector_of_distances(self, tree_file):
+
+    self.distances_to_root = dict()
+
+    with open(tree_file) as f:
+
+        self.mytree = ete3.Tree(f.readline().strip(), format=1)
+        root = self.mytree.get_tree_root()
+        root.name = "Root"
+        for node in self.mytree.traverse():
+            if node.is_root():
+                continue
+
+            self.distances_to_root[node.name] = (node, node.get_distance(root))
+
+def choose_advanced_recipient(self, time, alive_lineages, donor):
+
+    # Chooses and advanced recipient according to the logarithm of the phylogenetic distance
+
+    possible_recipients = list()
+    weights = list()
+
+    mydonor = self.distances_to_root[donor][0]
+
+    for recipient in alive_lineages:
+
+        if donor == recipient:
+            continue
+
+        myrecipient = self.distances_to_root[recipient][0]
+        phylo_d = mydonor.get_distance(myrecipient)
+
+        td = phylo_d + (2 * time) - self.distances_to_root[donor][1] - self.distances_to_root[recipient][1]
+
+        possible_recipients.append(recipient)
+        weights.append(td)
+
+    draw = numpy.random.choice(possible_recipients, 1, p=af.normalize(weights))
 
 
 

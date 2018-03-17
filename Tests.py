@@ -1,3 +1,6 @@
+import numpy
+import random
+
 
 def get_homologous_position(segment, genes):
 
@@ -275,5 +278,81 @@ def find_descendant(surviving_nodes, node):
             mynode = surviving_nodes[mynode]["descendant"]
 
     return mynode
+
+def inheritance_of_alleles():
+
+    population_1 = 10000
+    population_2 = 600
+
+    aleles = [2000,4000,1000,500,2500]
+    new_aleles = []
+
+    # You should shuffle the list
+
+    for i, alele in enumerate(aleles[1:]):
+
+        p = alele/population_1
+        q = ((population_1 - alele) / population_1)
+        variance = numpy.sqrt(p * q * population_1)
+        total_alleles_pop2 = sum(new_aleles)
+
+        print(alele, p, q, variance)
+
+        if total_alleles_pop2 >= population_2:
+            break
+        else:
+            new_value = int(numpy.random.normal(p * population_2,variance))
+            if new_value <= 0:
+                new_value = 0
+            new_aleles.append(new_value)
+
+    total_alleles_pop2 = sum(new_aleles)
+    dif = abs(total_alleles_pop2 - population_2)
+    new_aleles.insert(0, dif)
+    print(new_aleles)
+    print(sum(new_aleles))
+
+
+import ete3
+
+def return_vector_of_distances(time):
+
+    distances_to_root = dict()
+    distances = dict()
+
+    with open("/Users/adriandavin/Desktop/Simulator/Tests/Test8/T/WholeTree.nwk") as f:
+
+        mytree = ete3.Tree(f.readline().strip(), format=1)
+        root = mytree.get_tree_root()
+        root.name = "Root"
+        for node in mytree.traverse():
+            if node.is_root():
+                continue
+            distances[node.name] = (node.up.get_distance(root), node.get_distance(root))
+            distances_to_root[node.name] = node.get_distance(root)
+
+    alive_lineages = list()
+    for k,v in distances.items():
+        if time <= v[1] and time >= v[0]:
+            alive_lineages.append(k)
+
+    corrected_distances = dict()
+
+    for node1 in alive_lineages:
+        mynode1 = mytree & node1
+        for node2 in alive_lineages:
+            if node1 == node2:
+                continue
+            mynode2 = mytree & node2
+            phylo_d = mynode1.get_distance(mynode2)
+            td = phylo_d + (2 * time) - distances_to_root[node1] - distances_to_root[node2]
+            print(node1,node2, td)
+
+
+
+return_vector_of_distances(2.2)
+
+
+
 
 
