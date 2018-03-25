@@ -1,7 +1,6 @@
-### Genome evolution parameters
+#### Genome evolution parameters
 #
-#
-#
+#### Main events
 #
 DUPLICATION f:1
 TRANSFER f:2
@@ -9,30 +8,29 @@ LOSS f:3
 INVERSION f:0
 TRANSLOCATION f:0
 ORIGINATION f:2
+#
+### Extensions
+#
 DUPLICATION_EXTENSION f:1
 TRANSFER_EXTENSION f:1
 LOSS_EXTENSION f:1
 INVERSION_EXTENSION f:0.05
 TRANSLOCATION_EXTENSION f:0.3
+#
+### Transfer related parameters
+#
 REPLACEMENT_TRANSFER 1
 TRANSFER_PREFERENCE 1
+#
+### Genome size related parameters
+#
 STEM_FAMILIES	1000
 MIN_GENOME_SIZE	10
-#####
-###
-##
 #
-##  ADVANCED MODES
-# Gs
-GENE_IMPORTANCE f:1
-#
-#
+###  ADVANCED MODES
 #
 #### OUTPUT
-##
-##
-##
+#
 EVENTS_PER_BRANCH 0
 PROFILES 0
 GENE_TREES 1
-PRUNE_TREES 1

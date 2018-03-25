@@ -46,5 +46,5 @@ KAPPA	1.0
 #
 #
 #
-# *REQUIRED* parameters if mode == Sa or mode == Sb
+# *REQUIRED* parameters if mode == Sb
 RATE_MULTIPLIERS n:0.7;0.2

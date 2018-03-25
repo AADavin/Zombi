@@ -921,13 +921,13 @@ class GenomeSimulator():
         mydonor = self.distances_to_root[donor][0]
 
         for recipient in possible_recipients:
-        
+
             myrecipient = self.distances_to_root[recipient][0]
             phylo_d = mydonor.get_distance(myrecipient)
             td = phylo_d + (2 * time) - self.distances_to_root[donor][1] - self.distances_to_root[recipient][1]
             weights.append(td)
 
-        draw = numpy.random.choice(possible_recipients, 1, p=af.normalize(weights))[0]
+        draw = numpy.random.choice(possible_recipients, 1, p=af.normalize(af.inverse(weights)))[0]
 
         return draw
 

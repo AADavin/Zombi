@@ -61,7 +61,6 @@ class SequenceSimulator():
         self.branch_rates = dict()
 
         for node in mytree.traverse():
-
             self.branch_rates[node.name] = af.obtain_value(self.parameters["RATE_MULTIPLIERS"])
 
     def write_rates_tree(self, inputtree_file, output_tree):
