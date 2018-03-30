@@ -586,7 +586,11 @@ class SpeciesTreeGenerator():
 
     def write_events_file(self, events_file):
 
+        header = ["TIME","EVENT","NODES"]
+        header = "\t".join(map(str, header)) + "\n"
+
         with open(events_file, "w") as f:
+            f.write(header)
             for item in self.events:
                 line = "\t".join(map(str,item)) + "\n"
                 f.write(line)

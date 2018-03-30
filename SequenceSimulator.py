@@ -54,7 +54,6 @@ class SequenceSimulator():
         with open(tree_file) as f:
             mytree = ete3.Tree(f.readline().strip(), format=1)
 
-
         root = mytree.get_tree_root()
         root.name = "Root"
 
@@ -68,7 +67,6 @@ class SequenceSimulator():
         with open(inputtree_file) as f:
             mytree = ete3.Tree(f.readline().strip(), format=1)
 
-
         root = mytree.get_tree_root()
         root.name = "Root"
 
@@ -77,7 +75,6 @@ class SequenceSimulator():
 
         with open(output_tree, "w") as f:
             f.write(mytree.write(format=1))
-
 
     def write_rates(self, rates_file):
 
@@ -90,7 +87,6 @@ class SequenceSimulator():
 
                 line = "\t".join(map(str,[lineage, value])) + "\n"
                 f.write(line)
-
 
     def get_nucleotide_model(self):
 

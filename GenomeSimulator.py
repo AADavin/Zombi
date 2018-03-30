@@ -185,6 +185,7 @@ class GenomeSimulator():
 
         events = list()
         with open(events_file) as f:
+            f.readline()
             for line in f:
                 handle = line.strip().split("\t")
                 events.append(handle)
