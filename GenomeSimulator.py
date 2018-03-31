@@ -70,15 +70,12 @@ class GenomeSimulator():
 
         for gene_family_name, gene_family in self.all_gene_families.items():
 
-            print("Generating gene tree for family %s" % gene_family_name)
 
             whole_tree, pruned_tree = gene_family.generate_tree()
 
             with open(os.path.join(gene_tree_folder, gene_family_name + "_wholetree.nwk"),"w") as f:
 
                 f.write(whole_tree)
-
-            print("Pruning gene tree for family %s" % gene_family_name)
 
             if pruned_tree != None:
 
@@ -297,7 +294,6 @@ class GenomeSimulator():
             else:
 
                 current_time += time_to_next_genome_event
-
                 self.evolve_genomes(d, t, l, i, c, o, current_time)
 
     def run_s(self):
@@ -386,23 +382,41 @@ class GenomeSimulator():
 
         return d,t,l,i,c,o
 
-    def run_b(self):
+    def read_rates(self, rates_folder):
 
-        d = af.obtain_value(self.parameters["DUPLICATION"])
-        t = af.obtain_value(self.parameters["TRANSFER"])
-        l = af.obtain_value(self.parameters["LOSS"])
-        i = af.obtain_value(self.parameters["INVERSION"])
-        c = af.obtain_value(self.parameters["TRANSLOCATION"])
-        o = af.obtain_value(self.parameters["ORIGINATION"])
+        self.branch_event_rates = dict()
+        self.branch_extension_rates = dict()
+        self.transfer_rates = dict()
 
-        self.branch_rates = dict()
+        with open(os.path.join(rates_folder, "Event_rates.tsv")) as f:
+            f.readline()
+            for line in f:
+                sp, d, t, l, i, c, o,  = line.split("\t")
+                self.branch_event_rates[sp] = tuple([float(x) for x in (d, t, l, i, c, o)])
 
-        # First we prepare the rates per genome
+        with open(os.path.join(rates_folder, "Extension_rates.tsv")) as f:
+            f.readline()
+            for line in f:
+                sp, d, t, l, i, c,  = line.split("\t")
+                self.branch_extension_rates[sp] = tuple([float(x) for x in (d, t, l, i, c)])
+
+
+        with open(os.path.join(rates_folder, "Transfer_rates.tsv")) as f:
+            f.readline()
+            for line in f:
+                dn, rc, wt  = line.split("\t")
+                if dn not in self.transfer_rates:
+                    self.transfer_rates[dn] = dict()
+                if rc not in self.transfer_rates[dn]:
+                    self.transfer_rates[dn][rc] = 0.0
+
+                self.transfer_rates[dn][rc] = float(wt)
+
+    def run_u(self):
 
         genome = self._FillGenome()
         self.active_genomes.add(genome.species)
         self.all_genomes["Root"] = genome
-        self.branch_rates["Root"] = (d,t,l,i,c,o)
 
         current_species_tree_event = 0
         current_time = 0.0
@@ -420,18 +434,14 @@ class GenomeSimulator():
             time_to_next_genome_event = self.get_time_to_next_event_advanced_modes()
 
             elapsed_time = float(current_time) - elapsed_time
-
             if time_to_next_genome_event + current_time >= float(time_of_next_species_tree_event):
-
                 current_species_tree_event +=1
                 current_time = time_of_next_species_tree_event
-
                 if event == "S":
 
                     sp,c1,c2 = nodes.split(";")
 
                     # First we keep track of the active and inactive genomes
-
                     self.active_genomes.discard(sp)
                     self.active_genomes.add(c1)
                     self.active_genomes.add(c2)
@@ -439,15 +449,8 @@ class GenomeSimulator():
                     # Second, we speciate the genomes
 
                     genome_c1, genome_c2 = self.make_speciation(sp, c1, c2, current_time)
-
                     self.all_genomes[c1] = genome_c1
                     self.all_genomes[c2] = genome_c2
-
-                    # Third, we store the new rates
-
-                    self.branch_rates[c1] = self.generate_new_rates()
-                    self.branch_rates[c2] = self.generate_new_rates()
-
 
                 elif event == "E":
                     self.make_extinction(nodes, current_time)
@@ -463,82 +466,6 @@ class GenomeSimulator():
                 self.advanced_evolve_genomes(current_time)
 
 
-    def run_b(self):
-
-        d = af.obtain_value(self.parameters["DUPLICATION"])
-        t = af.obtain_value(self.parameters["TRANSFER"])
-        l = af.obtain_value(self.parameters["LOSS"])
-        i = af.obtain_value(self.parameters["INVERSION"])
-        c = af.obtain_value(self.parameters["TRANSLOCATION"])
-        o = af.obtain_value(self.parameters["ORIGINATION"])
-
-        self.branch_rates = dict()
-
-        # First we prepare the rates per genome
-
-        genome = self._FillGenome()
-        self.active_genomes.add(genome.species)
-        self.all_genomes["Root"] = genome
-        self.branch_rates["Root"] = (d,t,l,i,c,o)
-
-        current_species_tree_event = 0
-        current_time = 0.0
-        all_species_tree_events = len(self.tree_events)
-
-        elapsed_time = 0.0
-
-        while current_species_tree_event < all_species_tree_events:
-
-            time_of_next_species_tree_event, event, nodes = self.tree_events[current_species_tree_event]
-            time_of_next_species_tree_event = float(time_of_next_species_tree_event)
-
-            print("Simulating genomes. Time %s" % str(current_time))
-
-            time_to_next_genome_event = self.get_time_to_next_event_advanced_modes()
-
-            elapsed_time = float(current_time) - elapsed_time
-
-            if time_to_next_genome_event + current_time >= float(time_of_next_species_tree_event):
-
-                current_species_tree_event +=1
-                current_time = time_of_next_species_tree_event
-
-                if event == "S":
-
-                    sp,c1,c2 = nodes.split(";")
-
-                    # First we keep track of the active and inactive genomes
-
-                    self.active_genomes.discard(sp)
-                    self.active_genomes.add(c1)
-                    self.active_genomes.add(c2)
-
-                    # Second, we speciate the genomes
-
-                    genome_c1, genome_c2 = self.make_speciation(sp, c1, c2, current_time)
-
-                    self.all_genomes[c1] = genome_c1
-                    self.all_genomes[c2] = genome_c2
-
-                    # Third, we store the new rates
-
-                    self.branch_rates[c1] = self.generate_new_rates()
-                    self.branch_rates[c2] = self.generate_new_rates()
-
-
-                elif event == "E":
-                    self.make_extinction(nodes, current_time)
-                    self.active_genomes.discard(nodes)
-
-                elif event == "F":
-                    self.make_end(current_time)
-                    break
-
-            else:
-
-                current_time += time_to_next_genome_event
-
-                self.advanced_evolve_genomes(current_time)
 
 
     def choose_event(self, duplication, transfer, loss, inversion, translocation, origination):
@@ -556,7 +483,6 @@ class GenomeSimulator():
             return None
 
     def evolve_genomes(self, duplication, transfer, loss, inversion, translocation, origination, time):
-
 
         d_e = self.parameters["DUPLICATION_EXTENSION"]
         t_e = self.parameters["TRANSFER_EXTENSION"]
@@ -579,20 +505,11 @@ class GenomeSimulator():
 
             if len(possible_recipients) > 0:
 
-                if self.parameters["TRANSFER_PREFERENCE"] == 0:
 
-                    recipient = random.choice(possible_recipients)
-                    donor = lineage
-                    self.make_transfer(t_e, donor, recipient, time)
-                    return "T", donor+"->"+recipient
-
-                elif self.parameters["TRANSFER_PREFERENCE"] == 1:
-
-                    # In this case the transfers occur proportionally to the logarithm of the distance
-                    recipient = self.choose_advanced_recipient(time, possible_recipients, lineage)
-                    donor = lineage
-                    self.make_transfer(t_e, donor, recipient, time)
-                    return "T", donor + "->" + recipient
+                recipient = random.choice(possible_recipients)
+                donor = lineage
+                self.make_transfer(t_e, donor, recipient, time)
+                return "T", donor+"->"+recipient
 
             else:
                 return None
@@ -624,19 +541,16 @@ class GenomeSimulator():
 
     def advanced_evolve_genomes(self, time):
 
-        d_e = self.parameters["DUPLICATION_EXTENSION"]
-        t_e = self.parameters["TRANSFER_EXTENSION"]
-        l_e = self.parameters["LOSS_EXTENSION"]
-        i_e = self.parameters["INVERSION_EXTENSION"]
-        c_e = self.parameters["TRANSLOCATION_EXTENSION"]
 
         active_genomes = list(self.active_genomes)
         lineage = numpy.random.choice(active_genomes, 1, p=af.normalize(
-            [sum(self.branch_rates[x]) for x in active_genomes]))[0]
+            [sum(self.branch_event_rates[x]) for x in active_genomes]))[0]
 
-        d,t,l,i,c,o = self.branch_rates[lineage]
+        d,t,l,i,c,o = self.branch_event_rates[lineage]
 
         event = self.choose_event(d,t,l,i,c,o)
+
+        d_e, t_e, l_e, i_e, c_e = self.branch_extension_rates[lineage]
 
         if event == "D":
             self.make_duplication(d_e, lineage, time)
@@ -650,10 +564,11 @@ class GenomeSimulator():
 
             if len(possible_recipients) > 0:
 
-                recipient = random.choice(possible_recipients)
-                donor = lineage
-                self.make_transfer(t_e, donor, recipient, time)
-                return "T", donor+"->"+recipient
+                recipient = self.choose_advanced_recipient(possible_recipients, lineage)
+                if recipient != None:
+                    donor = lineage
+                    self.make_transfer(t_e, donor, recipient, time)
+                    return "T", donor+"->"+recipient
 
             else:
                 return None
@@ -697,8 +612,12 @@ class GenomeSimulator():
     def get_time_to_next_event_advanced_modes(self):
         # To obtain the time to next event in case that we have different rates per branch
         total = 0.0
+
         for lineage in self.active_genomes:
-            total += sum(self.branch_rates[lineage])
+            total += sum(self.branch_event_rates[lineage])
+
+        if total == 0:
+            return 1000000000000000 # We sent an arbitrarily big number. Probably not the most elegant thing to do
         time = numpy.random.exponential(1 / total)
         return time
 
@@ -706,41 +625,6 @@ class GenomeSimulator():
 
         for node in active_lineages:
             node.dist += time_to_next_event
-
-    def obtain_rates_per_branch(self, tree_file):
-
-        with open(tree_file) as f:
-            mytree = ete3.Tree(f.readline().strip(), format=1)
-
-        root = mytree.get_tree_root()
-        root.name = "Root"
-
-        self.branch_rates = dict()
-
-        for node in mytree.traverse():
-
-            d = af.obtain_value(self.parameters["DUPLICATION"])
-            t = af.obtain_value(self.parameters["TRANSFER"])
-            l = af.obtain_value(self.parameters["LOSS"])
-            i = af.obtain_value(self.parameters["INVERSION"])
-            c = af.obtain_value(self.parameters["TRANSLOCATION"])
-            o = af.obtain_value(self.parameters["ORIGINATION"])
-
-            self.branch_rates[node.name] = (d,t,l,i,c,o)
-
-    def write_rates(self, rates_file):
-
-        with open(rates_file, "w") as f:
-
-            line = "\t".join(["lineage","D","T","L","I","C","O"]) + "\n"
-            f.write(line)
-
-            for lineage, values in self.branch_rates.items():
-
-                d,t,l,i,c,o = values
-
-                line = "\t".join(map(str,[lineage, d,t,l,i,c,o])) + "\n"
-                f.write(line)
 
 
     def make_origination(self, species_tree_node, time):
@@ -914,9 +798,9 @@ class GenomeSimulator():
                     continue
                 self.distances_to_root[node.name] = (node, node.get_distance(root))
 
-    def choose_advanced_recipient(self, time, possible_recipients, donor):
+    def choose_precise_distance_recipient(self, time, possible_recipients, donor):
 
-        # Chooses and advanced recipient according to the logarithm of the phylogenetic distance
+        ### Deprecated
 
         weights = list()
         mydonor = self.distances_to_root[donor][0]
@@ -929,6 +813,21 @@ class GenomeSimulator():
             weights.append(td)
 
         draw = numpy.random.choice(possible_recipients, 1, p=af.normalize(af.inverse(weights)))[0]
+
+        return draw
+
+    def choose_advanced_recipient(self, possible_recipients, donor):
+
+        weights = list()
+
+        for recipient in possible_recipients:
+            weights.append(self.transfer_rates[donor][recipient])
+
+        if sum(weights) == 0:
+            return None
+
+
+        draw = numpy.random.choice(possible_recipients, 1, p=af.normalize(weights))[0]
 
         return draw
 

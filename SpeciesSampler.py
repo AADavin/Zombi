@@ -130,7 +130,9 @@ class SpeciesSampler():
         self.write_sampled_trees(trees)
 
 
-    def mode_w(self, myfile, n):
+    def mode_w(self, input):
+
+        myfile, n = input.split(";")
 
         species = []
         weights = []
@@ -185,6 +187,7 @@ if __name__ == "__main__":
         ss.mode_n(input)
 
     elif mode == "w":
+
 
         ss.mode_w(input)
 

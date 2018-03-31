@@ -104,19 +104,11 @@ class simuLyon():
         if advanced_mode == "0":
             gss.run()
 
-        elif advanced_mode == "s":
-            gss.run_s()
+        elif advanced_mode == "u":
 
-        elif advanced_mode == "b":
-            gss.obtain_rates_per_branch(experiment_folder + "/T/WholeTree.nwk")
-            # And we save it
-            log_folder = os.path.join(genome_folder, "Log")
-
-            if not os.path.isdir(log_folder):
-                os.mkdir(log_folder)
-            gss.write_rates(os.path.join(log_folder, "Rates.tsv"))
-
-            gss.run_b()
+            rates_folder = os.path.join(experiment_folder, "CustomRates")
+            gss.read_rates(rates_folder)
+            gss.run_u()
 
         # We write the output
 
@@ -201,7 +193,7 @@ if __name__ == "__main__":
 
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("mode", type=str, choices=["T","Ti","Tb","Tp","G", "Gb", "Gu", "S","Sb"], help="Mode")
+    parser.add_argument("mode", type=str, choices=["T","Ti","Tb","Tp","G", "Gu","S","Su"], help="Mode")
     parser.add_argument("params",  type=str, help="Parameters file")
     parser.add_argument("output", type=str, help="Name of the experiment folder")
 
