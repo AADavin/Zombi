@@ -20,8 +20,6 @@ class GenomeSimulator():
         self.gene_families_counter = 0
         self.active_genomes = set()
 
-        if self.parameters["TRANSFER_PREFERENCE"] == 1:
-            self.get_vector_of_distances(events_file.replace("Events.tsv","WholeTree.nwk"))
 
     def write_genomes(self, genome_folder):
 
@@ -784,19 +782,6 @@ class GenomeSimulator():
             gene.active = False
 
             self.all_gene_families[gene.gene_family].register_event(time, "D", ";".join(map(str, nodes)))
-
-    def get_vector_of_distances(self, tree_file):
-
-        self.distances_to_root = dict()
-
-        with open(tree_file) as f:
-            self.mytree = ete3.Tree(f.readline().strip(), format=1)
-            root = self.mytree.get_tree_root()
-            root.name = "Root"
-            for node in self.mytree.traverse():
-                if node.is_root():
-                    continue
-                self.distances_to_root[node.name] = (node, node.get_distance(root))
 
     def choose_precise_distance_recipient(self, time, possible_recipients, donor):
 

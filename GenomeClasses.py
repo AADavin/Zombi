@@ -174,7 +174,22 @@ class GeneFamily():
                     equick_nodes[c1name] = myc1
                     equick_nodes[c2name] = myc2
 
-        return wholetree.write(format=1), extanttree.write(format=1)
+        if len(wholetree) == 0:
+            wholetree = ";"
+        if len(wholetree) == 1:
+            wholetree = wholetree.get_leaves()[0].name + ";"
+        else:
+            wholetree = wholetree.write(format=1)
+
+        if len(extanttree) == 0:
+            extanttree = ";"
+        if len(extanttree) == 1:
+            extanttree = extanttree.get_leaves()[0].name + ";"
+        else:
+            extanttree = extanttree.write(format=1)
+
+
+        return wholetree, extanttree
 
 
     def generate_oldtree(self):

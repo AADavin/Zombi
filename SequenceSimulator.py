@@ -32,7 +32,7 @@ class SequenceSimulator():
         fasta_file = tree_file.split("/")[-1].replace("_wholetree.nwk", "_") + self.sequence + ".fasta"
         evolver(seqfile=os.path.join(sequences_folder, fasta_file), ratefile=None, infofile=None)
 
-    def run_b(self, tree_file, sequences_folder):
+    def run_u(self, tree_file, sequences_folder):
 
         with open(tree_file) as f:
             my_tree = ete3.Tree(f.readline().strip(), format=1)
@@ -48,45 +48,6 @@ class SequenceSimulator():
         evolver = pyvolve.Evolver(tree=tree, partitions=partition)
         fasta_file = tree_file.split("/")[-1].replace("_wholetree.nwk", "_") + self.sequence + ".fasta"
         evolver(seqfile=os.path.join(sequences_folder, fasta_file), ratefile=None, infofile=None)
-
-    def obtain_rates_multiplier(self, tree_file):
-
-        with open(tree_file) as f:
-            mytree = ete3.Tree(f.readline().strip(), format=1)
-
-        root = mytree.get_tree_root()
-        root.name = "Root"
-
-        self.branch_rates = dict()
-
-        for node in mytree.traverse():
-            self.branch_rates[node.name] = af.obtain_value(self.parameters["RATE_MULTIPLIERS"])
-
-    def write_rates_tree(self, inputtree_file, output_tree):
-
-        with open(inputtree_file) as f:
-            mytree = ete3.Tree(f.readline().strip(), format=1)
-
-        root = mytree.get_tree_root()
-        root.name = "Root"
-
-        for node in mytree.traverse():
-            node.dist = self.branch_rates[node.name] * node.dist
-
-        with open(output_tree, "w") as f:
-            f.write(mytree.write(format=1))
-
-    def write_rates(self, rates_file):
-
-        with open(rates_file, "w") as f:
-
-            line = "\t".join(["lineage", "multiplier"]) + "\n"
-            f.write(line)
-
-            for lineage, value in self.branch_rates.items():
-
-                line = "\t".join(map(str,[lineage, value])) + "\n"
-                f.write(line)
 
     def get_nucleotide_model(self):
 

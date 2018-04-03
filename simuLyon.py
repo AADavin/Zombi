@@ -159,7 +159,7 @@ class simuLyon():
                 print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
                 ss.run(tree_path, fasta_folder)
 
-        elif advanced_mode == "b":
+        elif advanced_mode == "u":
 
             # First we obtain the rates-multiplier
 

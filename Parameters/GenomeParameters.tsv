@@ -20,7 +20,6 @@ TRANSLOCATION_EXTENSION f:0.3
 ### Transfer related parameters
 #
 REPLACEMENT_TRANSFER 1
-TRANSFER_PREFERENCE 1
 #
 ### Genome size related parameters
 #
