@@ -52,6 +52,8 @@ class simuLyon():
             parameters = af.prepare_species_tree_parameters(af.read_parameters(parameters_file))
             stg = SpeciesTreeGenerator(parameters)
 
+        os.system("cp " + parameters_file + " " + tree_folder)
+
         run_counter = 0
         success = False
 
@@ -95,6 +97,7 @@ class simuLyon():
         parameters = af.prepare_genome_parameters(af.read_parameters(parameters_file))
         events_file = os.path.join(experiment_folder, "T/Events.tsv")
         genome_folder = os.path.join(experiment_folder, "G")
+        os.system("cp " + parameters_file + " " + genome_folder)
 
         genomes_folder = os.path.join(genome_folder, "Genomes")
         gene_families_folder = os.path.join(genome_folder, "Gene_families")
@@ -136,7 +139,9 @@ class simuLyon():
 
         gene_trees_folder = os.path.join(experiment_folder, "G/Gene_trees")
         sequences_folder = os.path.join(experiment_folder, "S/Sequences")
+        os.system("cp " + parameters_file + " " + sequences_folder)
         fasta_folder = os.path.join(sequence_folder, "Sequences")
+
 
         if not os.path.isdir(sequences_folder):
             os.mkdir(sequences_folder)

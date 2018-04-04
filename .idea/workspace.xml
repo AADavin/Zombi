@@ -2,14 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="59ba90f0-ee1f-4701-b72e-68f3e4c50e55" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CustomizeRatesSequences.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AuxiliarFunctions.py" afterPath="$PROJECT_DIR$/AuxiliarFunctions.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GenomeClasses.py" afterPath="$PROJECT_DIR$/GenomeClasses.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GenomeSimulator.py" afterPath="$PROJECT_DIR$/GenomeSimulator.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" afterPath="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Parameters/SequenceParameters.tsv" afterPath="$PROJECT_DIR$/Parameters/SequenceParameters.tsv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SequenceSimulator.py" afterPath="$PROJECT_DIR$/SequenceSimulator.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/simuLyon.py" afterPath="$PROJECT_DIR$/simuLyon.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -29,11 +23,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="simuLyon.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="simuLyon.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/simuLyon.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="182" column="0" selection-start-line="161" selection-start-column="0" selection-end-line="182" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.23230088">
+              <caret line="141" column="67" selection-start-line="141" selection-start-column="67" selection-end-line="141" selection-end-column="67" />
               <folding>
                 <element signature="e#0#53#0" expanded="true" />
               </folding>
@@ -107,11 +101,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="lineages_per_time.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="lineages_per_time.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Analyzing/lineages_per_time.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <caret line="3" column="24" selection-start-line="3" selection-start-column="24" selection-end-line="3" selection-end-column="24" />
               <folding />
             </state>
           </provider>
@@ -132,8 +126,8 @@
       <file leaf-file-name="AuxiliarFunctions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/AuxiliarFunctions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="121" column="8" selection-start-line="121" selection-start-column="8" selection-end-line="121" selection-end-column="8" />
+            <state vertical-scroll-proportion="-1.3333334">
+              <caret line="52" column="0" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -242,15 +236,15 @@
         <option value="$PROJECT_DIR$/SpeciesSampler.py" />
         <option value="$PROJECT_DIR$/generate_transfer_rates.py" />
         <option value="$PROJECT_DIR$/RatesCustomizer.py" />
-        <option value="$PROJECT_DIR$/simuLyon.py" />
         <option value="$PROJECT_DIR$/SequenceSimulator.py" />
         <option value="$PROJECT_DIR$/Parameters/SequenceParameters.tsv" />
         <option value="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" />
         <option value="$PROJECT_DIR$/CustomizeRatesSequences.py" />
         <option value="$PROJECT_DIR$/GenomeSimulator.py" />
-        <option value="$PROJECT_DIR$/AuxiliarFunctions.py" />
         <option value="$PROJECT_DIR$/GenomeClasses.py" />
         <option value="$PROJECT_DIR$/Analyzing/lineages_per_time.py" />
+        <option value="$PROJECT_DIR$/AuxiliarFunctions.py" />
+        <option value="$PROJECT_DIR$/simuLyon.py" />
       </list>
     </option>
   </component>
@@ -258,7 +252,7 @@
     <option name="x" value="1" />
     <option name="y" value="22" />
     <option name="width" value="1440" />
-    <option name="height" value="817" />
+    <option name="height" value="795" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -368,7 +362,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.generate_transfer_rates">
+  <component name="RunManager" selected="Python.lineages_per_time">
     <configuration default="false" name="Tests" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -382,23 +376,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="SimuLYON" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Tests.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="Runner" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="SimuLYON" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/simuLyon.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -450,6 +427,23 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="SimuLYON" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/generate_transfer_rates.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="lineages_per_time" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Analyzing" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="SimuLYON" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Analyzing/lineages_per_time.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -578,18 +572,18 @@
     </configuration>
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Python.Tests" />
-      <item index="1" class="java.lang.String" itemvalue="Python.Runner" />
-      <item index="2" class="java.lang.String" itemvalue="Python.GeneFamilySimulator" />
-      <item index="3" class="java.lang.String" itemvalue="Python.plot_vincent" />
-      <item index="4" class="java.lang.String" itemvalue="Python.generate_transfer_rates" />
+      <item index="1" class="java.lang.String" itemvalue="Python.GeneFamilySimulator" />
+      <item index="2" class="java.lang.String" itemvalue="Python.plot_vincent" />
+      <item index="3" class="java.lang.String" itemvalue="Python.generate_transfer_rates" />
+      <item index="4" class="java.lang.String" itemvalue="Python.lineages_per_time" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.generate_transfer_rates" />
-        <item index="1" class="java.lang.String" itemvalue="Python.Tests" />
-        <item index="2" class="java.lang.String" itemvalue="Python.plot_vincent" />
-        <item index="3" class="java.lang.String" itemvalue="Python.GeneFamilySimulator" />
-        <item index="4" class="java.lang.String" itemvalue="Python.Runner" />
+        <item index="0" class="java.lang.String" itemvalue="Python.lineages_per_time" />
+        <item index="1" class="java.lang.String" itemvalue="Python.generate_transfer_rates" />
+        <item index="2" class="java.lang.String" itemvalue="Python.Tests" />
+        <item index="3" class="java.lang.String" itemvalue="Python.plot_vincent" />
+        <item index="4" class="java.lang.String" itemvalue="Python.GeneFamilySimulator" />
       </list>
     </recent_temporary>
   </component>
@@ -640,11 +634,17 @@
       <option name="project" value="LOCAL" />
       <updated>1522489582277</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Solving bug with Extension parameters&#10;Change output of small trees">
+      <created>1522768174227</created>
+      <option name="number" value="00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1522768174227</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1" y="22" width="1440" height="817" extended-state="6" />
+    <frame x="1" y="22" width="1440" height="795" extended-state="6" />
     <editor active="false" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21458334" sideWeight="0.4877193" order="0" side_tool="false" content_ui="combo" />
@@ -653,7 +653,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32941177" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.328877" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.338843" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32941177" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.193125" sideWeight="0.5122807" order="2" side_tool="true" content_ui="tabs" />
@@ -685,7 +685,8 @@
     <MESSAGE value="Finished example 1" />
     <MESSAGE value="Added a SpeciesSampler" />
     <MESSAGE value="Fine control of Genome Rates working" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fine control of Genome Rates working" />
+    <MESSAGE value="Solving bug with Extension parameters&#10;Change output of small trees" />
+    <option name="LAST_COMMIT_MESSAGE" value="Solving bug with Extension parameters&#10;Change output of small trees" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -707,7 +708,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="30" />
+      <option name="time" value="31" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1043,16 +1044,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/simuLyon.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="182" column="0" selection-start-line="161" selection-start-column="0" selection-end-line="182" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#53#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/SequenceSimulator.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1099,16 +1090,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AuxiliarFunctions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="121" column="8" selection-start-line="121" selection-start-column="8" selection-end-line="121" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/GenomeClasses.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-10.444445">
@@ -1120,8 +1101,28 @@
     <entry file="file://$PROJECT_DIR$/Analyzing/lineages_per_time.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="3" column="24" selection-start-line="3" selection-start-column="24" selection-end-line="3" selection-end-column="24" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AuxiliarFunctions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.3333334">
+          <caret line="52" column="0" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/simuLyon.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.23230088">
+          <caret line="141" column="67" selection-start-line="141" selection-start-column="67" selection-end-line="141" selection-end-column="67" />
+          <folding>
+            <element signature="e#0#53#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
