@@ -550,7 +550,6 @@ def generate_gene_tree(events):
     else:
         wholetree = wholetree.write(format=1)
 
-
     if len(extanttree) == 0:
         extanttree = ";"
 
@@ -559,7 +558,6 @@ def generate_gene_tree(events):
 
     else:
         extanttree = extanttree.write(format=1)
-
 
     return wholetree, extanttree
 

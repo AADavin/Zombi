@@ -69,7 +69,7 @@ class simuLyon():
             if advanced_mode == "p":
                 success = stg.run_p()
 
-        if run_counter >= 50:
+        if run_counter >= 100:
             print("Aborting computation of the Species Tree. Please use other speciation and extinction rates!")
             return 0
 
