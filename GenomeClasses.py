@@ -179,10 +179,18 @@ class GeneFamily():
                     equick_nodes[c2name] = myc2
 
         if family_size == 0:
+
             extanttree = ";"
+
         elif family_size == 1:
-            extanttree = wholetree.get_leaves()[0].name + ";"
+
+
+            extanttree = [k for k, v in surviving_nodes.items() if v["state"] == 1 and v["descendant"] == "None"][
+                             0] + ";"
+
+
         else:
+
             extanttree = extanttree.write(format=1)
 
 
