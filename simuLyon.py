@@ -142,7 +142,6 @@ class simuLyon():
         os.system("cp " + parameters_file + " " + sequences_folder)
         fasta_folder = os.path.join(sequence_folder, "Sequences")
 
-
         if not os.path.isdir(sequences_folder):
             os.mkdir(sequences_folder)
 
@@ -168,26 +167,20 @@ class simuLyon():
 
             # First we obtain the rates-multiplier
 
-            ss.obtain_rates_multiplier(experiment_folder + "/T/WholeTree.nwk")
+            ss.obtain_rates_multipliers(experiment_folder + "/CustomRates/GT_Substitution_rates.tsv",
+                                        experiment_folder + "/CustomRates/ST_Substitution_rates.tsv")
 
             # And we save it
 
-            log_folder = os.path.join(sequence_folder, "Log")
+            ss.write_rates_sttree(experiment_folder + "/T/WholeTree.nwk",
+                                  os.path.join(experiment_folder, "T/RatesTree.nwk"))
 
-            if not os.path.isdir(log_folder):
-                os.mkdir(log_folder)
-            ss.write_rates(os.path.join(log_folder,"Rates.tsv"))
-            ss.write_rates_tree(experiment_folder + "/T/WholeTree.nwk", os.path.join(log_folder, "RatesTree.nwk"))
-
-            whole_trees = [x.replace("_pruned", "_whole") for x in os.listdir(gene_trees_folder) if "pruned" in x]
+            whole_trees = [x for x in os.listdir(gene_trees_folder) if "whole" in x]
 
             for tree_file in whole_trees:
                 tree_path = os.path.join(gene_trees_folder, tree_file)
                 print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
-                ss.run_b(tree_path, fasta_folder)
-
-        elif advanced_mode == "u":
-            ss.run_u()
+                ss.run_u(tree_path, fasta_folder)
 
 
 

@@ -6,7 +6,7 @@ import numpy
 import ete3
 
 
-class RatesCustomizer():
+class RateCustomizer():
 
     def __init__(self, mode, parameters, experiment_folder):
 
@@ -190,7 +190,7 @@ if __name__ == "__main__":
     if not os.path.isdir(rates_folder):
             os.mkdir(rates_folder)
 
-    rc = RatesCustomizer(mode, parameters, experiment_folder)
+    rc = RateCustomizer(mode, parameters, experiment_folder)
 
     if mode == "G":
 

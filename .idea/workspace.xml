@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="59ba90f0-ee1f-4701-b72e-68f3e4c50e55" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/GenomeClasses.py" afterPath="$PROJECT_DIR$/GenomeClasses.py" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/AuxiliarFunctions.py" afterPath="$PROJECT_DIR$/AuxiliarFunctions.py" />
+      <change beforePath="$PROJECT_DIR$/CustomizeRatesSequences.py" afterPath="$PROJECT_DIR$/RateCustomizer.py" />
+      <change beforePath="$PROJECT_DIR$/GenomeSimulator.py" afterPath="$PROJECT_DIR$/GenomeSimulator.py" />
+      <change beforePath="$PROJECT_DIR$/SequenceSimulator.py" afterPath="$PROJECT_DIR$/SequenceSimulator.py" />
+      <change beforePath="$PROJECT_DIR$/simuLyon.py" afterPath="$PROJECT_DIR$/simuLyon.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -22,11 +27,33 @@
       <file leaf-file-name="simuLyon.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/simuLyon.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-516">
-              <caret line="71" column="24" lean-forward="false" selection-start-line="71" selection-start-column="24" selection-end-line="71" selection-end-column="24" />
+            <state relative-caret-position="414">
+              <caret line="181" column="0" lean-forward="false" selection-start-line="181" selection-start-column="0" selection-end-line="181" selection-end-column="0" />
               <folding>
                 <element signature="e#0#53#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RateCustomizer.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/RateCustomizer.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="253">
+              <caret line="151" column="38" lean-forward="true" selection-start-line="151" selection-start-column="38" selection-end-line="151" selection-end-column="38" />
+              <folding>
+                <element signature="e#0#30#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RatesCustomizer.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/RatesCustomizer.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1789">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -46,34 +73,14 @@
       <file leaf-file-name="GenomeSimulator.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GenomeSimulator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="9167">
-              <caret line="667" column="0" lean-forward="false" selection-start-line="667" selection-start-column="0" selection-end-line="667" selection-end-column="0" />
+            <state relative-caret-position="5000">
+              <caret line="399" column="92" lean-forward="false" selection-start-line="399" selection-start-column="92" selection-end-line="399" selection-end-column="92" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SequenceParameters.tsv" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Parameters/SequenceParameters.tsv">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="720">
-              <caret line="48" column="37" lean-forward="false" selection-start-line="48" selection-start-column="37" selection-end-line="48" selection-end-column="37" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GenomeParameters.tsv" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Parameters/GenomeParameters.tsv">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="20" column="1" lean-forward="false" selection-start-line="20" selection-start-column="1" selection-end-line="20" selection-end-column="1" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GenomeClasses.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="GenomeClasses.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GenomeClasses.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="401">
@@ -83,11 +90,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SequenceSimulator.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="SequenceSimulator.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/SequenceSimulator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="248">
-              <caret line="50" column="0" lean-forward="false" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
+            <state relative-caret-position="420">
+              <caret line="60" column="36" lean-forward="false" selection-start-line="60" selection-start-column="36" selection-end-line="60" selection-end-column="36" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -98,8 +105,8 @@
       <file leaf-file-name="AuxiliarFunctions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/AuxiliarFunctions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1799">
-              <caret line="91" column="0" lean-forward="false" selection-start-line="91" selection-start-column="0" selection-end-line="91" selection-end-column="0" />
+            <state relative-caret-position="98">
+              <caret line="114" column="0" lean-forward="true" selection-start-line="114" selection-start-column="0" selection-end-line="114" selection-end-column="0" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -118,8 +125,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>verbose</find>
-      <find>read_para</find>
       <find>read</find>
       <find>FillG</find>
       <find>make_orig</find>
@@ -140,7 +145,6 @@
       <find>get_homo</find>
       <find>choose</find>
       <find>TRASLOCATION</find>
-      <find>branch_rates</find>
       <find>evolve</find>
       <find>self.act</find>
       <find>make_tr</find>
@@ -148,6 +152,9 @@
       <find>return_vector</find>
       <find>redundan</find>
       <find>namespacedef</find>
+      <find>branch_rates</find>
+      <find>gene</find>
+      <find>branch_ex</find>
     </findStrings>
     <replaceStrings>
       <replace>transfer</replace>
@@ -166,7 +173,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/HandlerFunctions/test_TED.py" />
         <option value="$PROJECT_DIR$/HandlerFunctions/get_TED.py" />
         <option value="$PROJECT_DIR$/Examples/1/massive_extinction_2.tsv" />
         <option value="$PROJECT_DIR$/ParallelGenomeGenerator.py" />
@@ -206,17 +212,18 @@
         <option value="$PROJECT_DIR$/SpeciesSampler.py" />
         <option value="$PROJECT_DIR$/generate_transfer_rates.py" />
         <option value="$PROJECT_DIR$/RatesCustomizer.py" />
-        <option value="$PROJECT_DIR$/SequenceSimulator.py" />
         <option value="$PROJECT_DIR$/Parameters/SequenceParameters.tsv" />
         <option value="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" />
         <option value="$PROJECT_DIR$/CustomizeRatesSequences.py" />
-        <option value="$PROJECT_DIR$/GenomeSimulator.py" />
         <option value="$PROJECT_DIR$/Analyzing/lineages_per_time.py" />
-        <option value="$PROJECT_DIR$/AuxiliarFunctions.py" />
         <option value="$USER_HOME$/anaconda3/envs/Phylogenetics/lib/python3.6/site-packages/ete3/phyloxml/_phyloxml_tree.py" />
         <option value="$PROJECT_DIR$/prepare_reconciliations.py" />
-        <option value="$PROJECT_DIR$/simuLyon.py" />
         <option value="$PROJECT_DIR$/GenomeClasses.py" />
+        <option value="$PROJECT_DIR$/RateCustomizer.py" />
+        <option value="$PROJECT_DIR$/AuxiliarFunctions.py" />
+        <option value="$PROJECT_DIR$/GenomeSimulator.py" />
+        <option value="$PROJECT_DIR$/simuLyon.py" />
+        <option value="$PROJECT_DIR$/SequenceSimulator.py" />
       </list>
     </option>
   </component>
@@ -250,6 +257,11 @@
             <path>
               <item name="SimuLYON" type="b2602c69:ProjectViewProjectNode" />
               <item name="SimuLYON" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="SimuLYON" type="b2602c69:ProjectViewProjectNode" />
+              <item name="SimuLYON" type="462c0819:PsiDirectoryNode" />
+              <item name="Parameters" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -585,7 +597,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1600" height="900" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.214375" sideWeight="0.4877193" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -937,35 +948,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/RatesCustomizer.py" />
-    <entry file="file://$PROJECT_DIR$/Parameters/SequenceParameters.tsv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="720">
-          <caret line="48" column="37" lean-forward="false" selection-start-line="48" selection-start-column="37" selection-end-line="48" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CustomizeRatesSequences.py" />
     <entry file="file://$PROJECT_DIR$/Analyzing/lineages_per_time.py" />
-    <entry file="file://$PROJECT_DIR$/Parameters/GenomeParameters.tsv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="20" column="1" lean-forward="false" selection-start-line="20" selection-start-column="1" selection-end-line="20" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SequenceSimulator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="248">
-          <caret line="50" column="0" lean-forward="false" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda3/envs/Phylogenetics/lib/python3.6/site-packages/ete3/phyloxml/_phyloxml_tree.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="279">
@@ -984,31 +967,47 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/simuLyon.py">
+    <entry file="file://$PROJECT_DIR$/RatesCustomizer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-516">
-          <caret line="71" column="24" lean-forward="false" selection-start-line="71" selection-start-column="24" selection-end-line="71" selection-end-column="24" />
-          <folding>
-            <element signature="e#0#53#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="-1789">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Parameters/GenomeParameters.tsv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="20" column="1" lean-forward="false" selection-start-line="20" selection-start-column="1" selection-end-line="20" selection-end-column="1" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/AuxiliarFunctions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1799">
-          <caret line="91" column="0" lean-forward="false" selection-start-line="91" selection-start-column="0" selection-end-line="91" selection-end-column="0" />
+        <state relative-caret-position="98">
+          <caret line="114" column="0" lean-forward="true" selection-start-line="114" selection-start-column="0" selection-end-line="114" selection-end-column="0" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GenomeSimulator.py">
+    <entry file="file://$PROJECT_DIR$/Parameters/SequenceParameters.tsv">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="9167">
-          <caret line="667" column="0" lean-forward="false" selection-start-line="667" selection-start-column="0" selection-end-line="667" selection-end-column="0" />
+        <state relative-caret-position="432">
+          <caret line="48" column="37" lean-forward="false" selection-start-line="48" selection-start-column="37" selection-end-line="48" selection-end-column="37" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/RateCustomizer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="253">
+          <caret line="151" column="38" lean-forward="true" selection-start-line="151" selection-start-column="38" selection-end-line="151" selection-end-column="38" />
+          <folding>
+            <element signature="e#0#30#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1017,6 +1016,34 @@
         <state relative-caret-position="401">
           <caret line="189" column="0" lean-forward="true" selection-start-line="189" selection-start-column="0" selection-end-line="189" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GenomeSimulator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5000">
+          <caret line="399" column="92" lean-forward="false" selection-start-line="399" selection-start-column="92" selection-end-line="399" selection-end-column="92" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/simuLyon.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="414">
+          <caret line="181" column="0" lean-forward="false" selection-start-line="181" selection-start-column="0" selection-end-line="181" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#53#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SequenceSimulator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="60" column="36" lean-forward="false" selection-start-line="60" selection-start-column="36" selection-end-line="60" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

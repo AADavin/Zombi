@@ -233,6 +233,7 @@ class GenomeSimulator():
         l = af.obtain_value(self.parameters["LOSS"])
         i = af.obtain_value(self.parameters["INVERSION"])
         c = af.obtain_value(self.parameters["TRANSLOCATION"])
+
         o = af.obtain_value(self.parameters["ORIGINATION"])
 
         # First we prepare the first genome
@@ -398,7 +399,6 @@ class GenomeSimulator():
                 sp, d, t, l, i, c,  = line.split("\t")
                 self.branch_extension_rates[sp] = tuple([float(x) for x in (d, t, l, i, c)])
 
-
         with open(os.path.join(rates_folder, "Transfer_rates.tsv")) as f:
             f.readline()
             for line in f:
@@ -482,11 +482,11 @@ class GenomeSimulator():
 
     def evolve_genomes(self, duplication, transfer, loss, inversion, translocation, origination, time):
 
-        d_e = self.parameters["DUPLICATION_EXTENSION"]
-        t_e = self.parameters["TRANSFER_EXTENSION"]
-        l_e = self.parameters["LOSS_EXTENSION"]
-        i_e = self.parameters["INVERSION_EXTENSION"]
-        c_e = self.parameters["TRANSLOCATION_EXTENSION"]
+        d_e = af.obtain_value(self.parameters["DUPLICATION_EXTENSION"])
+        t_e = af.obtain_value(self.parameters["TRANSFER_EXTENSION"])
+        l_e = af.obtain_value(self.parameters["LOSS_EXTENSION"])
+        i_e = af.obtain_value(self.parameters["INVERSION_EXTENSION"])
+        c_e = af.obtain_value(self.parameters["TRANSLOCATION_EXTENSION"])
 
         lineage = random.choice(list(self.active_genomes))
         event = self.choose_event(duplication, transfer, loss, inversion, translocation, origination)
