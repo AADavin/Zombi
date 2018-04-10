@@ -17,16 +17,15 @@ class SpeciesSampler():
         self.existing_folders = os.listdir(experiment_folder)
         self.species_tree_events = self.read_events(os.path.join(experiment_folder, "T/Events.tsv"))
         self.gene_family_folder = os.path.join(experiment_folder, "G/Gene_families")
+        self.seq_folder = os.path.join(experiment_folder, "S/Sequences")
 
     def read_events(self, events_file):
 
         events = list()
-
         with open(events_file) as f:
             f.readline()
             for line in f:
                 events.append(tuple(line.strip().split("\t")))
-
         return events
 
 
@@ -40,11 +39,8 @@ class SpeciesSampler():
             if e == "F":
 
                 if nodes not in species_to_sample:
-
                     pruned_events.append((t, "E", nodes))
-
                 else:
-
                     pruned_events.append((t, e, nodes))
 
             else:
@@ -78,7 +74,7 @@ class SpeciesSampler():
         pruned_events = self.prune_tree_events(species_sampled)
         w, p = af.generate_newick_trees(pruned_events)
 
-        cut_trees.append(("SampleSpeciesTree.nwk", p))
+        cut_trees.append(("SampledSpeciesTree.nwk", p))
 
         # p stores the pruned Species Tree
 
@@ -106,6 +102,11 @@ class SpeciesSampler():
         trees = self.cut(species_to_sample)
         self.write_sampled_trees(trees)
 
+        for tree in trees[1:]:
+            sampled_tree = os.path.join(self.output_folder, tree[0].replace("_events.tsv", "_sampledtree.nwk"))
+            af.write_sampled_sequences(sampled_tree, self.seq_folder, self.output_folder)
+
+
     def mode_r(self, value):
 
         # First we get the list of all the extant species
@@ -120,6 +121,11 @@ class SpeciesSampler():
         trees = self.cut(species_to_sample)
         self.write_sampled_trees(trees)
 
+        # We cut the sequences too
+        for tree in trees[1:]:
+            sampled_tree = os.path.join(self.output_folder, tree[0].replace("_events.tsv", "_sampledtree.nwk"))
+            af.write_sampled_sequences(sampled_tree, self.seq_folder, self.output_folder)
+
 
     def mode_n(self, value):
 
@@ -129,6 +135,9 @@ class SpeciesSampler():
         trees = self.cut(species_to_sample)
         self.write_sampled_trees(trees)
 
+        for tree in trees[1:]:
+            sampled_tree = os.path.join(self.output_folder, tree[0].replace("_events.tsv", "_sampledtree.nwk"))
+            af.write_sampled_sequences(sampled_tree, self.seq_folder, self.output_folder)
 
     def mode_w(self, input):
 
@@ -147,15 +156,21 @@ class SpeciesSampler():
         trees = self.cut(species_to_sample)
         self.write_sampled_trees(trees)
 
+        for tree in trees[1:]:
+            sampled_tree = os.path.join(self.output_folder, tree[0].replace("_events.tsv", "_sampledtree.nwk"))
+            af.write_sampled_sequences(sampled_tree, self.seq_folder, self.output_folder)
+
 
     def write_sampled_trees(self, trees):
 
         for name, tree in trees:
 
-            print("Writing %s" % name)
-            with open(os.path.join(self.output_folder,name), "w") as f:
-                f.write(tree)
+            tree_name = name.replace("_events.tsv", "_sampledtree.nwk")
 
+            print("Writing %s" % tree_name)
+
+            with open(os.path.join(self.output_folder, tree_name), "w") as f:
+                f.write(tree)
 
 
 

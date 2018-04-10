@@ -124,25 +124,7 @@ class SequenceSimulator():
             f.write(whole_tree.write(format=1))
 
 
-    def write_pruned_sequences(self, tree_file, fasta_folder):
 
-        with open(tree_file) as f:
-            line = f.readline().strip()
-            if "(" not in line or line == ";":
-                return None
-            else:
-                my_tree = ete3.Tree(line, format=1)
-
-        surviving_nodes = {x.name for x in my_tree.get_leaves()}
-        file_name = tree_file.split("/")[-1].split("_")[0]
-        entries = af.fasta_reader(fasta_folder + "/" + file_name + "_whole.fasta")
-
-        clean_entries = list()
-        for h, seq in entries:
-            if h[1:] in surviving_nodes:
-                clean_entries.append((h, seq))
-
-        af.fasta_writer(fasta_folder + "/" + file_name + "_pruned.fasta", clean_entries)
 
 
 

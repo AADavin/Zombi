@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="59ba90f0-ee1f-4701-b72e-68f3e4c50e55" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/AuxiliarFunctions.py" afterPath="$PROJECT_DIR$/AuxiliarFunctions.py" />
       <change beforePath="$PROJECT_DIR$/SequenceSimulator.py" afterPath="$PROJECT_DIR$/SequenceSimulator.py" />
+      <change beforePath="$PROJECT_DIR$/SpeciesSampler.py" afterPath="$PROJECT_DIR$/SpeciesSampler.py" />
       <change beforePath="$PROJECT_DIR$/simuLyon.py" afterPath="$PROJECT_DIR$/simuLyon.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -22,14 +22,12 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="simuLyon.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/simuLyon.py">
+      <file leaf-file-name="SpeciesSampler.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/SpeciesSampler.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-119">
-              <caret line="164" column="93" lean-forward="false" selection-start-line="164" selection-start-column="93" selection-end-line="164" selection-end-column="93" />
-              <folding>
-                <element signature="e#0#53#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="41">
+              <caret line="140" column="0" lean-forward="true" selection-start-line="140" selection-start-column="0" selection-end-line="140" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -41,28 +39,6 @@
               <caret line="151" column="38" lean-forward="true" selection-start-line="151" selection-start-column="38" selection-end-line="151" selection-end-column="38" />
               <folding>
                 <element signature="e#0#30#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RatesCustomizer.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/RatesCustomizer.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1789">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="prepare_reconciliations.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/prepare_reconciliations.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="384">
-              <caret line="33" column="40" lean-forward="false" selection-start-line="33" selection-start-column="40" selection-end-line="33" selection-end-column="40" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -91,8 +67,8 @@
       <file leaf-file-name="SequenceSimulator.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SequenceSimulator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="388">
-              <caret line="141" column="40" lean-forward="false" selection-start-line="141" selection-start-column="40" selection-end-line="141" selection-end-column="40" />
+            <state relative-caret-position="262">
+              <caret line="126" column="0" lean-forward="false" selection-start-line="126" selection-start-column="0" selection-end-line="126" selection-end-column="0" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -103,10 +79,22 @@
       <file leaf-file-name="AuxiliarFunctions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/AuxiliarFunctions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="134" column="30" lean-forward="false" selection-start-line="134" selection-start-column="30" selection-end-line="134" selection-end-column="30" />
+            <state relative-caret-position="410">
+              <caret line="628" column="20" lean-forward="false" selection-start-line="628" selection-start-column="20" selection-end-line="628" selection-end-column="20" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="simuLyon.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/simuLyon.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="34">
+              <caret line="164" column="92" lean-forward="false" selection-start-line="164" selection-start-column="92" selection-end-line="164" selection-end-column="92" />
+              <folding>
+                <element signature="e#0#53#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -123,7 +111,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>read</find>
       <find>FillG</find>
       <find>make_orig</find>
       <find>positions</find>
@@ -151,8 +138,9 @@
       <find>redundan</find>
       <find>namespacedef</find>
       <find>branch_rates</find>
-      <find>gene</find>
       <find>branch_ex</find>
+      <find>gene</find>
+      <find>write_</find>
     </findStrings>
     <replaceStrings>
       <replace>transfer</replace>
@@ -207,7 +195,6 @@
         <option value="$PROJECT_DIR$/Parameters/SpeciesTreeParameters.tsv" />
         <option value="$PROJECT_DIR$/old_functions/SpeciesSampler.py" />
         <option value="$PROJECT_DIR$/SpeciesTreeSimulator.py" />
-        <option value="$PROJECT_DIR$/SpeciesSampler.py" />
         <option value="$PROJECT_DIR$/generate_transfer_rates.py" />
         <option value="$PROJECT_DIR$/RatesCustomizer.py" />
         <option value="$PROJECT_DIR$/Parameters/SequenceParameters.tsv" />
@@ -219,9 +206,10 @@
         <option value="$PROJECT_DIR$/GenomeClasses.py" />
         <option value="$PROJECT_DIR$/RateCustomizer.py" />
         <option value="$PROJECT_DIR$/GenomeSimulator.py" />
-        <option value="$PROJECT_DIR$/AuxiliarFunctions.py" />
         <option value="$PROJECT_DIR$/SequenceSimulator.py" />
+        <option value="$PROJECT_DIR$/AuxiliarFunctions.py" />
         <option value="$PROJECT_DIR$/simuLyon.py" />
+        <option value="$PROJECT_DIR$/SpeciesSampler.py" />
       </list>
     </option>
   </component>
@@ -938,7 +926,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/SpeciesSampler.py" />
     <entry file="file://$PROJECT_DIR$/Parameters/SpeciesTreeParameters.tsv">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -997,16 +984,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/RateCustomizer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="253">
-          <caret line="151" column="38" lean-forward="true" selection-start-line="151" selection-start-column="38" selection-end-line="151" selection-end-column="38" />
-          <folding>
-            <element signature="e#0#30#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/GenomeClasses.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="401">
@@ -1023,33 +1000,51 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AuxiliarFunctions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="134" column="30" lean-forward="false" selection-start-line="134" selection-start-column="30" selection-end-line="134" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/SequenceSimulator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="388">
-          <caret line="141" column="40" lean-forward="false" selection-start-line="141" selection-start-column="40" selection-end-line="141" selection-end-column="40" />
+        <state relative-caret-position="262">
+          <caret line="126" column="0" lean-forward="false" selection-start-line="126" selection-start-column="0" selection-end-line="126" selection-end-column="0" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/RateCustomizer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="253">
+          <caret line="151" column="38" lean-forward="true" selection-start-line="151" selection-start-column="38" selection-end-line="151" selection-end-column="38" />
+          <folding>
+            <element signature="e#0#30#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/simuLyon.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-119">
-          <caret line="164" column="93" lean-forward="false" selection-start-line="164" selection-start-column="93" selection-end-line="164" selection-end-column="93" />
+        <state relative-caret-position="34">
+          <caret line="164" column="92" lean-forward="false" selection-start-line="164" selection-start-column="92" selection-end-line="164" selection-end-column="92" />
           <folding>
             <element signature="e#0#53#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AuxiliarFunctions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="410">
+          <caret line="628" column="20" lean-forward="false" selection-start-line="628" selection-start-column="20" selection-end-line="628" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SpeciesSampler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="41">
+          <caret line="140" column="0" lean-forward="true" selection-start-line="140" selection-start-column="0" selection-end-line="140" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
