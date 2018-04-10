@@ -162,6 +162,7 @@ class simuLyon():
                 tree_path = os.path.join(gene_trees_folder, tree_file)
                 print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
                 ss.run(tree_path, fasta_folder)
+                ss.write_pruned_sequences(tree_path.replace("whole", "pruned"), fasta_folder)
 
         elif advanced_mode == "u":
 
@@ -177,10 +178,18 @@ class simuLyon():
 
             whole_trees = [x for x in os.listdir(gene_trees_folder) if "whole" in x]
 
+
             for tree_file in whole_trees:
                 tree_path = os.path.join(gene_trees_folder, tree_file)
                 print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
                 ss.run_u(tree_path, fasta_folder)
+                ss.write_pruned_sequences(tree_path.replace("whole", "pruned"), fasta_folder)
+
+
+
+
+
+
 
 
 

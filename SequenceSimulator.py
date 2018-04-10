@@ -34,7 +34,7 @@ class SequenceSimulator():
         tree = pyvolve.read_tree(tree=my_tree.write(format=5))
         partition = pyvolve.Partition(models=self.model, size=self.size)
         evolver = pyvolve.Evolver(tree=tree, partitions=partition)
-        fasta_file = tree_file.split("/")[-1].replace("_wholetree.nwk", "_") + self.sequence + ".fasta"
+        fasta_file = tree_file.split("/")[-1].replace("_wholetree.nwk", "_") + ".fasta"
         evolver(seqfile=os.path.join(sequences_folder, fasta_file), ratefile=None, infofile=None)
 
     def run_u(self, tree_file, sequences_folder):
@@ -58,12 +58,11 @@ class SequenceSimulator():
         for node in my_tree.traverse():
             node.dist = node.dist * gf_multiplier * self.st_multipliers[node.name.split("_")[0]]
 
-        print(my_tree.write(format=1))
 
         tree = pyvolve.read_tree(tree=my_tree.write(format=5))
         partition = pyvolve.Partition(models=self.model, size=self.size)
         evolver = pyvolve.Evolver(tree=tree, partitions=partition)
-        fasta_file = tree_file.split("/")[-1].replace("_wholetree.nwk", "_") + self.sequence + ".fasta"
+        fasta_file = tree_file.split("/")[-1].replace("_wholetree.nwk", "_") +  "whole.fasta"
         evolver(seqfile=os.path.join(sequences_folder, fasta_file), ratefile=None, infofile=None)
 
     def get_nucleotide_model(self):
@@ -123,6 +122,32 @@ class SequenceSimulator():
 
         with open(rates_tree, "w") as f:
             f.write(whole_tree.write(format=1))
+
+
+    def write_pruned_sequences(self, tree_file, fasta_folder):
+
+        with open(tree_file) as f:
+            line = f.readline().strip()
+            if "(" not in line or line == ";":
+                return None
+            else:
+                my_tree = ete3.Tree(line, format=1)
+
+        surviving_nodes = {x.name for x in my_tree.get_leaves()}
+        file_name = tree_file.split("/")[-1].split("_")[0]
+        entries = af.fasta_reader(fasta_folder + "/" + file_name + "_whole.fasta")
+
+        clean_entries = list()
+        for h, seq in entries:
+            if h[1:] in surviving_nodes:
+                clean_entries.append((h, seq))
+
+        af.fasta_writer(fasta_folder + "/" + file_name + "_pruned.fasta", clean_entries)
+
+
+
+
+
 
 
 

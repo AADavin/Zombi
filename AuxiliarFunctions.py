@@ -109,6 +109,36 @@ def prepare_species_tree_parameters(parameters):
     return parameters
 
 
+def fasta_reader(fasta_file):
+
+    with open(fasta_file) as f:
+
+        seq = ""
+        for line in f:
+            if ">" == line[0]:
+                if seq != "":
+                    yield header, seq
+                    header = line.strip()
+                    seq = ""
+                else:
+                    header = line.strip()
+                    seq = ""
+            else:
+                seq += line.strip()
+
+        yield header, seq
+
+def fasta_writer(outfile, entries):
+
+    x = 80
+    with open(outfile, "w") as f:
+        for h, seq in entries:
+            f.write(h + "\n")
+            lines = [seq[i: i + x] for i in range(0, len(seq), x)]
+            for line in lines:
+                f.write(line +"\n")
+
+
 def prepare_genome_parameters(parameters):
 
     for parameter, value in parameters.items():
