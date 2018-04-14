@@ -138,15 +138,12 @@ class simuLyon():
     def S(self, parameters_file, experiment_folder, advanced_mode):
 
         gene_trees_folder = os.path.join(experiment_folder, "G/Gene_trees")
-        sequences_folder = os.path.join(experiment_folder, "S/Sequences")
+        sequences_folder = os.path.join(experiment_folder, "S")
         os.system("cp " + parameters_file + " " + sequences_folder)
-        fasta_folder = os.path.join(sequence_folder, "Sequences")
+
 
         if not os.path.isdir(sequences_folder):
             os.mkdir(sequences_folder)
-
-        if not os.path.isdir(fasta_folder):
-            os.mkdir(fasta_folder)
 
         parameters = af.prepare_sequence_parameters(af.read_parameters(parameters_file))
 
@@ -161,8 +158,8 @@ class simuLyon():
             for tree_file in whole_trees:
                 tree_path = os.path.join(gene_trees_folder, tree_file)
                 print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
-                ss.run(tree_path, fasta_folder)
-                af.write_pruned_sequences(tree_path.replace("whole", "pruned"), fasta_folder, fasta_folder)
+                ss.run(tree_path, sequences_folder)
+                af.write_pruned_sequences(tree_path.replace("whole", "pruned"), sequences_folder)
 
         elif advanced_mode == "u":
 
@@ -182,8 +179,8 @@ class simuLyon():
             for tree_file in whole_trees:
                 tree_path = os.path.join(gene_trees_folder, tree_file)
                 print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
-                ss.run_u(tree_path, fasta_folder)
-                af.write_pruned_sequences(tree_path.replace("whole", "pruned"), fasta_folder, fasta_folder)
+                ss.run_u(tree_path, sequences_folder)
+                af.write_pruned_sequences(tree_path.replace("whole", "pruned"), sequences_folder)
 
 
 
@@ -242,10 +239,10 @@ if __name__ == "__main__":
 
     elif main_mode == "S":
 
-        sequence_folder = os.path.join(experiment_folder, "S")
+        sequences_folder = os.path.join(experiment_folder, "S")
 
-        if not os.path.isdir(sequence_folder):
-            os.mkdir(sequence_folder)
+        if not os.path.isdir(sequences_folder):
+            os.mkdir(sequences_folder)
 
         SL.S(parameters_file, experiment_folder, advanced_mode)
 

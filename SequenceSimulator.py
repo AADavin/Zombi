@@ -34,7 +34,7 @@ class SequenceSimulator():
         tree = pyvolve.read_tree(tree=my_tree.write(format=5))
         partition = pyvolve.Partition(models=self.model, size=self.size)
         evolver = pyvolve.Evolver(tree=tree, partitions=partition)
-        fasta_file = tree_file.split("/")[-1].replace("_wholetree.nwk", "_") + ".fasta"
+        fasta_file = tree_file.split("/")[-1].replace("_wholetree.nwk", "_whole") + ".fasta"
         evolver(seqfile=os.path.join(sequences_folder, fasta_file), ratefile=None, infofile=None)
 
     def run_u(self, tree_file, sequences_folder):
