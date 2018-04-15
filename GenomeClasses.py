@@ -43,14 +43,18 @@ class GeneFamily():
         surviving_nodes = dict()
         times = dict()
 
+        family_size = 0
+
+
         for current_time, event, nodes in events[::-1]:
 
             if event == "F":
 
                 nodename = nodes.replace(";","_")
-
                 times[nodename] = float(current_time)
                 surviving_nodes[nodename] = {"state": 1, "descendant": "None"}
+
+                family_size += 1
 
             elif event == "E" or event == "L":
 
@@ -174,19 +178,28 @@ class GeneFamily():
                     equick_nodes[c1name] = myc1
                     equick_nodes[c2name] = myc2
 
+        if family_size == 0:
+
+            extanttree = ";"
+
+        elif family_size == 1:
+
+
+            extanttree = [k for k, v in surviving_nodes.items() if v["state"] == 1 and v["descendant"] == "None"][
+                             0] + ";"
+
+
+        else:
+
+            extanttree = extanttree.write(format=1)
+
+
         if len(wholetree) == 0:
             wholetree = ";"
-        if len(wholetree) == 1:
+        elif len(wholetree) == 1:
             wholetree = wholetree.get_leaves()[0].name + ";"
         else:
             wholetree = wholetree.write(format=1)
-
-        if len(extanttree) == 0:
-            extanttree = ";"
-        if len(extanttree) == 1:
-            extanttree = extanttree.get_leaves()[0].name + ";"
-        else:
-            extanttree = extanttree.write(format=1)
 
 
         return wholetree, extanttree

@@ -109,18 +109,45 @@ def prepare_species_tree_parameters(parameters):
     return parameters
 
 
+def fasta_reader(fasta_file):
+
+    with open(fasta_file) as f:
+
+        seq = ""
+        for line in f:
+            if ">" == line[0]:
+                if seq != "":
+                    yield header, seq
+                    header = line.strip()
+                    seq = ""
+                else:
+                    header = line.strip()
+                    seq = ""
+            else:
+                seq += line.strip()
+
+        yield header, seq
+
+def fasta_writer(outfile, entries):
+
+    x = 80
+    with open(outfile, "w") as f:
+        for h, seq in entries:
+            f.write(h + "\n")
+            lines = [seq[i: i + x] for i in range(0, len(seq), x)]
+            for line in lines:
+                f.write(line +"\n")
+
+
 def prepare_genome_parameters(parameters):
 
     for parameter, value in parameters.items():
 
-        if parameter == "P_ESSENTIAL_GENE":
-            parameters[parameter] = obtain_value(value)
+        #if parameter == "DUPLICATION_EXTENSION" or parameter == "TRANSFER_EXTENSION" \
+        #        or parameter == "LOSS_EXTENSION" or parameter == "INVERSION_EXTENSION" or \
+        #        parameter == "TRANSLOCATION_EXTENSION" or parameter == "ORIGINATION_EXTENSION":
 
-        if parameter == "DUPLICATION_EXTENSION" or parameter == "TRANSFER_EXTENSION" \
-                or parameter == "LOSS_EXTENSION" or parameter == "INVERSION_EXTENSION" or \
-                parameter == "TRANSLOCATION_EXTENSION" or parameter == "ORIGINATION_EXTENSION":
-
-            parameters[parameter] = obtain_value(value)
+        #    parameters[parameter] = obtain_value(value)
 
         if parameter == "ROOT_GENOME":
             parameters[parameter] = value.split(";")
@@ -540,7 +567,63 @@ def generate_gene_tree(events):
                 equick_nodes[c1name] = myc1
                 equick_nodes[c2name] = myc2
 
-    return wholetree.write(format=1), extanttree.write(format=1)
+
+    if len(wholetree) == 0:
+        wholetree = ";"
+
+    elif len(wholetree) == 1:
+        wholetree =  wholetree.get_leaves()[0].name + ";"
+
+    else:
+        wholetree = wholetree.write(format=1)
+
+    if len(extanttree) == 0:
+        extanttree = ";"
+
+    elif len(extanttree) == 1:
+        extanttree = extanttree.get_leaves()[0].name + ";"
+
+    else:
+        extanttree = extanttree.write(format=1)
+
+    return wholetree, extanttree
 
 
+def write_pruned_sequences(tree_file, fasta_folder):
+    with open(tree_file) as f:
+        line = f.readline().strip()
+        if "(" not in line or line == ";":
+            return None
+        else:
+            my_tree = ete3.Tree(line, format=1)
 
+    surviving_nodes = {x.name for x in my_tree.get_leaves()}
+    file_name = tree_file.split("/")[-1].split("_")[0]
+    entries = fasta_reader(fasta_folder + "/" + file_name + "_whole.fasta")
+
+    clean_entries = list()
+    for h, seq in entries:
+        if h[1:] in surviving_nodes:
+            clean_entries.append((h, seq))
+
+    fasta_writer(fasta_folder + "/" + file_name + "_pruned.fasta", clean_entries)
+
+
+def write_sampled_sequences(tree_file, infasta_folder, outfasta_folder):
+
+    with open(tree_file) as f:
+        line = f.readline().strip()
+        if "(" not in line or line == ";":
+            return None
+        else:
+            my_tree = ete3.Tree(line, format=1)
+    surviving_nodes = {x.name for x in my_tree.get_leaves()}
+    file_name = tree_file.split("/")[-1].split("_")[0]
+    entries = fasta_reader(infasta_folder + "/" + file_name + "_whole.fasta")
+
+    clean_entries = list()
+    for h, seq in entries:
+        if h[1:] in surviving_nodes:
+            clean_entries.append((h, seq))
+
+    fasta_writer(outfasta_folder + "/" + file_name + "_sampled.fasta", clean_entries)
