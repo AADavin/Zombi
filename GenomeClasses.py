@@ -98,7 +98,6 @@ class GeneFamily():
 
                     surviving_nodes[pnodename] = {"state": -1, "descendant": c2nodename}
 
-
                 elif surviving_nodes[c1nodename]["state"] == 1 and surviving_nodes[c2nodename]["state"] == -1:
 
                     mynode = find_descendant(surviving_nodes, c2nodename)
@@ -108,7 +107,6 @@ class GeneFamily():
 
                     mynode = find_descendant(surviving_nodes, c1nodename)
                     surviving_nodes[pnodename] = {"state": 1, "descendant": mynode + ";" + c2nodename}
-
 
                 elif surviving_nodes[c1nodename]["state"] == -1 and surviving_nodes[c2nodename]["state"] == 0:
 

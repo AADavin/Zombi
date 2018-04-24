@@ -325,15 +325,18 @@ class SpeciesTreeGenerator():
 
             found = 0
             mynode = surviving_nodes[node]["descendant"]
+            collapsed_nodes = list()
 
             while found == 0:
 
                 if surviving_nodes[mynode]["state"] == 1:
+                    collapsed_nodes.append(mynode)
                     found = 1
                 else:
+                    collapsed_nodes.append(mynode)
                     mynode = surviving_nodes[mynode]["descendant"]
 
-            return mynode
+            return mynode, collapsed_nodes
 
         # Eric's algorithm
 
@@ -349,12 +352,12 @@ class SpeciesTreeGenerator():
             if event == "F":
 
                 times[nodes] = float(current_time)
-                surviving_nodes[nodes] = {"state": 1, "descendant": "None"}
+                surviving_nodes[nodes] = {"state": 1, "descendant": "None", "collapsed": ""}
 
             elif event == "E":
 
                 times[nodes] = float(current_time)
-                surviving_nodes[nodes] = {"state": 0, "descendant": "None"}
+                surviving_nodes[nodes] = {"state": 0, "descendant": "None", "collapsed": ""}
 
             elif event == "S":
 
@@ -364,49 +367,45 @@ class SpeciesTreeGenerator():
 
                 if surviving_nodes[c1]["state"] == 1 and surviving_nodes[c2]["state"] == 1:
 
-                    surviving_nodes[p] = {"state": 1, "descendant": c1 + ";" + c2}
+                    surviving_nodes[p] = {"state": 1, "descendant": c1 + ";" + c2, "collapsed": ""}
 
                 elif surviving_nodes[c1]["state"] == 0 and surviving_nodes[c2]["state"] == 0:
 
-                    surviving_nodes[p] = {"state": 0, "descendant": "None"}
+                    surviving_nodes[p] = {"state": 0, "descendant": "None", "collapsed": ""}
 
                 elif surviving_nodes[c1]["state"] == -1 and surviving_nodes[c2]["state"] == -1:
 
-                    mynode1 = find_descendant(surviving_nodes, c1)
-                    mynode2 = find_descendant(surviving_nodes, c2)
-
-                    surviving_nodes[p] = {"state": 1, "descendant": mynode1 + ";" + mynode2}
-
+                    mynode1, cp_nodes1 = find_descendant(surviving_nodes, c1)
+                    mynode2, cp_nodes2 = find_descendant(surviving_nodes, c2)
+                    surviving_nodes[p] = {"state": 1, "descendant": mynode1 + ";" + mynode2, "collapsed": surviving_nodes[c1]["collapsed"] + "+" + surviving_nodes[c2]["collapsed"]}
 
                 elif surviving_nodes[c1]["state"] == 1 and surviving_nodes[c2]["state"] == 0:
 
-                    surviving_nodes[p] = {"state": -1, "descendant": c1}
+                    surviving_nodes[p] = {"state": -1, "descendant": c1, "collapsed": p}
 
                 elif surviving_nodes[c1]["state"] == 0 and surviving_nodes[c2]["state"] == 1:
 
-                    surviving_nodes[p] = {"state": -1, "descendant": c2}
-
+                    surviving_nodes[p] = {"state": -1, "descendant": c2, "collapsed": p}
 
                 elif surviving_nodes[c1]["state"] == 1 and surviving_nodes[c2]["state"] == -1:
 
-                    mynode = find_descendant(surviving_nodes, c2)
-                    surviving_nodes[p] = {"state": 1, "descendant": c1 + ";" + mynode}
+                    mynode, cp_nodes = find_descendant(surviving_nodes, c2)
+                    surviving_nodes[p] = {"state": 1, "descendant": c1 + ";" + mynode, "collapsed": "N+" + surviving_nodes[c2]["collapsed"] }
 
                 elif surviving_nodes[c1]["state"] == -1 and surviving_nodes[c2]["state"] == 1:
 
-                    mynode = find_descendant(surviving_nodes, c1)
-                    surviving_nodes[p] = {"state": 1, "descendant": mynode + ";" + c2}
-
+                    mynode, cp_nodes = find_descendant(surviving_nodes, c1)
+                    surviving_nodes[p] = {"state": 1, "descendant": mynode + ";" + c2, "collapsed": surviving_nodes[c1]["collapsed"] + "+N"}
 
                 elif surviving_nodes[c1]["state"] == -1 and surviving_nodes[c2]["state"] == 0:
 
-                    mynode = find_descendant(surviving_nodes, c1)
-                    surviving_nodes[p] = {"state": -1, "descendant": mynode}
+                    mynode, cp_nodes = find_descendant(surviving_nodes, c1)
+                    surviving_nodes[p] = {"state": -1, "descendant": mynode, "collapsed": surviving_nodes[c1]["collapsed"] + ";" + p}
 
                 elif surviving_nodes[c1]["state"] == 0 and surviving_nodes[c2]["state"] == -1:
 
-                    mynode = find_descendant(surviving_nodes, c2)
-                    surviving_nodes[p] = {"state": -1, "descendant": mynode}
+                    mynode, cp_nodes = find_descendant(surviving_nodes, c2)
+                    surviving_nodes[p] = {"state": -1, "descendant": mynode, "collapsed": surviving_nodes[c2]["collapsed"] + ";" + p}
 
         extanttree = ete3.Tree()
         wholetree = ete3.Tree()
@@ -421,6 +420,10 @@ class SpeciesTreeGenerator():
         equick_nodes = dict()
 
         wquick_nodes["Root"] = wroot
+
+        # I create a dict for storing the collapsed nodes:
+
+        map_collapsed = dict()
 
         for i, values in enumerate(events):
 
@@ -446,6 +449,19 @@ class SpeciesTreeGenerator():
                 if state == 1:  # Now the extant tree
 
                     c1name, c2name = surviving_nodes[p]["descendant"].split(";")
+
+                    collapsed_nodes = surviving_nodes[p]["collapsed"]
+                    if collapsed_nodes != "":
+
+                        cp1, cp2 = collapsed_nodes.split("+")
+
+                        if cp1 != "N":
+                            map_collapsed[c1name] = cp1
+                        if cp2 != "N":
+                            map_collapsed[c1name] = cp2
+
+                        #print(p + " -> " + c1name + " : " + cp1)
+                        #print(p + " -> " + c2name + " : " + cp2)
 
                     if eroot.name == "":
                         eroot.name = p

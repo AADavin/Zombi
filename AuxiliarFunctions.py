@@ -508,6 +508,8 @@ def generate_gene_tree(events):
                 mynode = find_descendant(surviving_nodes, c2nodename)
                 surviving_nodes[pnodename] = {"state": -1, "descendant": mynode}
 
+
+
     extanttree = ete3.Tree()
     wholetree = ete3.Tree()
     eroot = extanttree.get_tree_root()
