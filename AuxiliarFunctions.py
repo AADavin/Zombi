@@ -103,7 +103,8 @@ def prepare_species_tree_parameters(parameters):
             parameters[parameter] = [tuple([int(j) for j in x.split("-")]) for x in value.split(";")]
 
         if parameter == "SPECIES_EVOLUTION_MODE" or parameter == "N_LINEAGES" or parameter == "MIN_LINEAGES" \
-                or parameter == "TOTAL_LINEAGES" or parameter == "STOPPING_RULE" or parameter == "MAX_LINEAGES":
+                or parameter == "TOTAL_LINEAGES" or parameter == "STOPPING_RULE" or parameter == "MAX_LINEAGES"\
+                or parameter == "VERBOSE":
             parameters[parameter] = int(value)
 
     return parameters

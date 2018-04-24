@@ -49,7 +49,9 @@ class SpeciesTreeGenerator():
                 success = False
                 return success
 
-            print("Time: %s ; Number of lineages alive: %s" % (str(time), str(n_lineages_alive)))
+            if self.parameters["VERBOSE"] == 1:
+                print("Time: %s ; Number of lineages alive: %s" % (str(time), str(n_lineages_alive)))
+
             time_to_next_event = self.get_time_to_next_event(n_lineages_alive, (speciation, extinction))
 
             if stopping_rule == 0 and time + time_to_next_event >= total_time:
@@ -130,7 +132,8 @@ class SpeciesTreeGenerator():
                 success = False
                 return success
 
-            print("Time: %s ; Number of lineages alive: %s" % (str(time), str(n_lineages_alive)))
+            if self.parameters["VERBOSE"] == 1:
+                print("Time: %s ; Number of lineages alive: %s" % (str(time), str(n_lineages_alive)))
 
             time_to_next_event = self.get_time_to_next_event_advanced_modes()
 
@@ -229,7 +232,8 @@ class SpeciesTreeGenerator():
                 success = False
                 return success
 
-            print("Time: %s ; Number of lineages alive: %s" % (str(time), str(n_lineages_alive)))
+            if self.parameters["VERBOSE"] == 1:
+                print("Time: %s ; Number of lineages alive: %s" % (str(time), str(n_lineages_alive)))
 
             time_to_next_event = self.get_time_to_next_event_advanced_modes()
 
@@ -323,7 +327,8 @@ class SpeciesTreeGenerator():
 
         while True:
 
-            print("Time: %s ; Number of lineages alive: %s" % (str(time), str(n_lineages_alive)))
+            if self.parameters["VERBOSE"] == 1:
+                print("Time: %s ; Number of lineages alive: %s" % (str(time), str(n_lineages_alive)))
 
             goal_N = time_slices[current_time_slice][1]  # The population size we have to attained
 

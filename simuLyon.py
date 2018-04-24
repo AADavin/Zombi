@@ -169,7 +169,9 @@ def S(self, parameters_file, experiment_folder, advanced_mode):
 
             for tree_file in whole_trees:
                 tree_path = os.path.join(gene_trees_folder, tree_file)
-                print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
+
+                if parameters["VERBOSE"] == 1:
+                    print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
                 ss.run(tree_path, sequences_folder)
                 af.write_pruned_sequences(tree_path.replace("whole", "pruned"), sequences_folder)
 
@@ -190,7 +192,8 @@ def S(self, parameters_file, experiment_folder, advanced_mode):
 
             for tree_file in whole_trees:
                 tree_path = os.path.join(gene_trees_folder, tree_file)
-                print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
+                if parameters["VERBOSE"] == 1:
+                    print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
                 ss.run_u(tree_path, sequences_folder)
                 af.write_pruned_sequences(tree_path.replace("whole", "pruned"), sequences_folder)
 

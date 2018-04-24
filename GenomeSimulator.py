@@ -166,7 +166,10 @@ class GenomeSimulator():
             f.write(header)
 
             for gene_family_name, gene_family in self.all_gene_families.items():
-                print("Writing profile for family %s" % str(gene_family_name))
+
+                if self.parameters["VERBOSE"] == 1:
+                    print("Writing profile for family %s" % str(gene_family_name))
+
                 line = ["Fam" + gene_family_name]
                 for genome in genome_names:
                     n = 0
@@ -257,7 +260,8 @@ class GenomeSimulator():
             time_of_next_species_tree_event, event, nodes = self.tree_events[current_species_tree_event]
             time_of_next_species_tree_event = float(time_of_next_species_tree_event)
 
-            print("Simulating genomes. Time %s" % str(current_time))
+            if self.parameters["VERBOSE"] == 1:
+                print("Simulating genomes. Time %s" % str(current_time))
 
             time_to_next_genome_event = self.get_time_to_next_event(len(self.active_genomes), d, t, l, i, c, o)
 
@@ -332,7 +336,8 @@ class GenomeSimulator():
             time_of_next_species_tree_event, event, nodes = self.tree_events[current_species_tree_event]
             time_of_next_species_tree_event = float(time_of_next_species_tree_event)
 
-            print("Simulating genomes. Time %s" % str(current_time))
+            if self.parameters["VERBOSE"] == 1:
+                print("Simulating genomes. Time %s" % str(current_time))
 
             time_to_next_genome_event = self.get_time_to_next_event(len(self.active_genomes), d, t, l, i, c, o)
 
@@ -430,7 +435,8 @@ class GenomeSimulator():
             time_of_next_species_tree_event, event, nodes = self.tree_events[current_species_tree_event]
             time_of_next_species_tree_event = float(time_of_next_species_tree_event)
 
-            print("Simulating genomes. Time %s" % str(current_time))
+            if self.parameters["VERBOSE"] == 1:
+                print("Simulating genomes. Time %s" % str(current_time))
 
             time_to_next_genome_event = self.get_time_to_next_event_advanced_modes()
 

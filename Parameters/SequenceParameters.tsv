@@ -48,3 +48,7 @@ KAPPA	1.0
 #
 # *REQUIRED* parameters if mode == Su
 RATE_MULTIPLIERS n:0.7;0.2
+###
+#
+#
+VERBOSE 0
