@@ -4,7 +4,7 @@ from SequenceSimulator import SequenceSimulator
 import AuxiliarFunctions as af
 import argparse
 import os
-import sys
+
 
 class simuLyon():
 
@@ -130,12 +130,24 @@ class simuLyon():
             events_per_branch_folder = os.path.join(genome_folder, "Events_per_branch")
             gss.write_events_per_branch(events_per_branch_folder)
 
-        if parameters["GENE_TREES"] == 1:
+        if parameters["GENE_TREES"] == 1 and parameters["RECONCILED_TREES"] == 1:
             print("Writing Gene Trees")
             gene_trees_folder = os.path.join(genome_folder, "Gene_trees")
-            gss.write_gene_trees(gene_trees_folder)
+            gss.write_gene_trees(gene_trees_folder, reconciliations=True)
 
-    def S(self, parameters_file, experiment_folder, advanced_mode):
+        elif parameters["GENE_TREES"] == 1 and parameters["RECONCILED_TREES"] == 0:
+            print("Writing Gene Trees")
+            gene_trees_folder = os.path.join(genome_folder, "Gene_trees")
+            gss.write_gene_trees(gene_trees_folder, reconciliations=False)
+
+        elif parameters["GENE_TREES"] == 0 and parameters["RECONCILED_TREES"] == 1:
+            print("Writing Gene Trees")
+            gene_trees_folder = os.path.join(genome_folder, "Gene_trees")
+            gss.write_gene_trees(gene_trees_folder, reconciliations=True, gene_trees= False)
+
+
+
+def S(self, parameters_file, experiment_folder, advanced_mode):
 
         gene_trees_folder = os.path.join(experiment_folder, "G/Gene_trees")
         sequences_folder = os.path.join(experiment_folder, "S")
@@ -181,12 +193,6 @@ class simuLyon():
                 print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
                 ss.run_u(tree_path, sequences_folder)
                 af.write_pruned_sequences(tree_path.replace("whole", "pruned"), sequences_folder)
-
-
-
-
-
-
 
 
 

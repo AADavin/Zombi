@@ -61,25 +61,28 @@ class GenomeSimulator():
                     line = "\t".join(map(str, line)) + "\n"
                     f.write(line)
 
-    def write_gene_trees(self, gene_tree_folder):
+    def write_gene_trees(self, gene_tree_folder, gene_trees = True, reconciliations = False):
 
         if not os.path.isdir(gene_tree_folder):
             os.mkdir(gene_tree_folder)
 
         for gene_family_name, gene_family in self.all_gene_families.items():
 
+            whole_tree, pruned_tree, rec_tree = gene_family.generate_tree()
 
-            whole_tree, pruned_tree = gene_family.generate_tree()
+            if gene_trees == True:
 
-            with open(os.path.join(gene_tree_folder, gene_family_name + "_wholetree.nwk"),"w") as f:
+                with open(os.path.join(gene_tree_folder, gene_family_name + "_wholetree.nwk"), "w") as f:
+                    f.write(whole_tree)
+                if pruned_tree != None:
+                    with open(os.path.join(gene_tree_folder, gene_family_name + "_prunedtree.nwk"), "w") as f:
+                        f.write(pruned_tree)
 
-                f.write(whole_tree)
+            if reconciliations == True:
+                with open(os.path.join(gene_tree_folder, gene_family_name + "_rec.xml"), "w") as f:
+                    f.write(rec_tree)
 
-            if pruned_tree != None:
 
-                with open(os.path.join(gene_tree_folder, gene_family_name + "_prunedtree.nwk"),"w") as f:
-
-                    f.write(pruned_tree)
 
     def write_events_per_branch(self, events_per_branch_folder):
 

@@ -1,6 +1,8 @@
 import AuxiliarFunctions as af
 import numpy
 import ete3
+import ReconciledTree as RT
+
 
 class GeneFamily():
 
@@ -19,6 +21,7 @@ class GeneFamily():
         self.events.append((time, event, genes))
 
     def generate_tree(self):
+
 
         def find_descendant(surviving_nodes, node):
 
@@ -44,7 +47,6 @@ class GeneFamily():
         times = dict()
 
         family_size = 0
-
 
         for current_time, event, nodes in events[::-1]:
 
@@ -118,8 +120,9 @@ class GeneFamily():
                     mynode = find_descendant(surviving_nodes, c2nodename)
                     surviving_nodes[pnodename] = {"state": -1, "descendant": mynode}
 
-        extanttree = ete3.Tree()
-        wholetree = ete3.Tree()
+        extanttree = RT.ReconciledTree()
+        wholetree = RT.ReconciledTree()
+
         eroot = extanttree.get_tree_root()
         eroot.name = ""
 
@@ -135,6 +138,15 @@ class GeneFamily():
                 wroot = wholetree.get_tree_root()
                 wroot.name = nodes + "_1"
                 wquick_nodes[wroot.name] = wroot
+
+            if event == "L" or event == "E":
+
+                p, g0 = nodes.split(";")
+                pnodename = p + "_" + g0
+                mynode = wquick_nodes[pnodename]
+
+                e = RT.RecEvent(event, p, current_time)
+                mynode.addEvent(e, append=True)
 
             if event == "S" or event == "D" or event == "T":
 
@@ -155,6 +167,11 @@ class GeneFamily():
                 wquick_nodes[c2nodename] = myc2
 
                 state = surviving_nodes[pnodename]["state"]
+
+                ### Now we add the reconciled events
+
+                e = RT.RecEvent(event, p, current_time)
+                mynode.addEvent(e, append=True)
 
                 if state == 1:  # Now the extant tree
 
@@ -188,11 +205,12 @@ class GeneFamily():
             extanttree = [k for k, v in surviving_nodes.items() if v["state"] == 1 and v["descendant"] == "None"][
                              0] + ";"
 
-
         else:
 
             extanttree = extanttree.write(format=1)
 
+
+        rec = wholetree.getTreeRecPhyloXML()
 
         if len(wholetree) == 0:
             wholetree = ";"
@@ -202,7 +220,7 @@ class GeneFamily():
             wholetree = wholetree.write(format=1)
 
 
-        return wholetree, extanttree
+        return wholetree, extanttree, rec
 
 
     def generate_oldtree(self):

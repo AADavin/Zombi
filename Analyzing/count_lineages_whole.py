@@ -1,4 +1,3 @@
-import ete3
 import sys
 
 def count_lineages_in_time_whole(events_file):
@@ -32,10 +31,8 @@ def count_lineages_in_time_whole(events_file):
         print(line)
 
 
+
 if __name__ == "__main__":
 
-    try:
-        my_file = sys.argv[1:][0]
-        count_lineages_in_time_whole(my_file)
-    except:
-        print("count_lineages_in_time_whole(my_file)")
+    my_file = sys.argv[1:][0]
+    count_lineages_in_time_whole(my_file)

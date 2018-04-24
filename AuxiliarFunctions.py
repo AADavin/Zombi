@@ -156,7 +156,7 @@ def prepare_genome_parameters(parameters):
             parameters[parameter] = float(value)
 
         if parameter == "PROFILES" or parameter == "EVENTS_PER_BRANCH" or parameter == "GENE_TREES" \
-                or parameter == "PRUNE_TREES" or parameter == "TRANSFER_PREFERENCE":
+                or parameter == "PRUNE_TREES" or parameter == "TRANSFER_PREFERENCE" or parameter == "RECONCILED_TREES":
 
             parameters[parameter] = int(value)
 
