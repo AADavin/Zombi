@@ -245,8 +245,13 @@ class GenomeSimulator():
         # First we prepare the first genome
 
         genome = self._FillGenome()
+
         self.active_genomes.add(genome.species)
         self.all_genomes["Root"] = genome
+
+        # We add the original genome too
+
+        self.all_genomes["Origin"] = copy.deepcopy(genome)
 
         current_species_tree_event = 0
         current_time = 0.0
@@ -322,6 +327,10 @@ class GenomeSimulator():
 
         self.active_genomes.add(genome.species)
         self.all_genomes["Root"] = genome
+
+        # We add the original genome too
+
+        self.all_genomes["Origin"] = copy.deepcopy(genome)
 
         current_species_tree_event = 0
         current_time = 0.0
@@ -423,6 +432,10 @@ class GenomeSimulator():
         genome = self._FillGenome()
         self.active_genomes.add(genome.species)
         self.all_genomes["Root"] = genome
+
+        # We add the original genome too
+
+        self.all_genomes["Origin"] = copy.deepcopy(genome)
 
         current_species_tree_event = 0
         current_time = 0.0

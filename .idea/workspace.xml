@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="59ba90f0-ee1f-4701-b72e-68f3e4c50e55" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/NewSpeciesTreeSimulator.py" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/simuLyon.py" afterPath="$PROJECT_DIR$/simuLyon.py" />
+      <change beforePath="$PROJECT_DIR$/GenomeSimulator.py" afterPath="$PROJECT_DIR$/GenomeSimulator.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -62,20 +60,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GenomeSimulator.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="GenomeSimulator.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GenomeSimulator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="263" column="21" lean-forward="false" selection-start-line="263" selection-start-column="10" selection-end-line="263" selection-end-column="21" />
+            <state relative-caret-position="164">
+              <caret line="234" column="11" lean-forward="false" selection-start-line="234" selection-start-column="8" selection-end-line="234" selection-end-column="11" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="simuLyon.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="simuLyon.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/simuLyon.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="266">
+            <state relative-caret-position="2235">
               <caret line="149" column="4" lean-forward="false" selection-start-line="149" selection-start-column="4" selection-end-line="149" selection-end-column="4" />
               <folding>
                 <element signature="e#0#56#0" expanded="true" />
@@ -135,7 +133,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>random.sa</find>
       <find>get_time_to</find>
       <find>get_time</find>
       <find>iter_search_nodes(</find>
@@ -165,6 +162,7 @@
       <find>write_gene_trees</find>
       <find>print</find>
       <find>print</find>
+      <find>run</find>
     </findStrings>
     <replaceStrings>
       <replace>transfer</replace>
@@ -230,10 +228,10 @@
         <option value="$PROJECT_DIR$/AuxiliarFunctions.py" />
         <option value="$PROJECT_DIR$/SpeciesTreeSimulator.py" />
         <option value="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" />
-        <option value="$PROJECT_DIR$/GenomeSimulator.py" />
         <option value="$PROJECT_DIR$/Parameters/SequenceParameters.tsv" />
         <option value="$PROJECT_DIR$/NewSpeciesTreeSimulator.py" />
         <option value="$PROJECT_DIR$/simuLyon.py" />
+        <option value="$PROJECT_DIR$/GenomeSimulator.py" />
       </list>
     </option>
   </component>
@@ -1042,14 +1040,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GenomeSimulator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="263" column="21" lean-forward="false" selection-start-line="263" selection-start-column="10" selection-end-line="263" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Parameters/SequenceParameters.tsv">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="515">
@@ -1084,11 +1074,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/simuLyon.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
+        <state relative-caret-position="2235">
           <caret line="149" column="4" lean-forward="false" selection-start-line="149" selection-start-column="4" selection-end-line="149" selection-end-column="4" />
           <folding>
             <element signature="e#0#56#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GenomeSimulator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="164">
+          <caret line="234" column="11" lean-forward="false" selection-start-line="234" selection-start-column="8" selection-end-line="234" selection-end-column="11" />
+          <folding />
         </state>
       </provider>
     </entry>
