@@ -144,8 +144,15 @@ class GeneFamily():
                 p, g0 = nodes.split(";")
                 pnodename = p + "_" + g0
                 mynode = wquick_nodes[pnodename]
+                e = RT.RecEvent("L", p, int(float(current_time)))
+                mynode.addEvent(e, append=True)
 
-                e = RT.RecEvent(event, p, current_time)
+            if event == "F":
+
+                p, g0 = nodes.split(";")
+                pnodename = p + "_" + g0
+                mynode = wquick_nodes[pnodename]
+                e = RT.RecEvent("C", p, int(float(current_time)))
                 mynode.addEvent(e, append=True)
 
             if event == "S" or event == "D" or event == "T":
@@ -170,7 +177,7 @@ class GeneFamily():
 
                 ### Now we add the reconciled events
 
-                e = RT.RecEvent(event, p, current_time)
+                e = RT.RecEvent(event, p, int(float(current_time)))
                 mynode.addEvent(e, append=True)
 
                 if state == 1:  # Now the extant tree
