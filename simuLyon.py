@@ -1,4 +1,4 @@
-from SpeciesTreeSimulator import SpeciesTreeGenerator
+from NewSpeciesTreeSimulator import SpeciesTreeGenerator
 from GenomeSimulator import GenomeSimulator
 from SequenceSimulator import SequenceSimulator
 import AuxiliarFunctions as af
@@ -147,7 +147,7 @@ class simuLyon():
 
 
 
-def S(self, parameters_file, experiment_folder, advanced_mode):
+    def S(self, parameters_file, experiment_folder, advanced_mode):
 
         gene_trees_folder = os.path.join(experiment_folder, "G/Gene_trees")
         sequences_folder = os.path.join(experiment_folder, "S")
@@ -196,9 +196,6 @@ def S(self, parameters_file, experiment_folder, advanced_mode):
                     print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
                 ss.run_u(tree_path, sequences_folder)
                 af.write_pruned_sequences(tree_path.replace("whole", "pruned"), sequences_folder)
-
-
-
 
 
 
