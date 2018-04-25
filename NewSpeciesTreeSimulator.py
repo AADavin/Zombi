@@ -481,7 +481,7 @@ class SpeciesTreeGenerator():
                     equick_nodes[c1name] = myc1
                     equick_nodes[c2name] = myc2
 
-        return wholetree.write(format=1), extanttree.write(format=1)
+        return wholetree.write(format=1), extanttree.write(format=1), map_collapsed
 
     def write_events_file(self, events_file):
 

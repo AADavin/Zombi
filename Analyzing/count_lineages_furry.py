@@ -16,7 +16,8 @@ def create_furry_tree(path_to_extant_tree, path_events_per_branch, mapping_file)
 
     # Second, we look at the arriving transfers
     # We need to check that they arrive and that they arrive to a lineage that survives. This is not obvious
-
+    # What I can do is checking that they arrive to a lineage that is in the branches of the extant tree
+    # or in the collapsed branches.
 
     events_per_branch = os.listdir(path_events_per_branch)
 

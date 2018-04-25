@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="59ba90f0-ee1f-4701-b72e-68f3e4c50e55" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/AuxiliarFunctions.py" afterPath="$PROJECT_DIR$/AuxiliarFunctions.py" />
-      <change beforePath="$PROJECT_DIR$/GenomeClasses.py" afterPath="$PROJECT_DIR$/GenomeClasses.py" />
+      <change beforePath="$PROJECT_DIR$/Analyzing/count_lineages_furry.py" afterPath="$PROJECT_DIR$/Analyzing/count_lineages_furry.py" />
       <change beforePath="$PROJECT_DIR$/NewSpeciesTreeSimulator.py" afterPath="$PROJECT_DIR$/NewSpeciesTreeSimulator.py" />
-      <change beforePath="$PROJECT_DIR$/SpeciesTreeSimulator.py" afterPath="$PROJECT_DIR$/SpeciesTreeSimulator.py" />
+      <change beforePath="$PROJECT_DIR$/simuLyon.py" afterPath="$PROJECT_DIR$/simuLyon.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -66,8 +65,8 @@
       <file leaf-file-name="simuLyon.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/simuLyon.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2235">
-              <caret line="149" column="4" lean-forward="false" selection-start-line="149" selection-start-column="4" selection-end-line="149" selection-end-column="4" />
+            <state relative-caret-position="735">
+              <caret line="69" column="35" lean-forward="false" selection-start-line="69" selection-start-column="35" selection-end-line="69" selection-end-column="35" />
               <folding>
                 <element signature="e#0#56#0" expanded="true" />
               </folding>
@@ -75,11 +74,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="count_lineages_furry.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="count_lineages_furry.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Analyzing/count_lineages_furry.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-142">
-              <caret line="24" column="36" lean-forward="false" selection-start-line="24" selection-start-column="36" selection-end-line="24" selection-end-column="36" />
+            <state relative-caret-position="-1037">
+              <caret line="28" column="26" lean-forward="true" selection-start-line="28" selection-start-column="26" selection-end-line="28" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -97,11 +96,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="NewSpeciesTreeSimulator.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="NewSpeciesTreeSimulator.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/NewSpeciesTreeSimulator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="777">
-              <caret line="464" column="0" lean-forward="true" selection-start-line="464" selection-start-column="0" selection-end-line="464" selection-end-column="0" />
+            <state relative-caret-position="456">
+              <caret line="483" column="83" lean-forward="false" selection-start-line="483" selection-start-column="83" selection-end-line="483" selection-end-column="83" />
               <folding />
             </state>
           </provider>
@@ -227,17 +226,17 @@
         <option value="$PROJECT_DIR$/Analyzing/lineages_per_time.py" />
         <option value="$PROJECT_DIR$/Analyzing/count_lineages_whole.py" />
         <option value="$PROJECT_DIR$/Analyzing/count_lineages_extant.py" />
-        <option value="$PROJECT_DIR$/Analyzing/count_lineages_furry.py" />
         <option value="$PROJECT_DIR$/Analyzing/map_extinct_lineages.py" />
         <option value="$PROJECT_DIR$/ReconciledTree.py" />
         <option value="$PROJECT_DIR$/Parameters/SpeciesTreeParameters.tsv" />
         <option value="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" />
         <option value="$PROJECT_DIR$/Parameters/SequenceParameters.tsv" />
-        <option value="$PROJECT_DIR$/simuLyon.py" />
         <option value="$PROJECT_DIR$/GenomeSimulator.py" />
         <option value="$PROJECT_DIR$/GenomeClasses.py" />
         <option value="$PROJECT_DIR$/SpeciesTreeSimulator.py" />
         <option value="$PROJECT_DIR$/AuxiliarFunctions.py" />
+        <option value="$PROJECT_DIR$/Analyzing/count_lineages_furry.py" />
+        <option value="$PROJECT_DIR$/simuLyon.py" />
         <option value="$PROJECT_DIR$/NewSpeciesTreeSimulator.py" />
       </list>
     </option>
@@ -1023,16 +1022,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/simuLyon.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2235">
-          <caret line="149" column="4" lean-forward="false" selection-start-line="149" selection-start-column="4" selection-end-line="149" selection-end-column="4" />
-          <folding>
-            <element signature="e#0#56#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/GenomeSimulator.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="192">
@@ -1081,18 +1070,28 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/NewSpeciesTreeSimulator.py">
+    <entry file="file://$PROJECT_DIR$/Analyzing/count_lineages_furry.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="777">
-          <caret line="464" column="0" lean-forward="true" selection-start-line="464" selection-start-column="0" selection-end-line="464" selection-end-column="0" />
+        <state relative-caret-position="-1037">
+          <caret line="28" column="26" lean-forward="true" selection-start-line="28" selection-start-column="26" selection-end-line="28" selection-end-column="26" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Analyzing/count_lineages_furry.py">
+    <entry file="file://$PROJECT_DIR$/simuLyon.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-142">
-          <caret line="24" column="36" lean-forward="false" selection-start-line="24" selection-start-column="36" selection-end-line="24" selection-end-column="36" />
+        <state relative-caret-position="735">
+          <caret line="69" column="35" lean-forward="false" selection-start-line="69" selection-start-column="35" selection-end-line="69" selection-end-column="35" />
+          <folding>
+            <element signature="e#0#56#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/NewSpeciesTreeSimulator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="456">
+          <caret line="483" column="83" lean-forward="false" selection-start-line="483" selection-start-column="83" selection-end-line="483" selection-end-column="83" />
           <folding />
         </state>
       </provider>

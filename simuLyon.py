@@ -36,14 +36,20 @@ class simuLyon():
 
             whole_tree_file = os.path.join(tree_folder, "WholeTree.nwk")
             extant_tree_file = os.path.join(tree_folder, "ExtantTree.nwk")
+            collapsed_nodes_file = os.path.join(tree_folder, "CollapsedNodes.tsv")
 
-            whole_tree, extant_tree = stg.generate_newick_trees()
+            whole_tree, extant_tree, collapsed_nodes = stg.generate_newick_trees()
 
             with open(whole_tree_file, "w") as f:
                 f.write(whole_tree)
 
             with open(extant_tree_file, "w") as f:
                 f.write(extant_tree)
+
+            with open(collapsed_nodes_file, "w") as f:
+                for k, v in collapsed_nodes.items():
+                    line = "\t".join([k, v]) + "\n"
+                    f.write(line)
 
             return 0
 
@@ -62,8 +68,6 @@ class simuLyon():
             print("Computing Species Tree. Trial number %s" % str(run_counter))
             if advanced_mode == "0":
                 success = stg.run()
-            if advanced_mode == "a":
-                success = stg.run_a()
             if advanced_mode == "b":
                 success = stg.run_b()
             if advanced_mode == "p":
@@ -78,14 +82,20 @@ class simuLyon():
 
         whole_tree_file = os.path.join(tree_folder, "WholeTree.nwk")
         extant_tree_file = os.path.join(tree_folder, "ExtantTree.nwk")
+        collapsed_nodes_file = os.path.join(tree_folder, "CollapsedNodes.tsv")
 
-        whole_tree, extant_tree = stg.generate_newick_trees()
+        whole_tree, extant_tree, collapsed_nodes = stg.generate_newick_trees()
 
         with open(whole_tree_file, "w") as f:
             f.write(whole_tree)
 
         with open(extant_tree_file, "w") as f:
             f.write(extant_tree)
+
+        with open(collapsed_nodes_file, "w") as f:
+            for k, v in collapsed_nodes.items():
+                line = "\t".join([k, v]) +"\n"
+                f.write(line)
 
         if advanced_mode == "b" or advanced_mode == "a":
             rates_file = os.path.join(tree_folder, "Rates.tsv")
