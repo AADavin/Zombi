@@ -6,7 +6,7 @@ import argparse
 import os
 
 
-class simuLyon():
+class Zombi():
 
     def __init__(self):
 
@@ -232,7 +232,7 @@ if __name__ == "__main__":
     else:
         print ("Incorrect value for mode")
 
-    SL = simuLyon()
+    Z = Zombi()
 
     if main_mode == "T":
 
@@ -242,7 +242,7 @@ if __name__ == "__main__":
         if not os.path.isdir(os.path.join(experiment_folder,"T")):
             os.mkdir(os.path.join(experiment_folder, "T"))
 
-        SL.T(parameters_file, experiment_folder, advanced_mode)
+        Z.T(parameters_file, experiment_folder, advanced_mode)
 
     elif main_mode == "G":
 
@@ -251,7 +251,7 @@ if __name__ == "__main__":
         if not os.path.isdir(genome_folder):
             os.mkdir(genome_folder)
 
-        SL.G(parameters_file, experiment_folder, advanced_mode)
+        Z.G(parameters_file, experiment_folder, advanced_mode)
 
     elif main_mode == "S":
 
@@ -260,7 +260,7 @@ if __name__ == "__main__":
         if not os.path.isdir(sequences_folder):
             os.mkdir(sequences_folder)
 
-        SL.S(parameters_file, experiment_folder, advanced_mode)
+        Z.S(parameters_file, experiment_folder, advanced_mode)
 
 
     else:
