@@ -6,7 +6,7 @@
 
 ### **Introduction** ###
 
-Zombi is a flexible platform of genome evolution which can be of great interest to those who want to test different evolutionary hypothesis under simulations and need to use a fast and easy to use tool to generate species trees, gene trees or sequences.
+Zombi is a flexible platform of genome evolution which can be of great interest to those who want to test different evolutionary hypotheses under simulations and need to use a fast and easy to use tool to generate species trees, gene trees or sequences.
 Zombi's output is especially simple and easy to read, understand and parse. 
 
 
@@ -14,7 +14,7 @@ Zombi's output is especially simple and easy to read, understand and parse.
 
 Writen by Adrián A. Davín 
 
-Using ideas, suggestions and comments coming from: Théo Tricou, Thibault Latrille, Nicolas Lartillot, Vincent Daubin, Damiene de Vienne, Eric Tannier and Gergely J. Szollosi
+Using ideas, suggestions and comments coming from: Théo Tricou, Thibault Latrille, Nicolas Lartillot, Vincent Daubin, Damien de Vienne, Eric Tannier and Gergely J. Szollosi
 
 Please, if you have any doubts or need a hand, **just contact me here: aaredav@gmail.com**
 
