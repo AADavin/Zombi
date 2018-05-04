@@ -113,13 +113,10 @@ class SequenceSimulator():
 
         with open(whole_tree) as f:
             whole_tree = ete3.Tree(f.readline().strip(), format=1)
-
         r = whole_tree.get_tree_root()
         r.name = "Root"
-
         for n in whole_tree.traverse():
             n.dist *= self.st_multipliers[n.name]
-
         with open(rates_tree, "w") as f:
             f.write(whole_tree.write(format=1))
 
