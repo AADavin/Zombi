@@ -9,13 +9,14 @@
 Zombi is a flexible platform of genome evolution which can be of great interest to those who want to test different evolutionary hypothesis under simulations and need to use a fast and easy to use tool to generate species trees, gene trees or sequences.
 Zombi's output is especially simple and easy to read, understand and parse. 
 
-Writen by Adrián A. Davín 
 
 ----------
 
+Writen by Adrián A. Davín 
+
 Using ideas, suggestions and comments coming from: Théo Tricou, Thibault Latrille, Nicolas Lartillot, Vincent Daubin, Damiene de Vienne, Eric Tannier and Gergely J. Szollosi
 
-Please, if you have any doubts or need a hand, **just contact me here: aaredav@gmail.com** 
+Please, if you have any doubts or need a hand, **just contact me here: aaredav@gmail.com**
 
 
 ----------
@@ -39,7 +40,7 @@ Second, you need **python 3.6** installed with **ETE3**, **numpy** and pyvolve
 
 ### **Usage** ###
 
-**There is a detailed Wiki that explains how Zombi works [here](https://github.com/AADavin/ZOMBI/wiki)** It takes around 15 minutes of your time reading it! But if you want to launch it
+**There is a detailed Wiki that explains how Zombi works [here](https://github.com/AADavin/ZOMBI/wiki)** and it takes around 15 minutes of your time reading it! But if you want to launch it
 right away, just read this.
 
 There are **three main modes** to run Zombi: **T** (species Tree), **G** (Genomes) and  **S** (Sequences) 
@@ -68,6 +69,8 @@ Then, you can simulate the evolution of sequences for each gene in that species 
 
     python3 Zombi.py S ./Parameters/SequenceParameters.tsv ./Output_folder
     
+    
+----------
     
 
 Distributed under:
