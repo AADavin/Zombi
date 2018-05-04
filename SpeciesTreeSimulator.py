@@ -292,7 +292,7 @@ class SpeciesTreeGenerator():
                     self.branchwise_rates[c1] = (af.obtain_value(probability_type_s + ":" + mean_s + ";" + variance),
                                                  af.obtain_value(probability_type_e + ":" + mean_e + ";" + variance))
 
-                    print(af.obtain_value(probability_type_s + ":" + mean_s + ";" + variance))
+                    #print(af.obtain_value(probability_type_s + ":" + mean_s + ";" + variance))
 
                     mean_s = str(self.branchwise_rates[lineage][0])
                     mean_e = str(self.branchwise_rates[lineage][1])
@@ -564,8 +564,6 @@ class SpeciesTreeGenerator():
                 state = surviving_nodes[p]["state"]
 
                 if state == 1:  # Now the extant tree
-
-                    print(surviving_nodes[p]["collapsed"])
 
                     c1name, c2name = surviving_nodes[p]["descendant"].split(";")
 

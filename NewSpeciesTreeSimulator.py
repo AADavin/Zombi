@@ -485,11 +485,12 @@ class SpeciesTreeGenerator():
                             if ep2 != "N":
                                 map_extinct[c2name] = ep2
 
-                            print(p + " -> " +  " : " + ep1)
-                            print(p + " -> " +  " : " + ep2)
+                            #print(p + " -> " +  " : " + ep1)
+                            #print(p + " -> " +  " : " + ep2)
 
                         else:
-                            print(p + " -> " +  " : " + extinct_nodes)
+                            pass
+                            #print(p + " -> " +  " : " + extinct_nodes)
 
                 if state == 1:  # Now the extant tree
 
@@ -514,13 +515,14 @@ class SpeciesTreeGenerator():
                             if ep2 != "N":
                                 map_extinct[c2name] = ep2
 
-                            print(p + " -> " + c1name + " : " + ep1)
-                            print(p + " -> " + c2name + " : " + ep2)
+                            #print(p + " -> " + c1name + " : " + ep1)
+                            #print(p + " -> " + c2name + " : " + ep2)
 
                         else:
+                            pass
 
-                            print(p + " -> " + c1name + " : " + extinct_nodes)
-                            print(p + " -> " + c2name + " : " + extinct_nodes)
+                            #print(p + " -> " + c1name + " : " + extinct_nodes)
+                            #print(p + " -> " + c2name + " : " + extinct_nodes)
 
 
 
