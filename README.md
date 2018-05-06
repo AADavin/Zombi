@@ -46,8 +46,8 @@ right away, just read this.
 There are **three main modes** to run Zombi: **T** (species Tree), **G** (Genomes) and  **S** (Sequences) 
 
 You must run the computations in sequential order. This means that:
-Computing **genomes** requires having computed previously a species tree computed with the mode T. 
-Computing **sequences** requires having computed previously **genomes** with the mode G.
+Computing **genomes** requires having computed previously a species tree computed with the T mode. 
+Computing **sequences** requires having computed previously **genomes** with the G mode.
 
 The parameters are read from a .tsv file that can be modified with any text editor. 
 

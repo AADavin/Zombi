@@ -22,9 +22,6 @@ class SpeciesTreeGenerator():
 
         self.active_lineages.add("Root")
         self.distances["Root"] = 0.0
-        c1, c2 = self._get_speciated("Root", 0.0)
-
-        return c1, c2
 
     def run(self):
 
@@ -39,7 +36,7 @@ class SpeciesTreeGenerator():
 
         time = 0
 
-        n_lineages_alive = 2
+        n_lineages_alive = 1
 
         while True:
 
@@ -105,14 +102,8 @@ class SpeciesTreeGenerator():
         self.branchwise_rates = dict()
         self.branchwise_rates["Root"] = (speciation, extinction)
 
-        c1, c2 = self.start()
+        self.start()
 
-        self.branchwise_rates[c1] = (
-            af.obtain_value(self.parameters["SPECIATION"]),
-            af.obtain_value(self.parameters["EXTINCTION"]))
-        self.branchwise_rates[c2] = (
-            af.obtain_value(self.parameters["SPECIATION"]),
-            af.obtain_value(self.parameters["EXTINCTION"]))
 
         stopping_rule = self.parameters["STOPPING_RULE"]
         total_time = self.parameters["TOTAL_TIME"]
@@ -121,108 +112,8 @@ class SpeciesTreeGenerator():
 
         time = 0
 
-        n_lineages_alive = 2
+        n_lineages_alive = 1
 
-
-        while True:
-
-            if n_lineages_alive == 0:
-
-                print("All dead")
-                success = False
-                return success
-
-            if self.parameters["VERBOSE"] == 1:
-                print("Time: %s ; Number of lineages alive: %s" % (str(time), str(n_lineages_alive)))
-
-            time_to_next_event = self.get_time_to_next_event_advanced_modes()
-
-            if stopping_rule == 0 and time + time_to_next_event >= total_time:
-
-                self.increase_distances(total_time - time)
-                for lineage in self.active_lineages:
-                    self.events.append((total_time, "F", lineage))
-                success = True
-                return success
-
-            elif stopping_rule == 1 and n_lineages_alive == total_lineages:
-
-                self.increase_distances(time_to_next_event)
-                for lineage in self.active_lineages:
-                    self.events.append((time + time_to_next_event, "F", lineage))
-                success = True
-                return success
-
-            elif n_lineages_alive >= max_lineages:
-
-                print("Aborting. Max n of lineages attained")
-                success = True
-                return success
-
-            else:
-                # In this case we do the normal the computation
-
-                time += time_to_next_event
-                self.increase_distances(time_to_next_event)
-
-                # Now we have to choose the lineage doing the event. This will be proportional to the value of the rates
-                ###
-
-                active_lineages = list(self.active_lineages)
-
-                lineage = numpy.random.choice(active_lineages, 1, p=af.normalize(
-                    [sum((self.branchwise_rates[x][0], self.branchwise_rates[x][1])) for x in active_lineages]))[0]
-
-                myspeciation = self.branchwise_rates[lineage][0]
-                myextinction = self.branchwise_rates[lineage][1]
-
-                event = self.choose_event(myspeciation, myextinction)
-
-                if event == "S":
-                    c1,c2 = self._get_speciated(lineage, time)
-                    n_lineages_alive += 1
-
-                    self.branchwise_rates[c1] = (
-                        af.obtain_value(self.parameters["SPECIATION"]),
-                        af.obtain_value(self.parameters["EXTINCTION"]))
-                    self.branchwise_rates[c2] = (
-                        af.obtain_value(self.parameters["SPECIATION"]),
-                        af.obtain_value(self.parameters["EXTINCTION"]))
-
-                elif event == "E":
-                    self._get_extinct(lineage, time)
-                    n_lineages_alive -= 1
-
-
-    def run_a(self):
-
-        # Speciation and extinction rates are time autocorrelated
-        # Each time I create a new lineage, I have to generate new number for its rates
-        # We create a dictionary to store the rates
-
-        speciation = af.obtain_value(self.parameters["SPECIATION"])
-        extinction = af.obtain_value(self.parameters["EXTINCTION"])
-
-        self.branchwise_rates = dict()
-        self.branchwise_rates["Root"] = (speciation, extinction)
-
-        c1, c2 = self.start()
-
-        self.branchwise_rates[c1] = (
-            af.obtain_value(self.parameters["SPECIATION"]),
-            af.obtain_value(self.parameters["EXTINCTION"]))
-        self.branchwise_rates[c2] = (
-            af.obtain_value(self.parameters["SPECIATION"]),
-            af.obtain_value(self.parameters["EXTINCTION"]))
-
-        stopping_rule = self.parameters["STOPPING_RULE"]
-        total_time = self.parameters["TOTAL_TIME"]
-        total_lineages = self.parameters["TOTAL_LINEAGES"]
-        max_lineages = self.parameters["MAX_LINEAGES"]
-
-        time = 0
-
-        n_lineages_alive = 2
 
         while True:
 
@@ -282,30 +173,17 @@ class SpeciesTreeGenerator():
                     c1, c2 = self._get_speciated(lineage, time)
                     n_lineages_alive += 1
 
-                    variance = str(self.distances[lineage] * 0.01)
-
-                    mean_s = str(self.branchwise_rates[lineage][0])
-                    mean_e = str(self.branchwise_rates[lineage][1])
-                    probability_type_s = self.parameters["SPECIATION"].split(":")[0]
-                    probability_type_e = self.parameters["EXTINCTION"].split(":")[0]
-
-                    self.branchwise_rates[c1] = (af.obtain_value(probability_type_s + ":" + mean_s + ";" + variance),
-                                                 af.obtain_value(probability_type_e + ":" + mean_e + ";" + variance))
-
-                    #print(af.obtain_value(probability_type_s + ":" + mean_s + ";" + variance))
-
-                    mean_s = str(self.branchwise_rates[lineage][0])
-                    mean_e = str(self.branchwise_rates[lineage][1])
-
-                    probability_type_s = self.parameters["SPECIATION"].split(":")[0]
-                    probability_type_e = self.parameters["EXTINCTION"].split(":")[0]
-
-                    self.branchwise_rates[c2] = (af.obtain_value(probability_type_s + ":" + mean_s + ";" + variance),
-                                                 af.obtain_value(probability_type_e + ":" + mean_e + ";" + variance))
+                    self.branchwise_rates[c1] = (
+                        af.obtain_value(self.parameters["SPECIATION"]),
+                        af.obtain_value(self.parameters["EXTINCTION"]))
+                    self.branchwise_rates[c2] = (
+                        af.obtain_value(self.parameters["SPECIATION"]),
+                        af.obtain_value(self.parameters["EXTINCTION"]))
 
                 elif event == "E":
                     self._get_extinct(lineage, time)
                     n_lineages_alive -= 1
+
 
     def run_p(self):
 
@@ -452,12 +330,25 @@ class SpeciesTreeGenerator():
             while found == 0:
 
                 if surviving_nodes[mynode]["state"] == 1:
+                    collapsed_nodes.append(mynode)
                     found = 1
                 else:
                     collapsed_nodes.append(mynode)
                     mynode = surviving_nodes[mynode]["descendant"]
 
             return mynode, collapsed_nodes
+
+        def get_extinct(surviving_nodes, node):
+
+            extinct_nodes = list()
+
+            if surviving_nodes[node]["extinct"] == "E":
+                extinct_nodes.append(node)
+            else:
+                extinct_nodes.append(node)
+                extinct_nodes += surviving_nodes[node]["extinct"].split(";")
+
+            return ";".join(extinct_nodes)
 
         # Eric's algorithm
 
@@ -473,12 +364,12 @@ class SpeciesTreeGenerator():
             if event == "F":
 
                 times[nodes] = float(current_time)
-                surviving_nodes[nodes] = {"state": 1, "descendant": "None", "collapsed": ("None","None")}
+                surviving_nodes[nodes] = {"state": 1, "descendant": "None", "collapsed": "", "extinct": ""}
 
             elif event == "E":
 
                 times[nodes] = float(current_time)
-                surviving_nodes[nodes] = {"state": 0, "descendant": "None", "collapsed": ("None","None")}
+                surviving_nodes[nodes] = {"state": 0, "descendant": "None", "collapsed": "", "extinct": "E"}
 
             elif event == "S":
 
@@ -487,46 +378,60 @@ class SpeciesTreeGenerator():
                 times[p] = float(current_time)
 
                 if surviving_nodes[c1]["state"] == 1 and surviving_nodes[c2]["state"] == 1:
-
-                    surviving_nodes[p] = {"state": 1, "descendant": c1 + ";" + c2, "collapsed": ("None","None")}
+                    surviving_nodes[p] = {"state": 1, "descendant": c1 + ";" + c2, "collapsed": "", "extinct": ""}
 
                 elif surviving_nodes[c1]["state"] == 0 and surviving_nodes[c2]["state"] == 0:
 
-                    surviving_nodes[p] = {"state": 0, "descendant": "None", "collapsed": ("None","None")}
+                    en1 = get_extinct(surviving_nodes, c1)
+                    en2 = get_extinct(surviving_nodes, c2)
+
+                    surviving_nodes[p] = {"state": 0, "descendant": "None", "collapsed": "", "extinct": en1 + ";" + en2}
 
                 elif surviving_nodes[c1]["state"] == -1 and surviving_nodes[c2]["state"] == -1:
 
+                    en1 = get_extinct(surviving_nodes, c1)
+                    en2 = get_extinct(surviving_nodes, c2)
+
                     mynode1, cp_nodes1 = find_descendant(surviving_nodes, c1)
                     mynode2, cp_nodes2 = find_descendant(surviving_nodes, c2)
-                    surviving_nodes[p] = {"state": 1, "descendant": mynode1 + ";" + mynode2, "collapsed": (cp_nodes1, cp_nodes2)}
+                    surviving_nodes[p] = {"state": 1, "descendant": mynode1 + ";" + mynode2, "collapsed": surviving_nodes[c1]["collapsed"] + "+" + surviving_nodes[c2]["collapsed"],
+                                          "extinct": en1 + "+" + en2}
 
                 elif surviving_nodes[c1]["state"] == 1 and surviving_nodes[c2]["state"] == 0:
 
-                    surviving_nodes[p] = {"state": -1, "descendant": c1, "collapsed": ("None","None")}
+                    en2 = get_extinct(surviving_nodes, c2)
+                    surviving_nodes[p] = {"state": -1, "descendant": c1, "collapsed": p, "extinct": en2}
 
                 elif surviving_nodes[c1]["state"] == 0 and surviving_nodes[c2]["state"] == 1:
 
-                    surviving_nodes[p] = {"state": -1, "descendant": c2, "collapsed": ("None","None")}
+                    en1 = get_extinct(surviving_nodes, c1)
+                    surviving_nodes[p] = {"state": -1, "descendant": c2, "collapsed": p, "extinct": en1}
 
                 elif surviving_nodes[c1]["state"] == 1 and surviving_nodes[c2]["state"] == -1:
-
                     mynode, cp_nodes = find_descendant(surviving_nodes, c2)
-                    surviving_nodes[p] = {"state": 1, "descendant": c1 + ";" + mynode, "collapsed": ("None",cp_nodes)}
+                    surviving_nodes[p] = {"state": 1, "descendant": c1 + ";" + mynode, "collapsed": "N+" + surviving_nodes[c2]["collapsed"],
+                                          "extinct": ""}
 
                 elif surviving_nodes[c1]["state"] == -1 and surviving_nodes[c2]["state"] == 1:
-
                     mynode, cp_nodes = find_descendant(surviving_nodes, c1)
-                    surviving_nodes[p] = {"state": 1, "descendant": mynode + ";" + c2, "collapsed": (cp_nodes, "None")}
+                    surviving_nodes[p] = {"state": 1, "descendant": mynode + ";" + c2, "collapsed": surviving_nodes[c1]["collapsed"] + "+N",
+                                          "extinct": ""}
 
                 elif surviving_nodes[c1]["state"] == -1 and surviving_nodes[c2]["state"] == 0:
-
                     mynode, cp_nodes = find_descendant(surviving_nodes, c1)
-                    surviving_nodes[p] = {"state": -1, "descendant": mynode, "collapsed": (cp_nodes,"None")}
+
+                    en2 = get_extinct(surviving_nodes, c2)
+
+                    surviving_nodes[p] = {"state": -1, "descendant": mynode, "collapsed": surviving_nodes[c1]["collapsed"] + ";" + p,
+                                          "extinct": en2}
 
                 elif surviving_nodes[c1]["state"] == 0 and surviving_nodes[c2]["state"] == -1:
-
                     mynode, cp_nodes = find_descendant(surviving_nodes, c2)
-                    surviving_nodes[p] = {"state": -1, "descendant": mynode, "collapsed": ("None",cp_nodes)}
+
+                    en1 = get_extinct(surviving_nodes, c2)
+
+                    surviving_nodes[p] = {"state": -1, "descendant": mynode, "collapsed": surviving_nodes[c2]["collapsed"] + ";" + p,
+                                          "extinct": en1}
 
         extanttree = ete3.Tree()
         wholetree = ete3.Tree()
@@ -541,6 +446,11 @@ class SpeciesTreeGenerator():
         equick_nodes = dict()
 
         wquick_nodes["Root"] = wroot
+
+        # I create a dict for storing the collapsed nodes:
+
+        map_collapsed = dict()
+        map_extinct = dict()
 
         for i, values in enumerate(events):
 
@@ -563,9 +473,63 @@ class SpeciesTreeGenerator():
 
                 state = surviving_nodes[p]["state"]
 
+                if state == -1:
+
+                    extinct_nodes = surviving_nodes[p]["extinct"]
+
+                    if extinct_nodes != "":
+                        if "+" in extinct_nodes:
+                            ep1, ep2 = extinct_nodes.split("+")
+                            if ep1 != "N":
+                                map_extinct[c1name] = ep1
+                            if ep2 != "N":
+                                map_extinct[c2name] = ep2
+
+                            #print(p + " -> " +  " : " + ep1)
+                            #print(p + " -> " +  " : " + ep2)
+
+                        else:
+                            pass
+                            #print(p + " -> " +  " : " + extinct_nodes)
+
                 if state == 1:  # Now the extant tree
 
                     c1name, c2name = surviving_nodes[p]["descendant"].split(";")
+                    collapsed_nodes = surviving_nodes[p]["collapsed"]
+                    if collapsed_nodes != "":
+                        cp1, cp2 = collapsed_nodes.split("+")
+                        if cp1 != "N":
+                            map_collapsed[c1name] = cp1
+                        if cp2 != "N":
+                            map_collapsed[c2name] = cp2
+
+                        #print(p + " -> " + c1name + " : " + cp1)
+                        #print(p + " -> " + c2name + " : " + cp2)
+
+                    extinct_nodes = surviving_nodes[p]["extinct"]
+                    if extinct_nodes != "":
+                        if "+" in extinct_nodes:
+                            ep1, ep2 = extinct_nodes.split("+")
+                            if ep1 != "N":
+                                map_extinct[c1name] = ep1
+                            if ep2 != "N":
+                                map_extinct[c2name] = ep2
+
+                            #print(p + " -> " + c1name + " : " + ep1)
+                            #print(p + " -> " + c2name + " : " + ep2)
+
+                        else:
+                            pass
+
+                            #print(p + " -> " + c1name + " : " + extinct_nodes)
+                            #print(p + " -> " + c2name + " : " + extinct_nodes)
+
+
+
+
+
+
+
 
                     if eroot.name == "":
                         eroot.name = p
@@ -585,7 +549,9 @@ class SpeciesTreeGenerator():
                     equick_nodes[c1name] = myc1
                     equick_nodes[c2name] = myc2
 
-        return wholetree.write(format=1), extanttree.write(format=1)
+
+
+        return wholetree.write(format=1), extanttree.write(format=1), map_collapsed
 
     def write_events_file(self, events_file):
 

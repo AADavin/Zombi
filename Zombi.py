@@ -1,4 +1,4 @@
-from NewSpeciesTreeSimulator import SpeciesTreeGenerator
+from SpeciesTreeSimulator import SpeciesTreeGenerator
 from GenomeSimulator import GenomeSimulator
 from SequenceSimulator import SequenceSimulator
 import AuxiliarFunctions as af
