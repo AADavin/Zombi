@@ -78,14 +78,15 @@ def obtain_value(value):
     return value
 
 
-
-
 def prepare_sequence_parameters(parameters):
 
     for parameter, value in parameters.items():
 
-        if parameter == "SEQUENCE_SIZE":
+        if parameter == "SEQUENCE_SIZE" or parameter == "VERBOSE":
             parameters[parameter] = int(value)
+
+        if parameter == "SCALING":
+            parameters[parameter] = float(value)
 
     return parameters
 
@@ -157,7 +158,7 @@ def prepare_genome_parameters(parameters):
             parameters[parameter] = float(value)
 
         if parameter == "PROFILES" or parameter == "EVENTS_PER_BRANCH" or parameter == "GENE_TREES" \
-                or parameter == "PRUNE_TREES" or parameter == "TRANSFER_PREFERENCE" or parameter == "RECONCILED_TREES":
+                or parameter == "PRUNE_TREES" or parameter == "TRANSFER_PREFERENCE" or parameter == "RECONCILED_TREES" or parameter =="VERBOSE":
 
             parameters[parameter] = int(value)
 

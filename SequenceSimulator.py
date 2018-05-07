@@ -31,7 +31,7 @@ class SequenceSimulator():
             else:
                 my_tree = ete3.Tree(line, format=1)
 
-        tree = pyvolve.read_tree(tree=my_tree.write(format=5))
+        tree = pyvolve.read_tree(tree=my_tree.write(format=5), scale_tree = self.parameters["SCALING"])
         partition = pyvolve.Partition(models=self.model, size=self.size)
         evolver = pyvolve.Evolver(tree=tree, partitions=partition)
         fasta_file = tree_file.split("/")[-1].replace("_wholetree.nwk", "_whole") + ".fasta"
@@ -59,7 +59,7 @@ class SequenceSimulator():
             node.dist = node.dist * gf_multiplier * self.st_multipliers[node.name.split("_")[0]]
 
 
-        tree = pyvolve.read_tree(tree=my_tree.write(format=5))
+        tree = pyvolve.read_tree(tree=my_tree.write(format=5), scale_tree = self.parameters["SCALING"])
         partition = pyvolve.Partition(models=self.model, size=self.size)
         evolver = pyvolve.Evolver(tree=tree, partitions=partition)
         fasta_file = tree_file.split("/")[-1].replace("_wholetree.nwk", "_") +  "whole.fasta"

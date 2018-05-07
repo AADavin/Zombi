@@ -1,7 +1,11 @@
 # Parameters for mode S
 # Please refer to the manual for more details
 #
-# *REQUIRED* parameters
+#
+##
+# The number of expected substitutions per unit of time (1 by default)
+SCALING 1
+#
 # The sequence size (integer, strictly positive value)
 SEQUENCE_SIZE	100
 # The type of sequence be either 'nucleotide', 'amino-acid' or 'codon'
