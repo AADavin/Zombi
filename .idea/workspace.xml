@@ -2,17 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="59ba90f0-ee1f-4701-b72e-68f3e4c50e55" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/UsefulScripts/concatenate.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/UsefulScripts/fastareader.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/UsefulScripts/get_singlecopyuniversal_families.py" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/AuxiliarFunctions.py" afterPath="$PROJECT_DIR$/AuxiliarFunctions.py" />
-      <change beforePath="$PROJECT_DIR$/GenomeClasses.py" afterPath="$PROJECT_DIR$/GenomeClasses.py" />
       <change beforePath="$PROJECT_DIR$/GenomeSimulator.py" afterPath="$PROJECT_DIR$/GenomeSimulator.py" />
-      <change beforePath="$PROJECT_DIR$/RateCustomizer.py" afterPath="$PROJECT_DIR$/RateCustomizer.py" />
-      <change beforePath="$PROJECT_DIR$/SequenceSimulator.py" afterPath="$PROJECT_DIR$/SequenceSimulator.py" />
-      <change beforePath="$PROJECT_DIR$/SpeciesTreeSimulator.py" afterPath="$PROJECT_DIR$/SpeciesTreeSimulator.py" />
-      <change beforePath="$PROJECT_DIR$/Zombi.py" afterPath="$PROJECT_DIR$/Zombi.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -29,8 +19,8 @@
       <file leaf-file-name="Zombi.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Zombi.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="212">
-              <caret line="185" column="69" lean-forward="false" selection-start-line="185" selection-start-column="69" selection-end-line="185" selection-end-column="69" />
+            <state relative-caret-position="532">
+              <caret line="204" column="36" lean-forward="false" selection-start-line="204" selection-start-column="35" selection-end-line="204" selection-end-column="36" />
               <folding>
                 <element signature="e#0#53#0" expanded="true" />
               </folding>
@@ -48,7 +38,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SpeciesSampler.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="SpeciesSampler.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SpeciesSampler.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="221">
@@ -61,8 +51,8 @@
       <file leaf-file-name="AuxiliarFunctions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/AuxiliarFunctions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="212">
-              <caret line="195" column="7" lean-forward="false" selection-start-line="195" selection-start-column="7" selection-end-line="195" selection-end-column="7" />
+            <state relative-caret-position="221">
+              <caret line="525" column="22" lean-forward="false" selection-start-line="525" selection-start-column="22" selection-end-line="525" selection-end-column="22" />
               <folding />
             </state>
           </provider>
@@ -71,18 +61,18 @@
       <file leaf-file-name="GenomeClasses.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GenomeClasses.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="212">
-              <caret line="227" column="23" lean-forward="false" selection-start-line="227" selection-start-column="23" selection-end-line="227" selection-end-column="23" />
+            <state relative-caret-position="120">
+              <caret line="11" column="19" lean-forward="false" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GenomeSimulator.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="GenomeSimulator.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GenomeSimulator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="212">
-              <caret line="170" column="28" lean-forward="false" selection-start-line="170" selection-start-column="28" selection-end-line="170" selection-end-column="28" />
+            <state relative-caret-position="2972">
+              <caret line="437" column="33" lean-forward="false" selection-start-line="437" selection-start-column="33" selection-end-line="437" selection-end-column="33" />
               <folding />
             </state>
           </provider>
@@ -144,10 +134,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>_start</find>
-      <find>self.distances</find>
-      <find>af.generate_value(</find>
-      <find>Genera</find>
       <find>get_homo</find>
       <find>choose</find>
       <find>TRASLOCATION</find>
@@ -172,8 +158,12 @@
       <find>VERBO</find>
       <find>prepare</find>
       <find>whol</find>
-      <find>whole</find>
       <find>Whole</find>
+      <find>whole</find>
+      <find>original</find>
+      <find>ori</find>
+      <find>O</find>
+      <find>Ori</find>
     </findStrings>
     <replaceStrings>
       <replace>transfer</replace>
@@ -243,9 +233,9 @@
         <option value="$PROJECT_DIR$/Zombi.py" />
         <option value="$PROJECT_DIR$/AuxiliarFunctions.py" />
         <option value="$PROJECT_DIR$/GenomeClasses.py" />
-        <option value="$PROJECT_DIR$/GenomeSimulator.py" />
         <option value="$PROJECT_DIR$/RateCustomizer.py" />
         <option value="$PROJECT_DIR$/SequenceSimulator.py" />
+        <option value="$PROJECT_DIR$/GenomeSimulator.py" />
       </list>
     </option>
   </component>
@@ -1056,40 +1046,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Zombi.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="212">
-          <caret line="185" column="69" lean-forward="false" selection-start-line="185" selection-start-column="69" selection-end-line="185" selection-end-column="69" />
-          <folding>
-            <element signature="e#0#53#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AuxiliarFunctions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="212">
-          <caret line="195" column="7" lean-forward="false" selection-start-line="195" selection-start-column="7" selection-end-line="195" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GenomeClasses.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="212">
-          <caret line="227" column="23" lean-forward="false" selection-start-line="227" selection-start-column="23" selection-end-line="227" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GenomeSimulator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="212">
-          <caret line="170" column="28" lean-forward="false" selection-start-line="170" selection-start-column="28" selection-end-line="170" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/RateCustomizer.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="212">
@@ -1134,6 +1090,40 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
           <caret line="171" column="13" lean-forward="false" selection-start-line="171" selection-start-column="13" selection-end-line="171" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GenomeClasses.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="11" column="19" lean-forward="false" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AuxiliarFunctions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="525" column="22" lean-forward="false" selection-start-line="525" selection-start-column="22" selection-end-line="525" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Zombi.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="532">
+          <caret line="204" column="36" lean-forward="false" selection-start-line="204" selection-start-column="35" selection-end-line="204" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#53#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GenomeSimulator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2972">
+          <caret line="437" column="33" lean-forward="false" selection-start-line="437" selection-start-column="33" selection-end-line="437" selection-end-column="33" />
           <folding />
         </state>
       </provider>
