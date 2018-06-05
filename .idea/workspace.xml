@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="59ba90f0-ee1f-4701-b72e-68f3e4c50e55" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/AuxiliarFunctions.py" afterPath="$PROJECT_DIR$/AuxiliarFunctions.py" />
-      <change beforePath="$PROJECT_DIR$/GenomeSimulator.py" afterPath="$PROJECT_DIR$/GenomeSimulator.py" />
-      <change beforePath="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" afterPath="$PROJECT_DIR$/Parameters/GenomeParameters.tsv" />
-      <change beforePath="$PROJECT_DIR$/Parameters/SequenceParameters.tsv" afterPath="$PROJECT_DIR$/Parameters/SequenceParameters.tsv" />
-      <change beforePath="$PROJECT_DIR$/Parameters/SpeciesTreeParameters.tsv" afterPath="$PROJECT_DIR$/Parameters/SpeciesTreeParameters.tsv" />
-      <change beforePath="$PROJECT_DIR$/SpeciesTreeSimulator.py" afterPath="$PROJECT_DIR$/SpeciesTreeSimulator.py" />
+      <change beforePath="$PROJECT_DIR$/Images/GenomeEvolution.png" afterPath="$PROJECT_DIR$/Images/GenomeEvolution.png" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -29,16 +24,6 @@
               <folding>
                 <element signature="e#0#53#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SequenceSimulator.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/SequenceSimulator.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="212">
-              <caret line="36" column="85" lean-forward="false" selection-start-line="36" selection-start-column="85" selection-end-line="36" selection-end-column="85" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -73,13 +58,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AuxiliarFunctions.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="AuxiliarFunctions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/AuxiliarFunctions.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="3621">
               <caret line="267" column="71" lean-forward="true" selection-start-line="267" selection-start-column="71" selection-end-line="267" selection-end-column="71" />
               <folding />
             </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GenomeEvolution.png" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Images/GenomeEvolution.png">
+          <provider selected="true" editor-type-id="images">
+            <state />
           </provider>
         </entry>
       </file>
@@ -157,13 +149,13 @@
       <find>Whole</find>
       <find>whole</find>
       <find>ori</find>
-      <find>O</find>
       <find>Ori</find>
       <find>POPUL</find>
       <find>original</find>
       <find>POPU</find>
       <find>FAMILI</find>
       <find>stem_families</find>
+      <find>O</find>
     </findStrings>
     <replaceStrings>
       <replace>transfer</replace>
@@ -177,8 +169,8 @@
       <replace>Z</replace>
       <replace>Complete</replace>
       <replace>Initial</replace>
-      <replace>complete</replace>
       <replace>Initial_genome_size</replace>
+      <replace>complete</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -273,6 +265,11 @@
             <path>
               <item name="Zombi" type="b2602c69:ProjectViewProjectNode" />
               <item name="SimuLYON" type="462c0819:PsiDirectoryNode" />
+              <item name="Images" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Zombi" type="b2602c69:ProjectViewProjectNode" />
+              <item name="SimuLYON" type="462c0819:PsiDirectoryNode" />
               <item name="Parameters" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -289,17 +286,17 @@
     <property name="SearchEverywhereHistoryKey" value=":&#9;null&#9;null" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Images" />
+      <recent name="$PROJECT_DIR$/Trash" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/old_functions" />
+      <recent name="$PROJECT_DIR$/Examples/2" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/Images" />
       <recent name="$PROJECT_DIR$/NewParameters" />
       <recent name="$PROJECT_DIR$" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/Trash" />
-      <recent name="$PROJECT_DIR$/Images" />
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/old_functions" />
-      <recent name="$PROJECT_DIR$/Examples/2" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -775,13 +772,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Trash/HandlerFunctions/test_TED.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="8" column="28" lean-forward="false" selection-start-line="8" selection-start-column="28" selection-end-line="8" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Trash/Examples/2/massive_extinction.tsv">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1135,6 +1125,11 @@
           <caret line="267" column="71" lean-forward="true" selection-start-line="267" selection-start-column="71" selection-end-line="267" selection-end-column="71" />
           <folding />
         </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Images/GenomeEvolution.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
       </provider>
     </entry>
   </component>
