@@ -194,7 +194,7 @@ class SpeciesTreeGenerator():
         extinction = af.obtain_value(self.parameters["EXTINCTION"])
         turnover = self.parameters["TURNOVER"]
 
-        time_slices = self.parameters["POPULATION_SIZES"]
+        time_slices = self.parameters["LINEAGE_PROFILE"]
         total_time = time_slices[-1][0]
         current_time_slice = 0
 

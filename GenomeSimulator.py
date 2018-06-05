@@ -209,10 +209,10 @@ class GenomeSimulator():
         genome.species = "Root"
         time = 0
 
-        stem_families = self.parameters["STEM_FAMILIES"].split(";")
+        initial_genome_size = self.parameters["INITIAL_GENOME_SIZE"].split(";")
         shape = "C"
 
-        for n_genes in stem_families:
+        for n_genes in initial_genome_size:
 
             if shape == "L":
                 chromosome = LinearChromosome()

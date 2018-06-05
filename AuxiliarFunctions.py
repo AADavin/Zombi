@@ -100,7 +100,7 @@ def prepare_species_tree_parameters(parameters):
         if parameter == "TOTAL_TIME":
             parameters[parameter] = float(value)
 
-        if parameter == "POPULATION_SIZES":
+        if parameter == "LINEAGE_PROFILE":
             parameters[parameter] = [tuple([int(j) for j in x.split("-")]) for x in value.split(";")]
 
         if parameter == "SPECIES_EVOLUTION_MODE" or parameter == "N_LINEAGES" or parameter == "MIN_LINEAGES" \
