@@ -34,7 +34,7 @@ class SequenceSimulator():
         tree = pyvolve.read_tree(tree=my_tree.write(format=5), scale_tree = self.parameters["SCALING"])
         partition = pyvolve.Partition(models=self.model, size=self.size)
         evolver = pyvolve.Evolver(tree=tree, partitions=partition)
-        fasta_file = tree_file.split("/")[-1].replace("_wholetree.nwk", "_whole") + ".fasta"
+        fasta_file = tree_file.split("/")[-1].replace("_completetree.nwk", "_complete") + ".fasta"
         evolver(seqfile=os.path.join(sequences_folder, fasta_file), ratefile=None, infofile=None)
 
     def run_u(self, tree_file, sequences_folder):
@@ -62,7 +62,7 @@ class SequenceSimulator():
         tree = pyvolve.read_tree(tree=my_tree.write(format=5), scale_tree = self.parameters["SCALING"])
         partition = pyvolve.Partition(models=self.model, size=self.size)
         evolver = pyvolve.Evolver(tree=tree, partitions=partition)
-        fasta_file = tree_file.split("/")[-1].replace("_wholetree.nwk", "_") +  "whole.fasta"
+        fasta_file = tree_file.split("/")[-1].replace("_completetree.nwk", "_") +  "complete.fasta"
         evolver(seqfile=os.path.join(sequences_folder, fasta_file), ratefile=None, infofile=None)
 
     def get_nucleotide_model(self):
@@ -109,16 +109,16 @@ class SequenceSimulator():
                 clade, m = line.strip().split("\t")
                 self.st_multipliers[clade] = float(m)
 
-    def write_rates_sttree(self, whole_tree, rates_tree):
+    def write_rates_sttree(self, complete_tree, rates_tree):
 
-        with open(whole_tree) as f:
-            whole_tree = ete3.Tree(f.readline().strip(), format=1)
-        r = whole_tree.get_tree_root()
+        with open(complete_tree) as f:
+            complete_tree = ete3.Tree(f.readline().strip(), format=1)
+        r = complete_tree.get_tree_root()
         r.name = "Root"
-        for n in whole_tree.traverse():
+        for n in complete_tree.traverse():
             n.dist *= self.st_multipliers[n.name]
         with open(rates_tree, "w") as f:
-            f.write(whole_tree.write(format=1))
+            f.write(complete_tree.write(format=1))
 
 
 

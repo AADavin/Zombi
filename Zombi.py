@@ -34,14 +34,14 @@ class Zombi():
             events_file = os.path.join(tree_folder, "Events.tsv")
             stg.write_events_file(events_file)
 
-            whole_tree_file = os.path.join(tree_folder, "WholeTree.nwk")
+            complete_tree_file = os.path.join(tree_folder, "CompleteTree.nwk")
             extant_tree_file = os.path.join(tree_folder, "ExtantTree.nwk")
             collapsed_nodes_file = os.path.join(tree_folder, "CollapsedNodes.tsv")
 
-            whole_tree, extant_tree, collapsed_nodes = stg.generate_newick_trees()
+            complete_tree, extant_tree, collapsed_nodes = stg.generate_newick_trees()
 
-            with open(whole_tree_file, "w") as f:
-                f.write(whole_tree)
+            with open(complete_tree_file, "w") as f:
+                f.write(complete_tree)
 
             with open(extant_tree_file, "w") as f:
                 f.write(extant_tree)
@@ -80,14 +80,14 @@ class Zombi():
         events_file = os.path.join(tree_folder, "Events.tsv")
         stg.write_events_file(events_file)
 
-        whole_tree_file = os.path.join(tree_folder, "WholeTree.nwk")
+        complete_tree_file = os.path.join(tree_folder, "CompleteTree.nwk")
         extant_tree_file = os.path.join(tree_folder, "ExtantTree.nwk")
         collapsed_nodes_file = os.path.join(tree_folder, "CollapsedNodes.tsv")
 
-        whole_tree, extant_tree, collapsed_nodes = stg.generate_newick_trees()
+        complete_tree, extant_tree, collapsed_nodes = stg.generate_newick_trees()
 
-        with open(whole_tree_file, "w") as f:
-            f.write(whole_tree)
+        with open(complete_tree_file, "w") as f:
+            f.write(complete_tree)
 
         with open(extant_tree_file, "w") as f:
             f.write(extant_tree)
@@ -175,15 +175,15 @@ class Zombi():
 
         if advanced_mode == "0":
 
-            whole_trees = [x.replace("_pruned", "_whole") for x in os.listdir(gene_trees_folder) if "pruned" in x]
+            complete_trees = [x.replace("_pruned", "_complete") for x in os.listdir(gene_trees_folder) if "pruned" in x]
 
-            for tree_file in whole_trees:
+            for tree_file in complete_trees:
                 tree_path = os.path.join(gene_trees_folder, tree_file)
 
                 if parameters["VERBOSE"] == 1:
                     print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
                 ss.run(tree_path, sequences_folder)
-                af.write_pruned_sequences(tree_path.replace("whole", "pruned"), sequences_folder)
+                af.write_pruned_sequences(tree_path.replace("complete", "pruned"), sequences_folder)
 
         elif advanced_mode == "u":
 
@@ -194,18 +194,18 @@ class Zombi():
 
             # And we save it
 
-            ss.write_rates_sttree(experiment_folder + "/T/WholeTree.nwk",
+            ss.write_rates_sttree(experiment_folder + "/T/CompleteTree.nwk",
                                   os.path.join(experiment_folder, "T/RatesTree.nwk"))
 
-            whole_trees = [x for x in os.listdir(gene_trees_folder) if "whole" in x]
+            complete_trees = [x for x in os.listdir(gene_trees_folder) if "complete" in x]
 
 
-            for tree_file in whole_trees:
+            for tree_file in complete_trees:
                 tree_path = os.path.join(gene_trees_folder, tree_file)
                 if parameters["VERBOSE"] == 1:
                     print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
                 ss.run_u(tree_path, sequences_folder)
-                af.write_pruned_sequences(tree_path.replace("whole", "pruned"), sequences_folder)
+                af.write_pruned_sequences(tree_path.replace("complete", "pruned"), sequences_folder)
 
 
 

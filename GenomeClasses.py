@@ -119,7 +119,7 @@ class GeneFamily():
                     surviving_nodes[pnodename] = {"state": -1, "descendant": mynode}
 
         extanttree = RT.ReconciledTree()
-        wholetree = RT.ReconciledTree()
+        completetree = RT.ReconciledTree()
 
         eroot = extanttree.get_tree_root()
         eroot.name = ""
@@ -133,7 +133,7 @@ class GeneFamily():
 
             if event == "O":
 
-                wroot = wholetree.get_tree_root()
+                wroot = completetree.get_tree_root()
                 wroot.name = nodes + "_1"
                 wquick_nodes[wroot.name] = wroot
 
@@ -215,17 +215,17 @@ class GeneFamily():
             extanttree = extanttree.write(format=1)
 
 
-        rec = wholetree.getTreeRecPhyloXML()
+        rec = completetree.getTreeRecPhyloXML()
 
-        if len(wholetree) == 0:
-            wholetree = ";"
-        elif len(wholetree) == 1:
-            wholetree = wholetree.get_leaves()[0].name + ";"
+        if len(completetree) == 0:
+            completetree = ";"
+        elif len(completetree) == 1:
+            completetree = completetree.get_leaves()[0].name + ";"
         else:
-            wholetree = wholetree.write(format=1)
+            completetree = completetree.write(format=1)
 
 
-        return wholetree, extanttree, rec
+        return completetree, extanttree, rec
 
 
     def generate_oldtree(self):
@@ -311,7 +311,7 @@ class GeneFamily():
             elif event == "F":
                 break
 
-        whole_tree = tree.write(format=1)
+        complete_tree = tree.write(format=1)
         active_nodes = [x for x in tree.get_leaves() if x.is_active == True]
 
         if len(active_nodes) < 3:
@@ -321,7 +321,7 @@ class GeneFamily():
             tree.prune(active_nodes, preserve_branch_length=True)
             pruned_tree = tree.write(format=1)
 
-        return whole_tree, pruned_tree
+        return complete_tree, pruned_tree
 
     def obtain_new_gene_id(self):
         self.gene_ids_counter += 1

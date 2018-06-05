@@ -16,7 +16,7 @@ class RateCustomizer():
 
     def generate_substitution_speciestree_file(self):
 
-        tree_file = os.path.join(self.experiment_folder, "T/WholeTree.nwk")
+        tree_file = os.path.join(self.experiment_folder, "T/CompleteTree.nwk")
 
         with open(tree_file) as f:
             mytree = ete3.Tree(f.readline().strip(), format=1)
@@ -42,7 +42,7 @@ class RateCustomizer():
 
     def generate_substitution_genetree_file(self):
 
-        gene_trees = [x.split("_")[0] for x in os.listdir(os.path.join(self.experiment_folder, "G/Gene_trees")) if "whole" in x]
+        gene_trees = [x.split("_")[0] for x in os.listdir(os.path.join(self.experiment_folder, "G/Gene_trees")) if "complete" in x]
 
         with open(os.path.join(experiment_folder,"CustomRates/GT_Substitution_rates.tsv"),"w") as f:
 
@@ -106,7 +106,7 @@ class RateCustomizer():
 
     def generate_events_file(self):
 
-        tree_file = os.path.join(self.experiment_folder, "T/WholeTree.nwk")
+        tree_file = os.path.join(self.experiment_folder, "T/CompleteTree.nwk")
 
         with open(tree_file) as f:
             mytree = ete3.Tree(f.readline().strip(), format=1)
@@ -140,7 +140,7 @@ class RateCustomizer():
 
     def generate_extension_file(self):
 
-        tree_file = os.path.join(self.experiment_folder, "T/WholeTree.nwk")
+        tree_file = os.path.join(self.experiment_folder, "T/CompleteTree.nwk")
 
         with open(tree_file) as f:
             mytree = ete3.Tree(f.readline().strip(), format=1)

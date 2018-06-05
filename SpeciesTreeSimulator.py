@@ -524,13 +524,6 @@ class SpeciesTreeGenerator():
                             #print(p + " -> " + c1name + " : " + extinct_nodes)
                             #print(p + " -> " + c2name + " : " + extinct_nodes)
 
-
-
-
-
-
-
-
                     if eroot.name == "":
                         eroot.name = p
                         equick_nodes[p] = eroot

@@ -68,12 +68,12 @@ class GenomeSimulator():
 
         for gene_family_name, gene_family in self.all_gene_families.items():
 
-            whole_tree, pruned_tree, rec_tree = gene_family.generate_tree()
+            complete_tree, pruned_tree, rec_tree = gene_family.generate_tree()
 
             if gene_trees == True:
 
-                with open(os.path.join(gene_tree_folder, gene_family_name + "_wholetree.nwk"), "w") as f:
-                    f.write(whole_tree)
+                with open(os.path.join(gene_tree_folder, gene_family_name + "_completetree.nwk"), "w") as f:
+                    f.write(complete_tree)
                 if pruned_tree != None:
                     with open(os.path.join(gene_tree_folder, gene_family_name + "_prunedtree.nwk"), "w") as f:
                         f.write(pruned_tree)

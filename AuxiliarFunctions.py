@@ -354,10 +354,10 @@ def generate_newick_trees(events):
                 surviving_nodes[p] = {"state": -1, "descendant": mynode}
 
     extanttree = ete3.Tree()
-    wholetree = ete3.Tree()
+    completetree = ete3.Tree()
     eroot = extanttree.get_tree_root()
     eroot.name = ""
-    wroot = wholetree.get_tree_root()
+    wroot = completetree.get_tree_root()
     wroot.name = "Root"
 
     wquick_nodes = dict()
@@ -408,7 +408,7 @@ def generate_newick_trees(events):
                 equick_nodes[c1name] = myc1
                 equick_nodes[c2name] = myc2
 
-    return wholetree.write(format=1), extanttree.write(format=1)
+    return completetree.write(format=1), extanttree.write(format=1)
 
 
 
@@ -512,7 +512,7 @@ def generate_gene_tree(events):
 
 
     extanttree = ete3.Tree()
-    wholetree = ete3.Tree()
+    completetree = ete3.Tree()
     eroot = extanttree.get_tree_root()
     eroot.name = ""
 
@@ -525,7 +525,7 @@ def generate_gene_tree(events):
 
         if event == "O":
 
-            wroot = wholetree.get_tree_root()
+            wroot = completetree.get_tree_root()
             wroot.name = nodes + "_1"
             wquick_nodes[wroot.name] = wroot
 
@@ -572,14 +572,14 @@ def generate_gene_tree(events):
                 equick_nodes[c2name] = myc2
 
 
-    if len(wholetree) == 0:
-        wholetree = ";"
+    if len(completetree) == 0:
+        completetree = ";"
 
-    elif len(wholetree) == 1:
-        wholetree =  wholetree.get_leaves()[0].name + ";"
+    elif len(completetree) == 1:
+        completetree =  completetree.get_leaves()[0].name + ";"
 
     else:
-        wholetree = wholetree.write(format=1)
+        completetree = completetree.write(format=1)
 
     if len(extanttree) == 0:
         extanttree = ";"
@@ -590,7 +590,7 @@ def generate_gene_tree(events):
     else:
         extanttree = extanttree.write(format=1)
 
-    return wholetree, extanttree
+    return completetree, extanttree
 
 
 def write_pruned_sequences(tree_file, fasta_folder):
@@ -603,7 +603,7 @@ def write_pruned_sequences(tree_file, fasta_folder):
 
     surviving_nodes = {x.name for x in my_tree.get_leaves()}
     file_name = tree_file.split("/")[-1].split("_")[0]
-    entries = fasta_reader(fasta_folder + "/" + file_name + "_whole.fasta")
+    entries = fasta_reader(fasta_folder + "/" + file_name + "_complete.fasta")
 
     clean_entries = list()
     for h, seq in entries:
@@ -623,7 +623,7 @@ def write_sampled_sequences(tree_file, infasta_folder, outfasta_folder):
             my_tree = ete3.Tree(line, format=1)
     surviving_nodes = {x.name for x in my_tree.get_leaves()}
     file_name = tree_file.split("/")[-1].split("_")[0]
-    entries = fasta_reader(infasta_folder + "/" + file_name + "_whole.fasta")
+    entries = fasta_reader(infasta_folder + "/" + file_name + "_complete.fasta")
 
     clean_entries = list()
     for h, seq in entries:
