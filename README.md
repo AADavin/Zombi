@@ -25,7 +25,13 @@ Please, if you have any doubts or need a hand, **just contact me here: aaredav@g
 
 Please, if you use Zombi, cite:
 
- ** Still to fill **
+**Zombi: A simulator of species, genes and genomes that accounts for extinct lineages.**
+
+Adrian A. Davin, Theo Tricou, Eric Tannier, Damien M. de Vienne, Gergely J. Szollosi
+
+bioRxiv 339473; doi: https://doi.org/10.1101/339473
+
+https://www.biorxiv.org/content/early/2018/06/07/339473
 
 ### **Installation** ###
 
