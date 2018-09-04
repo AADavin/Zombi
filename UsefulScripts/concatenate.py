@@ -1,43 +1,25 @@
-from fastareader import fastareader
 import ete3
-import os
-import sys
 import argparse
+import sys
+import os
 
-def concatenate(infile, extant_tree_path):
-
-    with open(extant_tree_path) as f:
-        extant_tree = ete3.Tree(f.readline().strip(), format=1)
-
-    sps = extant_tree.get_leaf_names()
+def concatenate(inpath):
 
     concatenate = dict()
 
-    with open(infile) as f:
+    fasta_files = [x for x in os.listdir(inpath) if "pruned" in x]
+    
+    for fasta_file in fasta_files:
+        gf = fasta_file.split("_")[0]
+        for h, s in fasta_reader(os.path.join(inpath, fasta_file)):
+            name = h[1:].split("_")[0]
+            if name not in concatenate:
+                concatenate[name] = ""
+            concatenate[name] += s
 
-        for line in f:
-
-            gf = line.strip()
-
-            gfs = dict()
-
-            for h, s in fastareader(gf):
-                name = h[1:].split("_")[0]
-                gfs[name] = s
-
-            for sp in sps:
-                if sp not in gfs:
-                    mys = "".join(["-" for x in range(100)])
-                else:
-                    gfs[sp] = mys
-
-            for sp,seq in gfs.items():
-                if sp not in concatenate:
-                    concatenate[sp] = ""
-                concatenate[sp] += seq
-
-
-
+    for sp, seq in concatenate.items():
+        print(">" + sp)
+        print(seq)
 
 
 def fasta_reader(fasta_file):
@@ -61,19 +43,14 @@ def fasta_reader(fasta_file):
 
 
 
-
-
-
-
-
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("e", type=str, help="ExtantTree")
+    #parser.add_argument("e", type=str, help="ExtantTree")
     parser.add_argument("f", type=str, help="Folder with gene trees")
 
     args = parser.parse_args()
-    infile, extant_tree,  =  args.f, args.e
+    inpath  =  args.f
 
-    concatenate(infile, extant_tree)
+    concatenate(inpath)
 
