@@ -16,6 +16,8 @@ class GeneFamily():
         self.event_counter = 0  # Each time that the family is modified in any form, we have to update the event counter
         self.gene_ids_counter = 0
 
+        self.length = 0
+
     def register_event(self, time, event, genes):
 
         self.events.append((time, event, genes))
@@ -375,25 +377,61 @@ class Gene():
         myname = "_".join(map(str, (self.gene_family, self.orientation)))
         return myname
 
+
+class Intergene():
+
+    def __init__(self):
+
+        self.length = 0
+
 class Chromosome():
 
     def __init__(self):
 
+        self.has_intergenes = False
+
+        self.intergenes = list()
         self.genes = list()
-        self.intergene_distances = list()
+
         self.shape = ""
+
+        self.length = 0
+
+    def obtain_total_itergenic_length(self):
+
+        total_length = 0
+        for intergene in self.intergenes:
+            total_length += intergene.length
+        return total_length
+
 
     def select_random_position(self):
 
         return numpy.random.randint(len(self.genes))
 
+    def select_random_position_in_intergenic_regions(self):
+
+        # We weight the position by the length of the region
+
+        return numpy.random.choice(range(len(self.genes)), p=af.normalize([x.length for x in self.intergenes]))
+
+
     def select_random_length(self, p):
 
-        return numpy.random.geometric(p)
+        # Watch out here
+
+        if not self.has_intergenes:
+            return numpy.random.geometric(p)
+        else:
+            return numpy.random.geometric(p)
 
     def __len__(self):
 
-        return len(self.genes)
+        # Watch out!! This is probably no the safest thing to do
+        if not self.has_intergenes:
+            return len(self.genes)
+        else:
+            return self.length
 
     def __str__(self):
 
@@ -474,6 +512,8 @@ class CircularChromosome(Chromosome):
                 affected_genes.append(i)
 
         return affected_genes
+
+
 
     def get_homologous_position(self, segment):
 
@@ -556,6 +596,40 @@ class CircularChromosome(Chromosome):
 
         return homologous
 
+    ### From here, functions related to intergenic regions
+
+    def remove_segment_with_intergenic(self, segment):
+
+        for gene in segment:
+            self.genes.remove(gene)
+
+    def insert_gene_within_intergene(self, position, gene):
+
+        # The first part is easier - We simply add the gene to the list of genes
+
+        self.genes.insert(position, gene)
+
+        # Now we determine the length. This can be more efficient (by simply using the
+        # random number previously generated)
+
+        left_side = numpy.random.randint(self.intergenes[position].length)
+
+
+        # Now we are going to cut down the size of that intergenic position by l, and obtain the remaining
+
+        right_side = self.intergenes[position].length - left_side
+
+        #print("The insertion in position %i will leave %i on the leftside and %i on the rightside" % (position,
+        #      left_side, right_side))
+        #print("The position had %i to begin with" % self.intergenes[position].length)
+
+        # Then, we create a new intergene
+
+        intergene = Intergene()
+        intergene.length = right_side
+        self.intergenes[position].length = left_side
+
+        self.intergenes.insert(position, intergene)
 
 
 class LinearChromosome(Chromosome):

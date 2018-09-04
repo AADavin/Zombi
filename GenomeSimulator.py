@@ -5,7 +5,7 @@ import copy
 import random
 import os
 
-from GenomeClasses import GeneFamily, Gene, CircularChromosome, LinearChromosome, Genome
+from GenomeClasses import GeneFamily, Gene, Intergene, CircularChromosome, LinearChromosome, Genome
 
 class GenomeSimulator():
 
@@ -21,26 +21,54 @@ class GenomeSimulator():
         self.active_genomes = set()
 
 
-    def write_genomes(self, genome_folder):
+    def write_genomes(self, genome_folder, intergenic_sequences = False):
 
         if not os.path.isdir(genome_folder):
             os.mkdir(genome_folder)
 
         for genome_name,genome in self.all_genomes.items():
-            # Open file
-            with open(os.path.join(genome_folder,genome_name + "_GENOME.tsv"),"w") as f:
 
-                header = ["POSITION","GENE_FAMILY","ORIENTATION","GENE_ID"]
+            with open(os.path.join(genome_folder, genome_name + "_GENOME.tsv"), "w") as f:
+
+                header = ["POSITION", "GENE_FAMILY", "ORIENTATION", "GENE_ID"]
                 header = "\t".join(map(str, header)) + "\n"
-
                 f.write(header)
 
                 for chromosome in genome:
                     for index, gene in enumerate(chromosome):
-                        #print(chromosome) I have to add the chromosome id
+
                         line = [index, gene.gene_family, gene.orientation, gene.gene_id]
                         line = "\t".join(map(str,line)) +"\n"
                         f.write(line)
+
+            if intergenic_sequences == True:
+
+                with open(os.path.join(genome_folder, genome_name + "_LENGTHS.tsv"), "w") as f:
+
+                    header = ["LEFT_POSITION", "RIGHT_POSITION", "LENGTH"]
+                    header = "\t".join(map(str, header)) + "\n"
+                    f.write(header)
+
+                    for chromosome in genome:
+                        for index, intergene in enumerate(chromosome.intergenes):
+                            if index == len(chromosome.intergenes) - 1:
+                                line = [index, 0, intergene.length]
+                            else:
+                                line = [index, index + 1, intergene.length]
+                            line = "\t".join(map(str, line)) + "\n"
+                            f.write(line)
+
+    def write_gene_family_lengths(self, genome_folder):
+
+        with open(os.path.join(genome_folder, "GeneFamily_lengths.tsv"), "w") as f:
+            header = ["GENE_FAMILY", "LENGTH"]
+            header = "\t".join(map(str, header)) + "\n"
+            f.write(header)
+
+            for gene_family_name, gene_family in self.all_gene_families.items():
+                line = "\t".join([gene_family_name, str(gene_family.length)]) + "\n"
+                f.write(line)
+
 
     def write_gene_family_events(self, gene_family_events_folder):
 
@@ -203,7 +231,7 @@ class GenomeSimulator():
 
         return new_identifiers
 
-    def _FillGenome(self):
+    def fill_genome(self, intergenic_sequences = False):
 
         genome = Genome()
         genome.species = "Root"
@@ -228,6 +256,11 @@ class GenomeSimulator():
                 chromosome.genes.append(gene)
                 self.all_gene_families[str(self.gene_families_counter)] = gene_family
 
+                if intergenic_sequences == True:
+                    intergenic_sequence = Intergene()
+                    intergenic_sequence.length = int(af.obtain_value(self.parameters["INTERGENIC_LENGTH"]))
+                    chromosome.intergenes.append(intergenic_sequence)
+
             genome.chromosomes.append(chromosome)
 
         return genome
@@ -244,7 +277,7 @@ class GenomeSimulator():
 
         # First we prepare the first genome
 
-        genome = self._FillGenome()
+        genome = self.fill_genome()
 
         self.active_genomes.add(genome.species)
         self.all_genomes["Root"] = genome
@@ -318,7 +351,7 @@ class GenomeSimulator():
 
         # First we prepare the first genome
 
-        genome = self._FillGenome()
+        genome = self.fill_genome()
 
         # We add the importance of the genes
 
@@ -387,6 +420,139 @@ class GenomeSimulator():
                 current_time += time_to_next_genome_event
                 self.evolve_genomes_selection(d, t, l, i, c, o, current_time)
 
+    def run_u(self):
+
+        genome = self.fill_genome()
+        self.active_genomes.add(genome.species)
+        self.all_genomes["Root"] = genome
+
+        # We add the original genome too
+
+        self.all_genomes["Initial"] = copy.deepcopy(genome)
+
+        current_species_tree_event = 0
+        current_time = 0.0
+        all_species_tree_events = len(self.tree_events)
+
+        elapsed_time = 0.0
+
+        while current_species_tree_event < all_species_tree_events:
+
+            time_of_next_species_tree_event, event, nodes = self.tree_events[current_species_tree_event]
+            time_of_next_species_tree_event = float(time_of_next_species_tree_event)
+
+            if self.parameters["VERBOSE"] == 1:
+                print("Simulating genomes. Time %s" % str(current_time))
+
+            time_to_next_genome_event = self.get_time_to_next_event_advanced_modes()
+
+            elapsed_time = float(current_time) - elapsed_time
+            if time_to_next_genome_event + current_time >= float(time_of_next_species_tree_event):
+                current_species_tree_event += 1
+                current_time = time_of_next_species_tree_event
+                if event == "S":
+
+                    sp, c1, c2 = nodes.split(";")
+
+                    # First we keep track of the active and inactive genomes
+                    self.active_genomes.discard(sp)
+                    self.active_genomes.add(c1)
+                    self.active_genomes.add(c2)
+
+                    # Second, we speciate the genomes
+
+                    genome_c1, genome_c2 = self.make_speciation(sp, c1, c2, current_time)
+                    self.all_genomes[c1] = genome_c1
+                    self.all_genomes[c2] = genome_c2
+
+                elif event == "E":
+                    self.make_extinction(nodes, current_time)
+                    self.active_genomes.discard(nodes)
+
+                elif event == "F":
+                    self.make_end(current_time)
+                    break
+
+            else:
+
+                current_time += time_to_next_genome_event
+                self.advanced_evolve_genomes(current_time)
+
+    def run_i(self):
+
+        d = af.obtain_value(self.parameters["DUPLICATION"])
+        t = af.obtain_value(self.parameters["TRANSFER"])
+        l = af.obtain_value(self.parameters["LOSS"])
+        i = af.obtain_value(self.parameters["INVERSION"])
+        c = af.obtain_value(self.parameters["TRANSLOCATION"])
+
+        o = af.obtain_value(self.parameters["ORIGINATION"])
+
+        # First we prepare the first genome
+
+        genome = self.fill_genome(intergenic_sequences=True)
+
+        self.active_genomes.add(genome.species)
+        self.all_genomes["Root"] = genome
+
+        # We add the original genome too
+
+        self.all_genomes["Initial"] = copy.deepcopy(genome)
+
+        current_species_tree_event = 0
+        current_time = 0.0
+        all_species_tree_events = len(self.tree_events)
+        # Second, we compute the time to the next event:
+
+        elapsed_time = 0.0
+
+        while current_species_tree_event < all_species_tree_events:
+
+            time_of_next_species_tree_event, event, nodes = self.tree_events[current_species_tree_event]
+            time_of_next_species_tree_event = float(time_of_next_species_tree_event)
+
+            if self.parameters["VERBOSE"] == 1:
+                print("Simulating genomes. Time %s" % str(current_time))
+
+            time_to_next_genome_event = self.get_time_to_next_event(len(self.active_genomes), d, t, l, i, c, o)
+
+            elapsed_time = float(current_time) - elapsed_time
+
+            if time_to_next_genome_event + current_time >= float(time_of_next_species_tree_event):
+
+                current_species_tree_event += 1
+                current_time = time_of_next_species_tree_event
+
+                if event == "S":
+
+                    sp, c1, c2 = nodes.split(";")
+
+                    # First we keep track of the active and inactive genomes
+
+                    self.active_genomes.discard(sp)
+                    self.active_genomes.add(c1)
+                    self.active_genomes.add(c2)
+
+                    # Second, we speciate the genomes
+
+                    genome_c1, genome_c2 = self.make_speciation(sp, c1, c2, current_time)
+
+                    self.all_genomes[c1] = genome_c1
+                    self.all_genomes[c2] = genome_c2
+
+                elif event == "E":
+                    self.make_extinction(nodes, current_time)
+                    self.active_genomes.discard(nodes)
+
+                elif event == "F":
+                    self.make_end(current_time)
+                    break
+
+            else:
+
+                current_time += time_to_next_genome_event
+                self.advanced_evolve_genomes_i(d, t, l, i, c, o, current_time)
+
     def generate_new_rates(self):
 
         d = af.obtain_value(self.parameters["DUPLICATION"])
@@ -427,121 +593,6 @@ class GenomeSimulator():
 
                 self.transfer_rates[dn][rc] = float(wt)
 
-    def run_u(self):
-
-        genome = self._FillGenome()
-        self.active_genomes.add(genome.species)
-        self.all_genomes["Root"] = genome
-
-        # We add the original genome too
-
-        self.all_genomes["Initial"] = copy.deepcopy(genome)
-
-        current_species_tree_event = 0
-        current_time = 0.0
-        all_species_tree_events = len(self.tree_events)
-
-        elapsed_time = 0.0
-
-        while current_species_tree_event < all_species_tree_events:
-
-            time_of_next_species_tree_event, event, nodes = self.tree_events[current_species_tree_event]
-            time_of_next_species_tree_event = float(time_of_next_species_tree_event)
-
-            if self.parameters["VERBOSE"] == 1:
-                print("Simulating genomes. Time %s" % str(current_time))
-
-            time_to_next_genome_event = self.get_time_to_next_event_advanced_modes()
-
-            elapsed_time = float(current_time) - elapsed_time
-            if time_to_next_genome_event + current_time >= float(time_of_next_species_tree_event):
-                current_species_tree_event +=1
-                current_time = time_of_next_species_tree_event
-                if event == "S":
-
-                    sp,c1,c2 = nodes.split(";")
-
-                    # First we keep track of the active and inactive genomes
-                    self.active_genomes.discard(sp)
-                    self.active_genomes.add(c1)
-                    self.active_genomes.add(c2)
-
-                    # Second, we speciate the genomes
-
-                    genome_c1, genome_c2 = self.make_speciation(sp, c1, c2, current_time)
-                    self.all_genomes[c1] = genome_c1
-                    self.all_genomes[c2] = genome_c2
-
-                elif event == "E":
-                    self.make_extinction(nodes, current_time)
-                    self.active_genomes.discard(nodes)
-
-                elif event == "F":
-                    self.make_end(current_time)
-                    break
-
-            else:
-
-                current_time += time_to_next_genome_event
-                self.advanced_evolve_genomes(current_time)
-
-    def run_i(self):
-
-        genome = self._FillGenome()
-        self.active_genomes.add(genome.species)
-        self.all_genomes["Root"] = genome
-
-        # We add the original genome too
-
-        self.all_genomes["Initial"] = copy.deepcopy(genome)
-
-        current_species_tree_event = 0
-        current_time = 0.0
-        all_species_tree_events = len(self.tree_events)
-
-        elapsed_time = 0.0
-
-        while current_species_tree_event < all_species_tree_events:
-
-            time_of_next_species_tree_event, event, nodes = self.tree_events[current_species_tree_event]
-            time_of_next_species_tree_event = float(time_of_next_species_tree_event)
-
-            if self.parameters["VERBOSE"] == 1:
-                print("Simulating genomes. Time %s" % str(current_time))
-
-            time_to_next_genome_event = self.get_time_to_next_event_advanced_modes()
-
-            elapsed_time = float(current_time) - elapsed_time
-            if time_to_next_genome_event + current_time >= float(time_of_next_species_tree_event):
-                current_species_tree_event +=1
-                current_time = time_of_next_species_tree_event
-                if event == "S":
-
-                    sp,c1,c2 = nodes.split(";")
-
-                    # First we keep track of the active and inactive genomes
-                    self.active_genomes.discard(sp)
-                    self.active_genomes.add(c1)
-                    self.active_genomes.add(c2)
-
-                    # Second, we speciate the genomes
-
-                    genome_c1, genome_c2 = self.make_speciation(sp, c1, c2, current_time)
-                    self.all_genomes[c1] = genome_c1
-                    self.all_genomes[c2] = genome_c2
-
-                elif event == "E":
-                    self.make_extinction(nodes, current_time)
-                    self.active_genomes.discard(nodes)
-
-                elif event == "F":
-                    self.make_end(current_time)
-                    break
-
-            else:
-
-                current_time += time_to_next_genome_event
-                self.advanced_evolve_genomes(current_time)
 
 
 
@@ -618,7 +669,6 @@ class GenomeSimulator():
 
     def advanced_evolve_genomes(self, time):
 
-
         active_genomes = list(self.active_genomes)
         lineage = numpy.random.choice(active_genomes, 1, p=af.normalize(
             [sum(self.branch_event_rates[x]) for x in active_genomes]))[0]
@@ -674,6 +724,71 @@ class GenomeSimulator():
 
             return "O", lineage
 
+    def advanced_evolve_genomes_i(self, duplication, transfer, loss, inversion, translocation, origination, time):
+
+        extension_multiplier = self.parameters["EXTENSION_MULTIPLIER"]
+
+        d_e = af.obtain_value(self.parameters["DUPLICATION_EXTENSION"])
+        t_e = af.obtain_value(self.parameters["TRANSFER_EXTENSION"])
+        l_e = af.obtain_value(self.parameters["LOSS_EXTENSION"])
+        i_e = af.obtain_value(self.parameters["INVERSION_EXTENSION"])
+        c_e = af.obtain_value(self.parameters["TRANSLOCATION_EXTENSION"])
+
+
+        lineage = random.choice(list(self.active_genomes))
+        event = self.choose_event(duplication, transfer, loss, inversion, translocation, origination)
+
+        if event == "D":
+            self.make_duplication(d_e, lineage, time)
+            return "D", lineage
+
+        elif event == "T":
+
+            # We choose a recipient
+
+            possible_recipients = [x for x in self.active_genomes if x != lineage]
+
+            if len(possible_recipients) > 0:
+
+                recipient = random.choice(possible_recipients)
+                donor = lineage
+                self.make_transfer(t_e, donor, recipient, time)
+                return "T", donor + "->" + recipient
+
+            else:
+                return None
+
+        elif event == "L":
+
+            self.make_loss(l_e, lineage, time)
+            return "L", lineage
+
+        elif event == "I":
+            self.make_inversion(i_e, lineage, time)
+            return "I", lineage
+
+        elif event == "C":
+            self.make_translocation(c_e, lineage, time)
+            return "C", lineage
+
+        elif event == "O":
+
+            gene, gene_family = self.make_origination(lineage, time)
+
+
+            # inserting a gene creates also a new intergene region
+
+            chromosome = self.all_genomes[lineage].select_random_chromosome()
+            position = chromosome.select_random_position_in_intergenic_regions()
+            chromosome.insert_gene_within_intergene(position, gene)
+
+            return "O", lineage
+
+
+
+
+
+
     def get_time_to_next_event(self, n, d, t, l ,i , c, o):
 
         total = 0.0
@@ -716,6 +831,8 @@ class GenomeSimulator():
         gene.species = species_tree_node
 
         gene_family = GeneFamily(gene_family_id, time)
+        gene_family.length = int(af.obtain_value(self.parameters["GENE_SIZE"]))
+
         gene_family.genes.append(gene)
         gene.gene_id = gene_family.obtain_new_gene_id()
 
@@ -798,6 +915,16 @@ class GenomeSimulator():
                          ]
 
                 self.all_gene_families[gene.gene_family].register_event(str(time), "S", ";".join(map(str,nodes)))
+
+            for intergene in chromosome.intergenes:
+
+                new_intergene1 = Intergene()
+                new_intergene2 = Intergene()
+                new_intergene1.length = intergene.length
+                new_intergene2.length = intergene.length
+                ch1.intergenes.append(new_intergene1)
+                ch2.intergenes.append(new_intergene2)
+
 
         genome1.update_genome_species(c1)
         genome2.update_genome_species(c2)
@@ -1039,6 +1166,27 @@ class GenomeSimulator():
         for gene in segment:
             gene.active = False
             self.all_gene_families[gene.gene_family].register_event(time, "L", ";".join(map(str,[lineage, gene.gene_id])))
+
+    def make_loss_intergenic(self, p, lineage, time):
+
+        chromosome = self.all_genomes[lineage].select_random_chromosome()
+        affected_genes = chromosome.obtain_affected_genes(p)
+        segment = chromosome.obtain_segment(affected_genes)
+
+        # Now we check we are not under the minimum size
+
+        if len(chromosome) - len(affected_genes) <= 0:
+            return 0
+
+        chromosome.remove_segment(segment)
+
+        # We have to register in the affected gene families that there has been as loss
+        # All genes affected must be returned
+
+        for gene in segment:
+            gene.active = False
+            self.all_gene_families[gene.gene_family].register_event(time, "L", ";".join(map(str,[lineage, gene.gene_id])))
+
 
     def make_loss_selection_mode(self, p, lineage, time):
 
