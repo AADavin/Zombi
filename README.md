@@ -1,5 +1,7 @@
 ﻿
-## Zombi 
+
+[zombilogo]: https://github.com/AADavin/Zombi/blob/master/Images/ZombiLogo.png "ZombiLogo"
+![alt text][zombilogo]
 ##### A simulator of species, genes and genomes that accounts for extinct lineages.
 
 ----------
