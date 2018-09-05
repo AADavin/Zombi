@@ -1,10 +1,10 @@
 
-<<<<<<< HEAD
+
 <img src="https://github.com/AADavin/Zombi/blob/master/Images/ZombiLogo.png" alt="zombilogo" height = "100" width="200"/>
 =======
 
-<img src="https://github.com/AADavin/Zombi/blob/master/Images/ZombiLogo.png" alt="zombilogo" height = "100" width="300"/>
->>>>>>> fea118d6626fd41b18cd3464a026e7adbed4a2d1
+
+
 
 ### **A simulator of species, genes and genomes that accounts for extinct lineages**
 
