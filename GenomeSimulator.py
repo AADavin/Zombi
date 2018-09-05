@@ -1225,6 +1225,16 @@ class GenomeSimulator():
         for i, gene in enumerate(segment):
             self.all_gene_families[gene.gene_family].register_event(str(time), "I", ";".join(map(str,[lineage, gene.gene_id])))
 
+    def make_inversion_intergenic(self, p, lineage, time):
+
+        chromosome = self.all_genomes[lineage].select_random_chromosome()
+        affected_genes = chromosome.obtain_affected_genes(p)
+        segment = chromosome.obtain_segment(affected_genes)
+        chromosome.invert_segment(affected_genes)
+
+        for i, gene in enumerate(segment):
+            self.all_gene_families[gene.gene_family].register_event(str(time), "I", ";".join(map(str,[lineage, gene.gene_id])))
+
     def make_translocation(self, p, lineage, time):
 
         chromosome = self.all_genomes[lineage].select_random_chromosome()

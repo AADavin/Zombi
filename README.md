@@ -1,8 +1,8 @@
 ﻿
 
-[zombilogo]: https://github.com/AADavin/Zombi/blob/master/Images/ZombiLogo.png "ZombiLogo"
-![alt text][zombilogo]
-##### A simulator of species, genes and genomes that accounts for extinct lineages.
+<img src="https://github.com/AADavin/Zombi/blob/master/Images/ZombiLogo.png" alt="zombilogo" height = "100" width="200"/>
+
+### **A simulator of species, genes and genomes that accounts for extinct lineages**
 
 ----------
 
@@ -44,6 +44,11 @@ First, clone the repository to your computer
 Second, you need **python 3.6** installed with **ETE3**, **numpy** and pyvolve
 
     pip3 install ete3 numpy pyvolve
+    
+You might find some problems when installing the ete3 library, more specifically, when ete3 tries to install the library six.
+Simply use the command pip3 to install the missing libraries. For instance:
+
+    pip3 install six
         
 
 ### **Usage** ###
