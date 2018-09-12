@@ -355,6 +355,7 @@ class Gene():
         self.sequence = ""
         self.species = ""
         self.importance = 0
+        self.length = 0
 
     def determine_orientation(self):
 
@@ -374,7 +375,8 @@ class Gene():
     def __str__(self):
         #myname = "_".join(map(str,(self.genome, self.orientation, self.gene_family, self.gene_id)))
         #myname = "_".join(map(str, (self.species, self.gene_family, self.gene_id)))
-        myname = "_".join(map(str, (self.gene_family, self.orientation)))
+        #myname = "_".join(map(str, (self.gene_family, self.orientation)))
+        myname = "_".join(map(str, (self.gene_family, self.length)))
         return myname
 
 
@@ -384,17 +386,18 @@ class Intergene():
 
         self.length = 0
 
+    def __str__(self):
+
+        return "I_" + str(self.length)
+
 class Chromosome():
 
     def __init__(self):
 
         self.has_intergenes = False
-
         self.intergenes = list()
         self.genes = list()
-
         self.shape = ""
-
         self.length = 0
 
     def obtain_total_itergenic_length(self):
@@ -435,12 +438,19 @@ class Chromosome():
 
     def __str__(self):
 
-        return ";".join(["CHROMOSOME"] + [str(gene) for gene in self.genes])
+        if self.has_intergenes == True:
+
+            return ";".join(["CHROMOSOME"] + [str(self.genes[i])+";"+str(self.intergenes[i]) for i in range(len(self.genes))])
+
+        else:
+
+            return ";".join(["CHROMOSOME"] + [str(gene) for gene in self.genes])
 
     def __iter__(self):
 
         for x in self.genes:
             yield x
+
 
 class CircularChromosome(Chromosome):
 
@@ -631,7 +641,6 @@ class CircularChromosome(Chromosome):
 
         self.intergenes.insert(position, intergene)
 
-
 class LinearChromosome(Chromosome):
 
     pass
@@ -667,7 +676,6 @@ class Genome():
 
             for gene in ch:
                 gene.species = species
-
 
     def __str__(self):
 

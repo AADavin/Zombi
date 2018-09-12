@@ -249,6 +249,9 @@ class GenomeSimulator():
                 chromosome = CircularChromosome()
                 chromosome.shape = "C"
 
+            if intergenic_sequences == True:
+                chromosome.has_intergenes = True
+
             for i in range(int(n_genes)):
                 # We fill the chromosomes and we create also the gene families
 
@@ -264,6 +267,8 @@ class GenomeSimulator():
             genome.chromosomes.append(chromosome)
 
         return genome
+
+
 
     def run(self):
 
