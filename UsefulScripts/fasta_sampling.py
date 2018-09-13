@@ -18,14 +18,20 @@ def fasta_reader(fasta_file):
 
         yield header, seq
 
+mapping = dict()
 
+with open("/Users/aadavin/Desktop/Last/GregTest/mapping_names") as f:
+    for line in f:
+        sp, nm = line.strip().split("\t")
+        mapping[nm] = sp
 
-myfile = "/Users/aadavin/Desktop/Last/GregTest/Tree/alignment_102_taxa.fst"
-with open("/Users/aadavin/Desktop/Last/GregTest/Tree/alignment_sample2000.fst", "w") as f:
-    n = 14745
-    sel = random.sample(range(n), 2000)
+myfile = "/Users/aadavin/Desktop/Last/GregTest/ZombiTest/S/concatenate.fasta"
 
-    for h,s in fasta_reader(myfile):
-        f.write(h + "\n")
-        seq = "".join([s[x] for x in sel])
-        f.write(seq+"\n")
+with open("/Users/aadavin/Desktop/Last/GregTest/ZombiTest/S/concatenate_goodnames.fasta", "w") as f:
+    n = 14500
+    #sel = random.sample(range(n), 2000)
+    for h, s in fasta_reader(myfile):
+        f.write(">"+mapping[h[1:]] + "\n")
+        #seq = "".join([s[x] for x in sel])
+        #f.write(seq+"\n")
+        f.write(s)
