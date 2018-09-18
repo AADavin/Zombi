@@ -110,8 +110,6 @@ class GenomeSimulator():
                 with open(os.path.join(gene_tree_folder, gene_family_name + "_rec.xml"), "w") as f:
                     f.write(rec_tree)
 
-
-
     def write_events_per_branch(self, events_per_branch_folder):
 
         if not os.path.isdir(events_per_branch_folder):
@@ -249,14 +247,20 @@ class GenomeSimulator():
                 chromosome = CircularChromosome()
                 chromosome.shape = "C"
 
+            if intergenic_sequences == True:
+                chromosome.has_intergenes = True
+
             for i in range(int(n_genes)):
                 # We fill the chromosomes and we create also the gene families
 
                 gene, gene_family = self.make_origination(genome.species, time)
+
                 chromosome.genes.append(gene)
                 self.all_gene_families[str(self.gene_families_counter)] = gene_family
 
                 if intergenic_sequences == True:
+
+                    gene.length = int(af.obtain_value(self.parameters["GENE_SIZE"]))
                     intergenic_sequence = Intergene()
                     intergenic_sequence.length = int(af.obtain_value(self.parameters["INTERGENIC_LENGTH"]))
                     chromosome.intergenes.append(intergenic_sequence)
@@ -264,6 +268,7 @@ class GenomeSimulator():
             genome.chromosomes.append(chromosome)
 
         return genome
+
 
     def run(self):
 
@@ -485,12 +490,14 @@ class GenomeSimulator():
         l = af.obtain_value(self.parameters["LOSS"])
         i = af.obtain_value(self.parameters["INVERSION"])
         c = af.obtain_value(self.parameters["TRANSLOCATION"])
-
         o = af.obtain_value(self.parameters["ORIGINATION"])
 
         # First we prepare the first genome
 
         genome = self.fill_genome(intergenic_sequences=True)
+        ## These two lines are important for this mode
+        for chromosome in genome:
+            chromosome.obtain_locations()
 
         self.active_genomes.add(genome.species)
         self.all_genomes["Root"] = genome
@@ -734,7 +741,6 @@ class GenomeSimulator():
         i_e = af.obtain_value(self.parameters["INVERSION_EXTENSION"])
         c_e = af.obtain_value(self.parameters["TRANSLOCATION_EXTENSION"])
 
-
         lineage = random.choice(list(self.active_genomes))
         event = self.choose_event(duplication, transfer, loss, inversion, translocation, origination)
 
@@ -773,14 +779,31 @@ class GenomeSimulator():
 
         elif event == "O":
 
+            print("ORIGINATION EVENT")
             gene, gene_family = self.make_origination(lineage, time)
-
 
             # inserting a gene creates also a new intergene region
 
             chromosome = self.all_genomes[lineage].select_random_chromosome()
-            position = chromosome.select_random_position_in_intergenic_regions()
-            chromosome.insert_gene_within_intergene(position, gene)
+            print(chromosome)
+
+            intergene_coordinate = chromosome.select_random_coordinate_in_intergenic_regions()
+
+            location = chromosome.return_location_by_coordinate(intergene_coordinate, within_intergene=True)
+            direction = numpy.random.choice(("left","right"),p=[0.5,0.5])
+            print("COORDINATE:")
+            print(intergene_coordinate)
+            print("DIRECTION:")
+            print(direction)
+            print("LOCATION:")
+            print(location)
+
+
+
+
+            chromosome.insert_gene_within_intergene(intergene_coordinate, location, direction, gene)
+
+            print(chromosome)
 
             return "O", lineage
 

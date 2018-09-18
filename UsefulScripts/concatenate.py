@@ -42,7 +42,6 @@ def fasta_reader(fasta_file):
         yield header, seq
 
 
-
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()

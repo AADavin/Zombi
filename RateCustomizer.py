@@ -27,7 +27,7 @@ class RateCustomizer():
         self.branch_substitution_rates = dict()
 
         for node in mytree.traverse():
-            self.branch_substitution_rates[node.name] = af.obtain_value(self.parameters["RATE_MULTIPLIERS"])
+            self.branch_substitution_rates[node.name] = af.obtain_value(self.parameters["ST_RATE_MULTIPLIERS"])
 
         with open(os.path.join(experiment_folder,"CustomRates/ST_Substitution_rates.tsv"),"w") as f:
 
@@ -49,8 +49,8 @@ class RateCustomizer():
             line = "\t".join(["gene_family", "SUBSTITUTION_RATE_MULTIPLIER"]) + "\n"
             f.write(line)
             for gf in gene_trees:
-
-                line = "\t".join(map(str,[gf, "1"])) + "\n"
+                v = af.obtain_value(self.parameters["GF_RATE_MULTIPLIERS"])
+                line = "\t".join(map(str,[gf, str(v)])) + "\n"
                 f.write(line)
 
     def generate_transfers_file(self):
