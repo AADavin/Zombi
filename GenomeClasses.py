@@ -357,6 +357,8 @@ class Gene():
         self.species = ""
         self.importance = 0
         self.length = 0
+        self.total_flanking = 0
+        self.specific_flanking = 0
 
     def determine_orientation(self):
 
@@ -386,6 +388,8 @@ class Intergene():
     def __init__(self):
 
         self.length = 0
+        self.total_flanking = 0
+        self.specific_flanking = 0
 
     def __str__(self):
 
@@ -400,8 +404,9 @@ class Chromosome():
         self.genes = list()
         self.shape = ""
         self.length = 0
-        self.total_locations = list()
 
+        self.total_locations = list()
+        self.map_of_locations = list()
 
     def obtain_total_itergenic_length(self):
 
@@ -415,18 +420,58 @@ class Chromosome():
 
         return numpy.random.randint(len(self.genes))
 
+    def obtain_map_of_locations(self):
+
+        # The map of locations contains:
+        #
+        pass
+    def obtain_flankings(self):
+
+        if self.has_intergenes:
+
+            self.genes[0].total_flanking = (0, self.genes[0].length)
+            self.genes[0].specific_flanking = (0, self.genes[0].length)
+
+            self.intergenes[0].total_flanking = (self.genes[0].total_flanking[1] + 1, self.genes[0].total_flanking[1] + 1 + self.intergenes[0].length)
+            self.intergenes[0].specific_flanking = (0, self.intergenes[0].length)
+
+
+            for i in range(len(self.genes)):
+                if i == 0:
+                    continue
+
+                lb = self.intergenes[i-1].total_flanking[1] + 1
+                ub = lb + self.genes[i].length
+
+                lbg = self.genes[i-1].specific_flanking[1] + 1
+                ubg = lbg + self.genes[i].length
+
+                self.genes[i].total_flanking = (lb, ub)
+                self.genes[i].specific_flanking = (lbg, ubg)
+
+                lbi = self.intergenes[i - 1].specific_flanking[1] + 1
+                ubi = lbi + self.intergenes[i].length
+
+                self.intergenes[i].total_flanking = (ub, ub + self.intergenes[i].length)
+                self.intergenes[i].specific_flanking = (lbi, ubi)
+
+
+            self.intergenes[i].total_flanking = (ub, 0)
+
+
+
     def select_random_coordinate_in_intergenic_regions(self):
 
         # We weight the position by the length of the region
 
-        t = sum([x.length for x in self.intergenes])
+        t = sum([x.length for x in self.intergenes]) + len(self.intergenes) - 1
 
         return random.randint(0, t)
 
     def obtain_locations(self):
 
         # The structure of total location is:
-        # tc1, tc2, Gene/intergene, Specific coordinate 1, specific coordinate 2, position
+        # tc1, tc2, Specific coordinate 1, specific coordinate 2, position, Gene/intergene
 
         tc1 = 0
         tc2 = 0
@@ -437,46 +482,46 @@ class Chromosome():
         ic1 = 0
         ic2 = 0
 
-
         for i in range(len(self.genes)):
 
-            tc2 += self.genes[i].length
-            gc2 += self.genes[i].length
+            tc1 = self.genes[i].total_flanking[0]
+            tc2 = self.genes[i].total_flanking[1]
+            sc1 = self.genes[i].specific_flanking[0]
+            sc2 = self.genes[i].specific_flanking[1]            
+            self.map_of_locations.append((tc1, tc2, sc1, sc2, str(i), "G"))
 
-            self.total_locations.append((tc1, tc2, "G", gc1, gc2, str(i)))
-
-            tc1 = tc2 + 1
-            gc2 = gc1 +1
-
-            tc2 += self.intergenes[i].length
-            ic2 += self.intergenes[i].length
-
-            self.total_locations.append((tc1,tc2, "I", ic1, ic2, str(i)))
-
-            tc1 = tc2 + 1
-            ic1 = ic2 + 1
+            tc1 = self.intergenes[i].total_flanking[0]
+            tc2 = self.intergenes[i].total_flanking[1]
+            sc1 = self.intergenes[i].specific_flanking[0]
+            sc2 = self.intergenes[i].specific_flanking[1]
+            self.map_of_locations.append((tc1, tc2, sc1, sc2, str(i), "I"))
+            
 
     def return_location_by_coordinate(self, c, within_intergene = False):
 
         if within_intergene == False:
 
-            for l in self.total_locations:
-                tc1, tc2, t, spc1, spc2, sp = l
+            for l in self.map_of_locations:
+                tc1, tc2, spc1, spc2, sp, t = l
                 if c >= tc1 and c <= tc2:
                     return l
         else:
 
-            for l in self.total_locations:
-                tc1, tc2, t, spc1, spc2, sp = l
-                if t == "I" and c >= spc1 and c <= spc2:
-                    return l
+            for l in self.map_of_locations:
 
+                tc1, tc2, spc1, spc2, sp, t = l
+
+                if t != "I":
+                    continue
+
+                if c >= spc1 and c <= spc2:
+                    return l
 
     def affected_segment(self, l1, l2, direction):
 
         # It returns a list of the genes affected
-        tc1_1, tc1_2, t1, sc1_1, sc1_2, p1 = l1
-        tc2_1, tc2_1, t2, sc2_1, sc2_2, p2 = l2
+        tc1_1, tc1_2, sc1_1, sc1_2, p1, t1, = l1
+        tc2_1, tc2_1, sc2_1, sc2_2, p2, t2 = l2
 
         p1 = int(p1)
         p2 = int(p2)

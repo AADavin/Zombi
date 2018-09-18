@@ -9,7 +9,7 @@ def fill_genome(intergenic_sequences = False):
         genome.species = "Root"
         time = 0
 
-        initial_genome_size = [10]
+        initial_genome_size = [2]
         shape = "C"
 
         for n_genes in initial_genome_size:
@@ -29,14 +29,14 @@ def fill_genome(intergenic_sequences = False):
                 # We fill the chromosomes and we create also the gene families
 
                 gene = GC.Gene()
-                gene.length = 10
+                gene.length = 4
                 gene.gene_family = i
                 gene.gene_id = 1
                 chromosome.genes.append(gene)
 
                 if intergenic_sequences == True:
                     intergenic_sequence = GC.Intergene()
-                    intergenic_sequence.length = 20
+                    intergenic_sequence.length = 3
                     chromosome.intergenes.append(intergenic_sequence)
 
             genome.chromosomes.append(chromosome)
@@ -45,15 +45,17 @@ def fill_genome(intergenic_sequences = False):
 
 g = fill_genome(intergenic_sequences=True)
 
+g.obtain_flankings()
+g.obtain_locations()
+for i in g.map_of_locations:
+    print(i)
+
+
+
+
 
 c1 = g.select_random_coordinate_in_intergenic_regions()
 c2 = g.select_random_coordinate_in_intergenic_regions()
-print(g)
-
-g.obtain_locations()
-print(g.total_locations)
-
-
 l1 = g.return_location_by_coordinate(c1, within_intergene=True)
 l2 = g.return_location_by_coordinate(c2, within_intergene=True)
 print(c1)
