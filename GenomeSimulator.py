@@ -45,18 +45,21 @@ class GenomeSimulator():
 
                 with open(os.path.join(genome_folder, genome_name + "_LENGTHS.tsv"), "w") as f:
 
-                    header = ["LEFT_POSITION", "RIGHT_POSITION", "LENGTH"]
+                    header = ["POSITION", "IDENTITY", "LENGTH"]
                     header = "\t".join(map(str, header)) + "\n"
                     f.write(header)
 
                     for chromosome in genome:
-                        for index, intergene in enumerate(chromosome.intergenes):
-                            if index == len(chromosome.intergenes) - 1:
-                                line = [index, 0, intergene.length]
-                            else:
-                                line = [index, index + 1, intergene.length]
+                        i = 0
+                        for j, gene in enumerate(chromosome.genes):
+                            line = [i, "G(" + str(gene.gene_family) + "_" + str(gene.gene_id) + ")", str(gene.length)]
                             line = "\t".join(map(str, line)) + "\n"
                             f.write(line)
+                            i += 1
+                            line = [i, "I", str(chromosome.intergenes[j].length)]
+                            line = "\t".join(map(str, line)) + "\n"
+                            f.write(line)
+                            i += 1
 
     def write_gene_family_lengths(self, genome_folder):
 
@@ -251,6 +254,7 @@ class GenomeSimulator():
                 chromosome.has_intergenes = True
 
             for i in range(int(n_genes)):
+
                 # We fill the chromosomes and we create also the gene families
 
                 gene, gene_family = self.make_origination(genome.species, time)
@@ -265,8 +269,11 @@ class GenomeSimulator():
                     intergenic_sequence.length = int(af.obtain_value(self.parameters["INTERGENIC_LENGTH"]))
                     chromosome.intergenes.append(intergenic_sequence)
 
-            genome.chromosomes.append(chromosome)
+            if intergenic_sequences == True:
+                chromosome.obtain_flankings()
+                chromosome.obtain_locations()
 
+            genome.chromosomes.append(chromosome)
         return genome
 
 
@@ -495,9 +502,11 @@ class GenomeSimulator():
         # First we prepare the first genome
 
         genome = self.fill_genome(intergenic_sequences=True)
+
         ## These two lines are important for this mode
+
         for chromosome in genome:
-            chromosome.obtain_locations()
+            chromosome.obtain_flankings()
 
         self.active_genomes.add(genome.species)
         self.all_genomes["Root"] = genome
@@ -779,36 +788,21 @@ class GenomeSimulator():
 
         elif event == "O":
 
-            print("ORIGINATION EVENT")
-            gene, gene_family = self.make_origination(lineage, time)
 
+            gene, gene_family = self.make_origination(lineage, time)
             # inserting a gene creates also a new intergene region
 
             chromosome = self.all_genomes[lineage].select_random_chromosome()
-            print(chromosome)
+
+            chromosome.obtain_flankings()
+            chromosome.obtain_locations()
 
             intergene_coordinate = chromosome.select_random_coordinate_in_intergenic_regions()
-
             location = chromosome.return_location_by_coordinate(intergene_coordinate, within_intergene=True)
-            direction = numpy.random.choice(("left","right"),p=[0.5,0.5])
-            print("COORDINATE:")
-            print(intergene_coordinate)
-            print("DIRECTION:")
-            print(direction)
-            print("LOCATION:")
-            print(location)
+            chromosome.insert_gene_within_intergene(intergene_coordinate, location, gene)
 
-
-
-
-            chromosome.insert_gene_within_intergene(intergene_coordinate, location, direction, gene)
-
-            print(chromosome)
 
             return "O", lineage
-
-
-
 
 
 
@@ -855,6 +849,7 @@ class GenomeSimulator():
 
         gene_family = GeneFamily(gene_family_id, time)
         gene_family.length = int(af.obtain_value(self.parameters["GENE_SIZE"]))
+        gene.length = gene_family.length
 
         gene_family.genes.append(gene)
         gene.gene_id = gene_family.obtain_new_gene_id()
@@ -892,6 +887,10 @@ class GenomeSimulator():
             genome1.chromosomes.append(ch1)
             genome2.chromosomes.append(ch2)
 
+            if chromosome.has_intergenes:
+                ch1.has_intergenes = True
+                ch2.has_intergenes = True
+
             for gene in chromosome:
 
                 new_id1 = self.return_new_identifiers_for_segment([gene])
@@ -905,6 +904,9 @@ class GenomeSimulator():
 
                 new_gene1.orientation = gene.orientation
                 new_gene2.orientation = gene.orientation
+
+                new_gene1.length = gene.length
+                new_gene2.length = gene.length
 
                 #new_gene1.selection_coefficient = gene.selection_coefficient
                 #new_gene2.selection_coefficient = gene.selection_coefficient

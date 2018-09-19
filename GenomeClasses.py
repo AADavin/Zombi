@@ -3,7 +3,7 @@ import numpy
 import ete3
 import ReconciledTree as RT
 import random
-
+from itertools import cycle
 
 class GeneFamily():
 
@@ -425,18 +425,18 @@ class Chromosome():
         # The map of locations contains:
         #
         pass
+
     def obtain_flankings(self):
 
         if self.has_intergenes:
 
             self.genes[0].total_flanking = (0, self.genes[0].length)
             self.genes[0].specific_flanking = (0, self.genes[0].length)
-
             self.intergenes[0].total_flanking = (self.genes[0].total_flanking[1] + 1, self.genes[0].total_flanking[1] + 1 + self.intergenes[0].length)
             self.intergenes[0].specific_flanking = (0, self.intergenes[0].length)
 
-
             for i in range(len(self.genes)):
+
                 if i == 0:
                     continue
 
@@ -455,9 +455,28 @@ class Chromosome():
                 self.intergenes[i].total_flanking = (ub, ub + self.intergenes[i].length)
                 self.intergenes[i].specific_flanking = (lbi, ubi)
 
-
             self.intergenes[i].total_flanking = (ub, 0)
 
+    def obtain_locations(self):
+
+        self.map_of_locations = list()
+
+        # The structure of total location is:
+        # tc1, tc2, Specific coordinate 1, specific coordinate 2, position, Gene/intergene
+
+        for i in range(len(self.genes)):
+
+            tc1 = self.genes[i].total_flanking[0]
+            tc2 = self.genes[i].total_flanking[1]
+            sc1 = self.genes[i].specific_flanking[0]
+            sc2 = self.genes[i].specific_flanking[1]
+            self.map_of_locations.append((tc1, tc2, sc1, sc2, str(i), "G"))
+
+            tc1 = self.intergenes[i].total_flanking[0]
+            tc2 = self.intergenes[i].total_flanking[1]
+            sc1 = self.intergenes[i].specific_flanking[0]
+            sc2 = self.intergenes[i].specific_flanking[1]
+            self.map_of_locations.append((tc1, tc2, sc1, sc2, str(i), "I"))
 
 
     def select_random_coordinate_in_intergenic_regions(self):
@@ -468,34 +487,6 @@ class Chromosome():
 
         return random.randint(0, t)
 
-    def obtain_locations(self):
-
-        # The structure of total location is:
-        # tc1, tc2, Specific coordinate 1, specific coordinate 2, position, Gene/intergene
-
-        tc1 = 0
-        tc2 = 0
-
-        gc1 = 0
-        gc2 = 0
-
-        ic1 = 0
-        ic2 = 0
-
-        for i in range(len(self.genes)):
-
-            tc1 = self.genes[i].total_flanking[0]
-            tc2 = self.genes[i].total_flanking[1]
-            sc1 = self.genes[i].specific_flanking[0]
-            sc2 = self.genes[i].specific_flanking[1]            
-            self.map_of_locations.append((tc1, tc2, sc1, sc2, str(i), "G"))
-
-            tc1 = self.intergenes[i].total_flanking[0]
-            tc2 = self.intergenes[i].total_flanking[1]
-            sc1 = self.intergenes[i].specific_flanking[0]
-            sc2 = self.intergenes[i].specific_flanking[1]
-            self.map_of_locations.append((tc1, tc2, sc1, sc2, str(i), "I"))
-            
 
     def return_location_by_coordinate(self, c, within_intergene = False):
 
@@ -508,43 +499,77 @@ class Chromosome():
         else:
 
             for l in self.map_of_locations:
-
                 tc1, tc2, spc1, spc2, sp, t = l
-
                 if t != "I":
                     continue
-
                 if c >= spc1 and c <= spc2:
                     return l
 
-    def affected_segment(self, l1, l2, direction):
+    def affected_segment(self, c1, c2, l1, l2, direction):
 
-        # It returns a list of the genes affected
+        # It returns a tuple
+        # 1. List of the genes affected
+        # 2. List of the intergenes affected
+        # 3. Tuple with left and right cuts of left intergene
+        # 4. Tuple with left and right cuts of right intergene
+
         tc1_1, tc1_2, sc1_1, sc1_2, p1, t1, = l1
-        tc2_1, tc2_1, sc2_1, sc2_2, p2, t2 = l2
+        tc2_1, tc2_2, sc2_1, sc2_2, p2, t2 = l2
 
         p1 = int(p1)
         p2 = int(p2)
 
-        if p1 <= p2 and direction == "right":
+        affected_genes = list()
+        affected_intergenes = list()
 
-            affected_segment = [str(self.genes[i]) for i in range(p1, p2)]
+        # Write == condition
 
-        if p1 >= p2 and direction == "right":
+        t_length = len(self.intergenes)
 
-            affected_segment = [str(self.genes[i]) for i in range(p1, len(self.genes))]
-            affected_segment += [str(self.genes[i]) for i in range(0, p2)]
+        if c1 == c2:
+            return None
 
-        if p1 <= p2 and direction == "left":
+        elif p1 == p2:
+            return None
 
-            affected_segment = [str(self.genes[i]) for i in range(0, p1)][::-1]
-            affected_segment += [str(self.genes[i]) for i in range(p2,len(self.genes))][::-1]
+        elif c1 < c2 and direction == "right":
 
-        if p1 >= p2 and direction == "left":
+            affected_genes = [str(self.genes[i + 1]) for i in range(p1, p2)]
+            affected_intergenes = [str(self.intergenes[i]) for i in range(p1,p2 + 1)]
+            left_limits = (c1 - sc1_1, sc1_2 - c1)
+            right_limits = (c2 - sc2_1, sc2_2 - c2)
 
-            affected_segment = [str(self.genes[i]) for i in range(p2, p1)]
+        elif c1 > c2 and direction == "right":
 
-        return affected_segment
+            affected_genes = [str(self.genes[i + 1]) for i in range(p1, t_length - 1)]
+            affected_genes += [str(self.genes[i]) for i in range(0, p2 + 1)]
+
+            affected_intergenes = [str(self.intergenes[i]) for i in range(p1, t_length)]
+            affected_intergenes += [str(self.intergenes[i]) for i in range(0, p2 + 1)]
+
+            left_limits = (c1 - sc1_1, sc1_2 - c1)
+            right_limits = (c2 - sc2_1, sc2_2 - c2)
+
+        elif c1 > c2 and direction == "left":
+
+            affected_genes = [str(self.genes[i]) for i in range(p1, p2, - 1)]
+            affected_intergenes = [str(self.intergenes[i]) for i in range(p1, p2 - 1, -1)]
+            left_limits = (c1 - sc1_1, sc1_2 - c1)
+            right_limits = (c2 - sc2_1, sc2_2 - c2)
+
+        elif c1 < c2 and direction == "left":
+
+            affected_genes = [str(self.genes[i]) for i in range(p1, -1, - 1)]
+            affected_genes += [str(self.genes[i]) for i in range(t_length - 1, p2, -1)]
+
+            affected_intergenes = [str(self.intergenes[i]) for i in range(p1, -1, -1)]
+            affected_intergenes += [str(self.intergenes[i]) for i in range(t_length - 1, p2 - 1, -1)]
+
+            left_limits = (c1 - sc1_1, sc1_2 - c1)
+            right_limits = (c2 - sc2_1, sc2_2 - c2)
+
+
+        return (affected_genes, affected_intergenes, left_limits, right_limits)
 
 
     def select_random_length(self, p):
@@ -741,13 +766,13 @@ class CircularChromosome(Chromosome):
         for gene in segment:
             self.genes.remove(gene)
 
-    def insert_gene_within_intergene(self, coordinate, location, direction, gene):
+    def insert_gene_within_intergene(self, coordinate, location, gene):
 
-        tc1, tc2, t, sc1, sc2, position = location
+        tc1, tc2, sc1, sc2, position, t = location
 
         # Convert to ints:
 
-        tc1,tc2,sc1,sc2,position = map(int,(tc1,tc2,sc1,sc2,position))
+        tc1, tc2, sc1, sc2, position = map(int,(tc1,tc2,sc1,sc2,position))
 
         # The first part is easier - We simply add the gene to the list of genes
 
@@ -755,18 +780,14 @@ class CircularChromosome(Chromosome):
 
         # The second part is cutting the intergene, obtaining the distances
 
-        if direction == "right":
-            left = coordinate - sc1 + 1
-            right = self.intergenes[position].length - left
-        else:
-            left = coordinate - sc1
-            right = self.intergenes[position].length - left
+        left_limits = coordinate - sc1
+        right_limits = sc2 - coordinate
 
         # Now we insert the new intergene in the position i + 1
 
         intergene = Intergene()
-        intergene.length = right
-        self.intergenes[position].length = left
+        intergene.length = right_limits
+        self.intergenes[position].length = left_limits
         self.intergenes.insert(position + 1, intergene)
 
 

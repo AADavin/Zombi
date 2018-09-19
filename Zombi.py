@@ -136,7 +136,7 @@ class Zombi():
         if advanced_mode == "i":
             gss.write_genomes(genomes_folder, intergenic_sequences = True)
         else:
-            gss.write_genomes(genomes_folder, intergenic_sequences=False)
+            gss.write_genomes(genomes_folder, intergenic_sequences = False)
 
         print("Writing Gene Families")
 
