@@ -44,12 +44,31 @@ def fill_genome(intergenic_sequences = False):
         return chromosome
 
 g = fill_genome(intergenic_sequences=True)
+
 print(g)
+
 g.obtain_flankings()
 g.obtain_locations()
 
 for i in g.map_of_locations:
     print(i)
+
+#p = 0.5
+#extension_multiplier = 6
+
+#sc1, sc2, d = select_lengthy(p, extension_multiplier)
+#print(sc1, sc2, d)
+#print(g)
+#test_inversion(g, sc1, sc2, d)
+#print(g)
+
+
+
+#test_inversion(g, 3, 11, "left")
+
+#print(g)
+
+
 
 def test_inversion(g, c1, c2, d):
     r1, r2, r3, r4 = g.return_affected_region(c1, c2, d)
@@ -60,6 +79,84 @@ def test_inversion(g, c1, c2, d):
     left_intergene.length += r4[0]
     right_intergene.length -= r4[0]
     right_intergene.length += r3[1]
+
+def test_translocation(g, c1, c2, d):
+    r1, r2, r3, r4 = g.return_affected_region(c1, c2, d)
+    g.cut_and_paste_within_intergene(r1, r2)
+    left_intergene = g.intergenes[r2[0]]
+    right_intergene = g.intergenes[r2[-1]]
+    left_intergene.length -= r3[1]
+    left_intergene.length += r4[0]
+    right_intergene.length -= r4[0]
+    right_intergene.length += r3[1]
+
+
+
+print("...")
+
+def cut_and_paste_within_intergene(sc1, sc2, d):
+
+    # Good luck if you are debugging this code
+
+    r = g.return_affected_region(sc1, sc2, d)
+    if r != None:
+        r1, r2, r3, r4 = r
+    else:
+        return 0
+    sc3 = g.select_random_coordinate_in_intergenic_regions()
+    sc3 = 11
+    l3 = g.return_location_by_coordinate(sc3, within_intergene=True)
+    tc3_1, tc3_2, sc3_1, sc3_2, p, t = l3
+    tc3_1, tc3_2, sc3_1, sc3_2, p = map(int,(tc3_1, tc3_2, sc3_1, sc3_2, p))
+
+    segment = [g.genes[x] for x in r1]
+    intergene_segment = [g.intergenes[x] for x in r2[1:]]
+
+    left_moving_intergene = g.intergenes[r2[0]]
+    right_moving_intergene = g.intergenes[r2[-1]]
+
+    new_segment = list()
+    new_intergene_segment = list()
+
+    if len(segment) == len(g.genes):
+        return 0
+
+    # Before popping any gene, we add the length sequences to the intergene regions
+
+    left_moving_intergene.length -= r3[1]
+    left_moving_intergene.length += r4[1]
+    right_moving_intergene.length = r3[1] + (g.intergenes[p].length - (sc3_2 - sc3))
+    g.intergenes[p].length = r4[1] + (g.intergenes[p].length - (sc3_2 - sc3))
+    right_moving_intergene.length, g.intergenes[p].length = g.intergenes[p].length, right_moving_intergene.length
+
+    for gene in segment:
+        new_segment.append(g.genes.pop(g.genes.index(gene)))
+    for intergene in intergene_segment:
+        new_intergene_segment.append(g.intergenes.pop(g.intergenes.index(intergene)))
+
+    for i,gene in enumerate(new_segment):
+        g.genes.insert(p + i, gene)
+    for i,intergene in enumerate(new_intergene_segment):
+        g.intergenes.insert(p + i, intergene)
+
+    # This might alter the position, if the gene is the gene is inserted after the cut
+    print(g)
+    #if (sc2 > sc3 and d = "right") or sc1
+
+    #print(g.genes)
+    #print(g.intergenes)
+
+
+    #print(sc3)
+    #print(g)
+
+
+    # And finally we modify the flankings
+
+sc1 = 0
+sc2 = 5
+
+cut_and_paste_within_intergene(sc1, sc2, "right")
 
 
 def select_lengthy(p, extension_multiplier):
@@ -117,15 +214,14 @@ def select_lengthy(p, extension_multiplier):
 
 
 
+#p = 0.5
+#extension_multiplier = 6
 
-p = 0.5
-extension_multiplier = 6
-
-sc1, sc2, d = select_lengthy(p, extension_multiplier)
-print(sc1, sc2, d)
-print(g)
-test_inversion(g, sc1, sc2, d)
-print(g)
+#sc1, sc2, d = select_lengthy(p, extension_multiplier)
+#print(sc1, sc2, d)
+#print(g)
+#test_inversion(g, sc1, sc2, d)
+#print(g)
 
 
 

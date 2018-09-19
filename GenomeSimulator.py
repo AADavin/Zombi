@@ -793,7 +793,15 @@ class GenomeSimulator():
             return "I", lineage
 
         elif event == "C":
-            self.make_translocation(c_e, lineage, time)
+
+            r = self.select_advanced_length(lineage, c_e, extension_multiplier)
+            if r == None:
+                return None
+            else:
+                c1, c2, d = r
+
+            self.make_translocation_intergenic(c1, c2, d, lineage, time)
+
             return "C", lineage
 
         elif event == "O":
@@ -1257,9 +1265,7 @@ class GenomeSimulator():
         chromosome = self.all_genomes[lineage].select_random_chromosome()
         r = chromosome.return_affected_region(c1, c2, d)
         if r== None:
-            
             return None
-
         else:
             r1, r2, r3, r4 = r
             segment = chromosome.obtain_segment(r1)
@@ -1283,6 +1289,20 @@ class GenomeSimulator():
 
         for i, gene in enumerate(segment):
             self.all_gene_families[gene.gene_family].register_event(str(time), "C", ";".join(map(str,[lineage, gene.gene_id])))
+
+    def make_translocation_intergenic(self, c1, c2, d, lineage, time):
+
+        chromosome = self.all_genomes[lineage].select_random_chromosome()
+        r = chromosome.return_affected_region(c1, c2, d)
+        if r == None:
+            return None
+        else:
+            r1, r2, r3, r4 = r
+            segment = chromosome.obtain_segment(r1)
+            chromosome.cut_and_paste(segment)
+
+            for i, gene in enumerate(segment):
+                self.all_gene_families[gene.gene_family].register_event(str(time), "C", ";".join(map(str,[lineage, gene.gene_id])))
 
     def get_gene_family_tree(self):
 
