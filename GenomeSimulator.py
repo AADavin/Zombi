@@ -779,6 +779,7 @@ class GenomeSimulator():
             return "L", lineage
 
         elif event == "I":
+
             self.make_inversion(i_e, lineage, time)
             return "I", lineage
 
@@ -788,19 +789,13 @@ class GenomeSimulator():
 
         elif event == "O":
 
-
             gene, gene_family = self.make_origination(lineage, time)
-            # inserting a gene creates also a new intergene region
-
             chromosome = self.all_genomes[lineage].select_random_chromosome()
-
             chromosome.obtain_flankings()
             chromosome.obtain_locations()
-
             intergene_coordinate = chromosome.select_random_coordinate_in_intergenic_regions()
             location = chromosome.return_location_by_coordinate(intergene_coordinate, within_intergene=True)
             chromosome.insert_gene_within_intergene(intergene_coordinate, location, gene)
-
 
             return "O", lineage
 

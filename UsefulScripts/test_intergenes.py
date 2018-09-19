@@ -9,7 +9,7 @@ def fill_genome(intergenic_sequences = False):
         genome.species = "Root"
         time = 0
 
-        initial_genome_size = [5]
+        initial_genome_size = [3]
         shape = "C"
 
         for n_genes in initial_genome_size:
@@ -36,7 +36,7 @@ def fill_genome(intergenic_sequences = False):
 
                 if intergenic_sequences == True:
                     intergenic_sequence = GC.Intergene()
-                    intergenic_sequence.length = 10
+                    intergenic_sequence.length = 3
                     chromosome.intergenes.append(intergenic_sequence)
 
             genome.chromosomes.append(chromosome)
@@ -47,6 +47,32 @@ g = fill_genome(intergenic_sequences=True)
 print(g)
 g.obtain_flankings()
 g.obtain_locations()
+
+def test_inversion(g, c1, c2, d):
+    r1, r2, r3, r4 = g.return_affected_region(c1, c2, d)
+    g.invert_segment(r1)
+    left_intergene = g.intergenes[r2[0]]
+    right_intergene = g.intergenes[r2[-1]]
+    left_intergene.length -= r3[1]
+    left_intergene.length += r4[0]
+    right_intergene.length -= r4[0]
+    right_intergene.length += r3[1]
+
+
+def length():
+    pass
+
+
+
+#test_inversion(g, 3, 11, "left")
+
+#print(g)
+
+
+
+
+
+
 
 
 def test2():
@@ -67,34 +93,18 @@ def test2():
 
 
 
-
-
-
-
-
-
-
-
-
-
 def test1():
+
     c1 = g.select_random_coordinate_in_intergenic_regions()
     c2 = g.select_random_coordinate_in_intergenic_regions()
     #c1 = 2
     #c2 = 6
-    l1 = g.return_location_by_coordinate(c1, within_intergene=True)
-    l2 = g.return_location_by_coordinate(c2, within_intergene=True)
-    print(c1)
-    print(l1)
-    print("....")
-    print(c2)
-    print(l2)
-    print("....")
+
 
     d = numpy.random.choice(("left","right"),p=[0.5,0.5])
     print(d)
 
-    r = g.affected_segment(c1, c2, l1, l2, d)
+    r = g.return_affected_segment(c1, c2, d)
     if r != None:
         r1, r2, r3, r4 = r
 

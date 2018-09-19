@@ -420,12 +420,6 @@ class Chromosome():
 
         return numpy.random.randint(len(self.genes))
 
-    def obtain_map_of_locations(self):
-
-        # The map of locations contains:
-        #
-        pass
-
     def obtain_flankings(self):
 
         if self.has_intergenes:
@@ -505,13 +499,16 @@ class Chromosome():
                 if c >= spc1 and c <= spc2:
                     return l
 
-    def affected_segment(self, c1, c2, l1, l2, direction):
+    def return_affected_region(self, c1, c2, direction):
 
         # It returns a tuple
-        # 1. List of the genes affected
-        # 2. List of the intergenes affected
+        # 1. List of the position of the genes affected
+        # 2. List of the position of the intergenes affected
         # 3. Tuple with left and right cuts of left intergene
         # 4. Tuple with left and right cuts of right intergene
+
+        l1 = self.return_location_by_coordinate(c1, within_intergene=True)
+        l2 = self.return_location_by_coordinate(c2, within_intergene=True)
 
         tc1_1, tc1_2, sc1_1, sc1_2, p1, t1, = l1
         tc2_1, tc2_2, sc2_1, sc2_2, p2, t2 = l2
@@ -522,9 +519,10 @@ class Chromosome():
         affected_genes = list()
         affected_intergenes = list()
 
-        # Write == condition
-
         t_length = len(self.intergenes)
+
+        left_limits = None
+        right_limits = None
 
         if c1 == c2:
             return None
@@ -534,40 +532,41 @@ class Chromosome():
 
         elif c1 < c2 and direction == "right":
 
-            affected_genes = [str(self.genes[i + 1]) for i in range(p1, p2)]
-            affected_intergenes = [str(self.intergenes[i]) for i in range(p1,p2 + 1)]
+            affected_genes = [i + 1 for i in range(p1, p2)]
+            affected_intergenes = [i for i in range(p1,p2 + 1)]
             left_limits = (c1 - sc1_1, sc1_2 - c1)
             right_limits = (c2 - sc2_1, sc2_2 - c2)
 
         elif c1 > c2 and direction == "right":
 
-            affected_genes = [str(self.genes[i + 1]) for i in range(p1, t_length - 1)]
-            affected_genes += [str(self.genes[i]) for i in range(0, p2 + 1)]
+            affected_genes = [i + 1 for i in range(p1, t_length - 1)]
+            affected_genes += [i for i in range(0, p2 + 1)]
 
-            affected_intergenes = [str(self.intergenes[i]) for i in range(p1, t_length)]
-            affected_intergenes += [str(self.intergenes[i]) for i in range(0, p2 + 1)]
+            affected_intergenes = [i for i in range(p1, t_length)]
+            affected_intergenes += [i for i in range(0, p2 + 1)]
 
             left_limits = (c1 - sc1_1, sc1_2 - c1)
             right_limits = (c2 - sc2_1, sc2_2 - c2)
 
         elif c1 > c2 and direction == "left":
 
-            affected_genes = [str(self.genes[i]) for i in range(p1, p2, - 1)]
-            affected_intergenes = [str(self.intergenes[i]) for i in range(p1, p2 - 1, -1)]
+            affected_genes = [i for i in range(p1, p2, - 1)]
+            affected_intergenes = [i for i in range(p1, p2 - 1, -1)]
+            affected_intergenes.reverse()
             left_limits = (c1 - sc1_1, sc1_2 - c1)
             right_limits = (c2 - sc2_1, sc2_2 - c2)
 
         elif c1 < c2 and direction == "left":
 
-            affected_genes = [str(self.genes[i]) for i in range(p1, -1, - 1)]
-            affected_genes += [str(self.genes[i]) for i in range(t_length - 1, p2, -1)]
+            affected_genes = [i for i in range(p1, -1, - 1)]
+            affected_genes += [i for i in range(t_length - 1, p2, -1)]
 
-            affected_intergenes = [str(self.intergenes[i]) for i in range(p1, -1, -1)]
-            affected_intergenes += [str(self.intergenes[i]) for i in range(t_length - 1, p2 - 1, -1)]
+            affected_intergenes = [i for i in range(p1, -1, -1)]
+            affected_intergenes += [i for i in range(t_length - 1, p2 - 1, -1)]
+            affected_intergenes.reverse()
 
             left_limits = (c1 - sc1_1, sc1_2 - c1)
             right_limits = (c2 - sc2_1, sc2_2 - c2)
-
 
         return (affected_genes, affected_intergenes, left_limits, right_limits)
 
