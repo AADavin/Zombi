@@ -48,6 +48,9 @@ print(g)
 g.obtain_flankings()
 g.obtain_locations()
 
+for i in g.map_of_locations:
+    print(i)
+
 def test_inversion(g, c1, c2, d):
     r1, r2, r3, r4 = g.return_affected_region(c1, c2, d)
     g.invert_segment(r1)
@@ -59,8 +62,70 @@ def test_inversion(g, c1, c2, d):
     right_intergene.length += r3[1]
 
 
-def length():
-    pass
+def select_lengthy(p, extension_multiplier):
+
+    counter = 0
+    total_genome_length = g.map_of_locations[-1][1]
+    success = False
+
+    while counter <= 100 and success == False:
+
+        counter += 1
+        sc1 = g.select_random_coordinate_in_intergenic_regions()
+        tc1 = g.return_total_coordinate_from_specific_coordinate(sc1)
+        d = numpy.random.choice(("left", "right"), p=[0.5, 0.5])
+        extension = numpy.random.geometric(p) * extension_multiplier
+
+        if d == "right":
+            if tc1 + extension >= total_genome_length:
+                tc2 = extension - (total_genome_length - tc1)
+                if tc2 < tc1:
+                    success = True
+                else:
+                    # The event covers the whole genome
+                    pass
+            else:
+                tc2 = tc1 + extension
+                success = True
+
+        elif d == "left":
+
+            if tc1 - extension <= 0:
+                tc2 = total_genome_length - extension - (0 - tc1)
+                if tc1 < tc2:
+                    success = True
+                else:
+                    # The event covers the whole genome
+                    pass
+            else:
+                tc2 = tc1 - extension
+                success = True
+
+        if success == True and tc2 >= 0 and tc2 <= total_genome_length:
+
+            sc2 = g.return_specific_coordinate_from_total_coordinate(tc2)
+
+            if sc2 == None:
+                success = False
+            else:
+                return sc1, sc2, d
+
+    return None
+
+
+
+
+
+
+
+p = 0.5
+extension_multiplier = 6
+
+sc1, sc2, d = select_lengthy(p, extension_multiplier)
+print(sc1, sc2, d)
+print(g)
+test_inversion(g, sc1, sc2, d)
+print(g)
 
 
 

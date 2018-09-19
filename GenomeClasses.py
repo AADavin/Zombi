@@ -426,7 +426,7 @@ class Chromosome():
 
             self.genes[0].total_flanking = (0, self.genes[0].length)
             self.genes[0].specific_flanking = (0, self.genes[0].length)
-            self.intergenes[0].total_flanking = (self.genes[0].total_flanking[1] + 1, self.genes[0].total_flanking[1] + 1 + self.intergenes[0].length)
+            self.intergenes[0].total_flanking = (self.genes[0].total_flanking[1], self.genes[0].total_flanking[1] + self.intergenes[0].length)
             self.intergenes[0].specific_flanking = (0, self.intergenes[0].length)
 
             for i in range(len(self.genes)):
@@ -434,7 +434,7 @@ class Chromosome():
                 if i == 0:
                     continue
 
-                lb = self.intergenes[i-1].total_flanking[1] + 1
+                lb = self.intergenes[i-1].total_flanking[1]
                 ub = lb + self.genes[i].length
 
                 lbg = self.genes[i-1].specific_flanking[1] + 1
@@ -449,7 +449,7 @@ class Chromosome():
                 self.intergenes[i].total_flanking = (ub, ub + self.intergenes[i].length)
                 self.intergenes[i].specific_flanking = (lbi, ubi)
 
-            self.intergenes[i].total_flanking = (ub, 0)
+            #self.intergenes[i].total_flanking = (ub, 0)
 
     def obtain_locations(self):
 
@@ -481,6 +481,28 @@ class Chromosome():
 
         return random.randint(0, t)
 
+    def return_total_coordinate_from_specific_coordinate(self, c):
+
+        tc = None
+
+        for r in self.map_of_locations:
+            tc1, tc2, spc1, spc2, sp, t = r
+
+            if c >= spc1 and c <= spc2:
+                distance_to_lower_bound = c - spc1
+                tc = tc1 + distance_to_lower_bound
+
+        return tc
+
+    def return_specific_coordinate_from_total_coordinate(self, c):
+
+        sc = None
+        for r in self.map_of_locations:
+            tc1, tc2, spc1, spc2, sp, t = r
+            if t == "I" and c >= tc1 and c <= tc2:
+                distance_to_lower_bound = c - tc1
+                sc = spc1 + distance_to_lower_bound
+        return sc
 
     def return_location_by_coordinate(self, c, within_intergene = False):
 
