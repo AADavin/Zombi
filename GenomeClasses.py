@@ -379,7 +379,8 @@ class Gene():
         #myname = "_".join(map(str,(self.genome, self.orientation, self.gene_family, self.gene_id)))
         #myname = "_".join(map(str, (self.species, self.gene_family, self.gene_id)))
         #myname = "_".join(map(str, (self.gene_family, self.orientation)))
-        myname = "_".join(map(str, (self.gene_family, self.length)))
+        myname = str(self.gene_family)
+        #myname = "_".join(map(str, (self.gene_family, self.length)))
         return myname
 
 
@@ -390,10 +391,14 @@ class Intergene():
         self.length = 0
         self.total_flanking = 0
         self.specific_flanking = 0
+        self.id = 0 # Only for debugging purposes
 
     def __str__(self):
 
-        return "I_" + str(self.length)
+        return "(" + str(self.length) + ")"
+        #return "I_" + str(self.length)
+        #return "I_" + str(self.id) + "_" + str(self.length)
+
 
 class Chromosome():
 
@@ -524,10 +529,11 @@ class Chromosome():
     def return_affected_region(self, c1, c2, direction):
 
         # It returns a tuple
-        # 1. List of the position of the genes affected
-        # 2. List of the position of the intergenes affected
-        # 3. Tuple with left and right cuts of left intergene
-        # 4. Tuple with left and right cuts of right intergene
+        # 1. List of the position of the genes affected. ALWAYS FROM LEFT TO RIGHT
+        # 2. List of the position of the intergenes affected. ALWAYS FROM LEFT TO RIGHT
+        # 3. Tuple with left and right cuts of first intergene.
+        # #  Watch out, the fact of calling it left or right can be confusing.
+        # 4. Tuple with left and right cuts of last intergene. Same note than above
 
         l1 = self.return_location_by_coordinate(c1, within_intergene=True)
         l2 = self.return_location_by_coordinate(c2, within_intergene=True)
@@ -574,9 +580,11 @@ class Chromosome():
 
             affected_genes = [i for i in range(p1, p2, - 1)]
             affected_intergenes = [i for i in range(p1, p2 - 1, -1)]
-            affected_intergenes.reverse()
             left_limits = (c1 - sc1_1, sc1_2 - c1)
             right_limits = (c2 - sc2_1, sc2_2 - c2)
+
+            affected_genes.reverse()
+            affected_intergenes.reverse()
 
         elif c1 < c2 and direction == "left":
 
@@ -585,6 +593,8 @@ class Chromosome():
 
             affected_intergenes = [i for i in range(p1, -1, -1)]
             affected_intergenes += [i for i in range(t_length - 1, p2 - 1, -1)]
+
+            affected_genes.reverse()
             affected_intergenes.reverse()
 
             left_limits = (c1 - sc1_1, sc1_2 - c1)
@@ -614,7 +624,8 @@ class Chromosome():
 
         if self.has_intergenes == True:
 
-            return ";".join(["CHROMOSOME"] + [str(self.genes[i])+";"+str(self.intergenes[i]) for i in range(len(self.genes))])
+            #return ";".join(["CHROMOSOME"] + [str(self.genes[i])+";"+str(self.intergenes[i]) for i in range(len(self.genes))])
+            return "".join(["CHROMOSOME: "] + [str(self.genes[i])+str(self.intergenes[i]) for i in range(len(self.genes))])
 
         else:
 

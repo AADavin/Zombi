@@ -9,7 +9,7 @@ def fill_genome(intergenic_sequences = False):
         genome.species = "Root"
         time = 0
 
-        initial_genome_size = [3]
+        initial_genome_size = [5]
         shape = "C"
 
         for n_genes in initial_genome_size:
@@ -37,21 +37,118 @@ def fill_genome(intergenic_sequences = False):
                 if intergenic_sequences == True:
                     intergenic_sequence = GC.Intergene()
                     intergenic_sequence.length = 3
+                    intergenic_sequence.id = i
                     chromosome.intergenes.append(intergenic_sequence)
 
             genome.chromosomes.append(chromosome)
 
         return chromosome
 
+
+def cut_and_paste_within_intergene(sc1, sc2, sc3, d):
+
+    # Good luck if you are debugging this code
+
+    r = g.return_affected_region(sc1, sc2, d)
+
+    if r != None:
+        r1, r2, r3, r4 = r
+    else:
+        return 0
+
+    l3 = g.return_location_by_coordinate(sc3, within_intergene=True)
+    tc3_1, tc3_2, sc3_1, sc3_2, p, t = l3
+    tc3_1, tc3_2, sc3_1, sc3_2, p = map(int,(tc3_1, tc3_2, sc3_1, sc3_2, p))
+
+    segment = [g.genes[x] for x in r1]
+    intergene_segment = [g.intergenes[x] for x in r2[1:]]
+
+    scar1 = g.intergenes[r2[0]]
+    scar2 = g.intergenes[p]
+    scar3 = g.intergenes[r2[-1]]
+
+    new_segment = list()
+    new_intergene_segment = list()
+
+    # If we insert in the intergene i, the gene must occupy the position i - 1
+    # We store it for reference
+
+    left_gene = g.genes[p]
+
+    # Now we pop the genes
+
+    for gene in segment:
+        new_segment.append(g.genes.pop(g.genes.index(gene)))
+
+    # And now we insert the genes at the right of the gene we saved before
+
+    position = g.genes.index(left_gene) + 1
+
+    for i, gene in enumerate(new_segment):
+        g.genes.insert(position + i, gene)
+
+    # We move the intergene on the right also
+
+    # We save the position for insertion
+
+    left_intergene = g.intergenes[p]
+
+    for intergene in intergene_segment:
+        new_intergene_segment.append(g.intergenes.pop(g.intergenes.index(intergene)))
+
+    # And now we insert the genes at the right of the gene we saved before
+
+    position = g.intergenes.index(left_intergene) + 1
+
+    for i, intergene in enumerate(new_intergene_segment):
+        g.intergenes.insert(position + i, intergene)
+
+    # Finally, we modify the segments so that they have the right length
+
+    r5 = (sc3 - sc3_1, sc3_2 - sc3)
+
+
+    if d == "left":
+        r3, r4 = r4, r3
+
+    scar1.length = r3[0] + r4[1]
+    scar2.length = r3[1] + r5[0]
+    scar3.length = r4[0] + r5[1]
+
+
+    '''
+    elif d == "left":
+        r5 = (sc3 - sc3_1, sc3_2 - sc3)
+        scar2 = left_intergene
+        scar3 = new_intergene_segment[-1]
+
+        scar1.length = r4[0] + r3[1]
+        scar2.length = r5[0] + r4[1]
+        scar3.length = r3[0] + r5[1]
+    '''
+
+    # We modify the scars one per one
+
+
+    print(g)
+
+
+
 g = fill_genome(intergenic_sequences=True)
 
 print(g)
-
 g.obtain_flankings()
 g.obtain_locations()
 
-for i in g.map_of_locations:
-    print(i)
+sc1 = 0
+sc2 = 15
+sc3 = 5
+
+d = "left"
+
+cut_and_paste_within_intergene(sc1, sc2, sc3, d)
+
+
 
 #p = 0.5
 #extension_multiplier = 6
@@ -67,6 +164,24 @@ for i in g.map_of_locations:
 #test_inversion(g, 3, 11, "left")
 
 #print(g)
+
+
+
+
+
+
+
+
+def test_affected_region():
+    r = g.return_affected_region(0, 15, "left")
+    r1, r2, r3, r4 = r
+    print(r1)
+    print(r2)
+    print(r3)
+    print(r4)
+
+
+
 
 
 
@@ -92,9 +207,9 @@ def test_translocation(g, c1, c2, d):
 
 
 
-print("...")
 
-def cut_and_paste_within_intergene(sc1, sc2, d):
+
+def cut_and_paste_within_intergene_draft(sc1, sc2, sc3, d):
 
     # Good luck if you are debugging this code
 
@@ -103,8 +218,10 @@ def cut_and_paste_within_intergene(sc1, sc2, d):
         r1, r2, r3, r4 = r
     else:
         return 0
-    sc3 = g.select_random_coordinate_in_intergenic_regions()
-    sc3 = 11
+
+    #if d == "left":
+    #    r1.reverse()
+
     l3 = g.return_location_by_coordinate(sc3, within_intergene=True)
     tc3_1, tc3_2, sc3_1, sc3_2, p, t = l3
     tc3_1, tc3_2, sc3_1, sc3_2, p = map(int,(tc3_1, tc3_2, sc3_1, sc3_2, p))
@@ -112,52 +229,90 @@ def cut_and_paste_within_intergene(sc1, sc2, d):
     segment = [g.genes[x] for x in r1]
     intergene_segment = [g.intergenes[x] for x in r2[1:]]
 
-    left_moving_intergene = g.intergenes[r2[0]]
-    right_moving_intergene = g.intergenes[r2[-1]]
+    # We saved the position of the first intergene for later
+
+    scar1 = g.intergenes[r2[0]]
 
     new_segment = list()
     new_intergene_segment = list()
 
-    if len(segment) == len(g.genes):
-        return 0
+    # If we insert in the intergene i, the gene must occupy the position i - 1
+    # We store it for reference
 
-    # Before popping any gene, we add the length sequences to the intergene regions
+    left_gene = g.genes[p]
 
-    left_moving_intergene.length -= r3[1]
-    left_moving_intergene.length += r4[1]
-    right_moving_intergene.length = r3[1] + (g.intergenes[p].length - (sc3_2 - sc3))
-    g.intergenes[p].length = r4[1] + (g.intergenes[p].length - (sc3_2 - sc3))
-    right_moving_intergene.length, g.intergenes[p].length = g.intergenes[p].length, right_moving_intergene.length
+    # Now we pop the genes
 
     for gene in segment:
         new_segment.append(g.genes.pop(g.genes.index(gene)))
+
+    # And now we insert the genes at the right of the gene we saved before
+
+    position = g.genes.index(left_gene) + 1
+
+    for i, gene in enumerate(new_segment):
+        g.genes.insert(position + i, gene)
+
+    # Now we switch the intergenes. We move the intergene on the right also
+
+    # We save the position for insertion
+
+    left_intergene = g.intergenes[p]
+
     for intergene in intergene_segment:
         new_intergene_segment.append(g.intergenes.pop(g.intergenes.index(intergene)))
 
-    for i,gene in enumerate(new_segment):
-        g.genes.insert(p + i, gene)
-    for i,intergene in enumerate(new_intergene_segment):
-        g.intergenes.insert(p + i, intergene)
+    # And now we insert the genes at the right of the gene we saved before
 
-    # This might alter the position, if the gene is the gene is inserted after the cut
+    position = g.intergenes.index(left_intergene) + 1
+
+    for i, intergene in enumerate(new_intergene_segment):
+        g.intergenes.insert(position + i, intergene)
+
+    # Finally, we modify the segments so that they have the right length
+
+    if d == "right" or d == "left":
+        r5 = (sc3 - sc3_1, sc3_2 - sc3)
+        scar2 = left_intergene
+        scar3 = new_intergene_segment[-1]
+
+        scar1.length = r3[0] + r4[1]
+        scar2.length = r5[0] + r3[1]
+        scar3.length = r4[0] + r5[1]
+    '''
+    elif d == "left":
+        r5 = (sc3 - sc3_1, sc3_2 - sc3)
+        scar2 = left_intergene
+        scar3 = new_intergene_segment[-1]
+
+        scar1.length = r4[0] + r3[1]
+        scar2.length = r5[0] + r4[1]
+        scar3.length = r3[0] + r5[1]
+    '''
+    print(r1)
+    print(r2)
+
+    # We modify the scars one per one
+
+
     print(g)
-    #if (sc2 > sc3 and d = "right") or sc1
-
-    #print(g.genes)
-    #print(g.intergenes)
 
 
-    #print(sc3)
-    #print(g)
-
-
-    # And finally we modify the flankings
-
+'''
 sc1 = 0
-sc2 = 5
+sc2 = 15
+sc3 = 9
+d = "left"
+cut_and_paste_within_intergene(sc1, sc2, sc3, d)
 
-cut_and_paste_within_intergene(sc1, sc2, "right")
+print("...")
 
+sc1 = 16
+sc2 = 11
+sc3 = 5
+d = "left"
+cut_and_paste_within_intergene(sc1, sc2, sc3, d)
+'''
 
 def select_lengthy(p, extension_multiplier):
 
