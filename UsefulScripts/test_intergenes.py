@@ -9,7 +9,7 @@ def fill_genome(intergenic_sequences = False):
         genome.species = "Root"
         time = 0
 
-        initial_genome_size = [5]
+        initial_genome_size = [4]
         shape = "C"
 
         for n_genes in initial_genome_size:
@@ -46,8 +46,6 @@ def fill_genome(intergenic_sequences = False):
 
 
 def cut_and_paste_within_intergene(sc1, sc2, sc3, d):
-
-    # Good luck if you are debugging this code
 
     r = g.return_affected_region(sc1, sc2, d)
 
@@ -107,7 +105,6 @@ def cut_and_paste_within_intergene(sc1, sc2, sc3, d):
 
     r5 = (sc3 - sc3_1, sc3_2 - sc3)
 
-
     if d == "left":
         r3, r4 = r4, r3
 
@@ -116,40 +113,128 @@ def cut_and_paste_within_intergene(sc1, sc2, sc3, d):
     scar3.length = r4[0] + r5[1]
 
 
-    '''
-    elif d == "left":
-        r5 = (sc3 - sc3_1, sc3_2 - sc3)
-        scar2 = left_intergene
-        scar3 = new_intergene_segment[-1]
-
-        scar1.length = r4[0] + r3[1]
-        scar2.length = r5[0] + r4[1]
-        scar3.length = r3[0] + r5[1]
-    '''
-
-    # We modify the scars one per one
 
 
-    print(g)
+
+def loss_gene(sc1, sc2, d, pseudo =False):
+
+    r = g.return_affected_region(sc1, sc2, d)
+
+    if r != None:
+        r1, r2, r3, r4 = r
+    else:
+        return 0
+
+    segment = [g.genes[x] for x in r1]
+    intergene_segment = [g.intergenes[x] for x in r2[1:]]
+
+    scar1 = g.intergenes[r2[0]]
+
+    # Now we remove the genes
+
+    for gene in segment:
+        g.genes.remove(gene)
+
+    # Now we remove the intergenes
+
+    for intergene in intergene_segment:
+        g.intergenes.remove(intergene)
+
+    # We modify the length of the scar:
+
+    if d == "left":
+        r3, r4 = r4, r3
+
+    if pseudo == True:
+
+        # We need to add the lenght of the genes removed
+        scar1.length =    sum(r3) + sum(r4) \
+                        + sum([x.length for x in segment]) \
+                        + sum([x.length for x in intergene_segment[:-1]])
+
+    else:
+
+        scar1.length = r3[0] + r4[1]
+
+
+def duplicate_within_intergene(sc1, sc2, d):
+
+    r = g.return_affected_region(sc1, sc2, d)
+
+    if r != None:
+        r1, r2, r3, r4 = r
+    else:
+        return 0
+
+    segment = [g.genes[x] for x in r1]
+    intergene_segment = [g.intergenes[x] for x in r2[1:]]
+
+    # We duplicate the genes
+
+    ## Here I need to add the lines to copy
+
+    new_segment_1 = [g.genes[x] for x in r1]
+    new_segment_2 = [g.genes[x] for x in r1]
+
+    new_intergene_segment_1 = [g.intergenes[x] for x in r2[1:]]
+    new_intergene_segment_2 = [g.intergenes[x] for x in r2[1:]]
+
+    scar1 = new_intergene_segment_1[-1]
+    scar2 = new_intergene_segment_2[-1]
+
+    new_segment = new_segment_1 + new_segment_2
+    new_intergene_segment = new_intergene_segment_1 + new_intergene_segment_2
+
+    ###
+    ###
+
+    position = r1[-1] + 1
+
+    for i, gene in enumerate(new_segment):
+        g.genes.insert(position + i, gene)
+    for i, intergene in enumerate(new_intergene_segment):
+        g.intergenes.insert(position + i, intergene)
+
+    # We remove the old copies:
+
+    g.remove_segment(segment)
+    g.remove_intersegment(intergene_segment)
+
+    # We adjust the new intergenes lengths
+
+    if d == "left":
+        r3, r4 = r4, r3
+
+    scar1.length = r3[1] + r4[0]
+    scar2.length = r4[1]
 
 
 
 g = fill_genome(intergenic_sequences=True)
-
 print(g)
 g.obtain_flankings()
 g.obtain_locations()
 
 sc1 = 0
-sc2 = 15
-sc3 = 5
-
+sc2 = 11
 d = "left"
+d = "right"
+pseudo = True
+duplicate_within_intergene(sc1, sc2, d)
+print(g)
 
-cut_and_paste_within_intergene(sc1, sc2, sc3, d)
 
 
 
+def test_cut_and_paste():
+    sc1 = 0
+    sc2 = 11
+
+
+    d = "left"
+    d = "right"
+
+    cut_and_paste_within_intergene(sc1, sc2, d)
 #p = 0.5
 #extension_multiplier = 6
 
@@ -318,15 +403,25 @@ def select_lengthy(p, extension_multiplier):
 
     counter = 0
     total_genome_length = g.map_of_locations[-1][1]
+    #print("Total genome length is: %i " % total_genome_length)
+
     success = False
 
     while counter <= 100 and success == False:
 
+        print("The counter is: %i " % counter)
+
         counter += 1
         sc1 = g.select_random_coordinate_in_intergenic_regions()
         tc1 = g.return_total_coordinate_from_specific_coordinate(sc1)
+
+        print("The specific coordinate is: %i " % sc1)
+        print("The total coordinate is: %i " % tc1)
         d = numpy.random.choice(("left", "right"), p=[0.5, 0.5])
+        print("The direction is %s" % d)
         extension = numpy.random.geometric(p) * extension_multiplier
+
+        print("The extension is %i" % extension)
 
         if d == "right":
             if tc1 + extension >= total_genome_length:
@@ -369,11 +464,8 @@ def select_lengthy(p, extension_multiplier):
 
 
 
-#p = 0.5
-#extension_multiplier = 6
 
-#sc1, sc2, d = select_lengthy(p, extension_multiplier)
-#print(sc1, sc2, d)
+
 #print(g)
 #test_inversion(g, sc1, sc2, d)
 #print(g)

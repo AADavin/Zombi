@@ -507,6 +507,7 @@ class GenomeSimulator():
 
         for chromosome in genome:
             chromosome.obtain_flankings()
+            chromosome.obtain_locations()
 
         self.active_genomes.add(genome.species)
         self.all_genomes["Root"] = genome
@@ -674,12 +675,10 @@ class GenomeSimulator():
         elif event == "O":
 
             gene, gene_family = self.make_origination(lineage, time)
-
             chromosome = self.all_genomes[lineage].select_random_chromosome()
             position = chromosome.select_random_position()
             segment = [gene]
             chromosome.insert_segment(position, segment)
-
             return "O", lineage
 
 
@@ -758,7 +757,14 @@ class GenomeSimulator():
             chromosome.obtain_locations()
 
         if event == "D":
-            self.make_duplication(d_e, lineage, time)
+
+            r = self.select_advanced_length(lineage, d_e, extension_multiplier)
+            if r == None:
+                return None
+            else:
+                c1, c2, d = r
+                self.make_duplication_within_intergene(c1, c2, d, lineage, time)
+
             return "D", lineage
 
         elif event == "T":
@@ -779,17 +785,27 @@ class GenomeSimulator():
 
         elif event == "L":
 
-            self.make_loss(l_e, lineage, time)
+            r = self.select_advanced_length(lineage, l_e, extension_multiplier)
+
+            if r == None:
+                return None
+            else:
+                c1, c2, d = r
+                pseudo = False
+                if numpy.random.uniform(0,1) <= int(self.parameters["PSEUDOGENIZATION"]):
+                    pseudo = True
+                self.make_loss_intergenic(c1, c2, d, lineage, time, pseudo)
+
             return "L", lineage
 
         elif event == "I":
+
             r = self.select_advanced_length(lineage, i_e, extension_multiplier)
             if r == None:
                 return None
             else:
                 c1, c2, d = r
                 self.make_inversion_intergenic(c1, c2, d, lineage, time)
-
             return "I", lineage
 
         elif event == "C":
@@ -799,8 +815,7 @@ class GenomeSimulator():
                 return None
             else:
                 c1, c2, d = r
-
-            self.make_translocation_intergenic(c1, c2, d, lineage, time)
+                self.make_translocation_intergenic(c1, c2, d, lineage, time)
 
             return "C", lineage
 
@@ -1024,6 +1039,74 @@ class GenomeSimulator():
 
             self.all_gene_families[gene.gene_family].register_event(time, "D", ";".join(map(str, nodes)))
 
+    def make_duplication_within_intergene(self, c1, c2, d, lineage, time):
+
+        chromosome = self.all_genomes[lineage].select_random_chromosome()
+        r = chromosome.return_affected_region(c1, c2, d)
+
+        if r == None:
+            return None
+
+        else:
+            r1, r2, r3, r4 = r
+            segment = chromosome.obtain_segment(r1)
+            intergene_segment = chromosome.obtain_intergenic_segment(r2[1:])
+
+        new_identifiers1 = self.return_new_identifiers_for_segment(segment)
+        new_identifiers2 = self.return_new_identifiers_for_segment(segment)
+
+        # We duplicate the genes
+
+        new_segment_1 = af.copy_segment(segment, new_identifiers1)
+        new_segment_2 = af.copy_segment(segment, new_identifiers2)
+
+        # And the intergenes
+
+        new_intergene_segment_1 = [copy.deepcopy(chromosome.intergenes[x]) for x in r2[1:]]
+        new_intergene_segment_2 = [copy.deepcopy(chromosome.intergenes[x]) for x in r2[1:]]
+
+        scar1 = new_intergene_segment_1[-1]
+        scar2 = new_intergene_segment_2[-1]
+
+        new_segment = new_segment_1 + new_segment_2
+        new_intergene_segment = new_intergene_segment_1 + new_intergene_segment_2
+
+        ###
+        ###
+
+        position = r1[-1] + 1
+
+        for i, gene in enumerate(new_segment):
+            chromosome.genes.insert(position + i, gene)
+        for i, intergene in enumerate(new_intergene_segment):
+            chromosome.intergenes.insert(position + i, intergene)
+
+        # We remove the old copies:
+
+        chromosome.remove_segment(segment)
+        chromosome.remove_intersegment(intergene_segment)
+
+        # We adjust the new intergenes lengths
+
+        if d == "left":
+            r3, r4 = r4, r3
+
+        scar1.length = r3[1] + r4[0]
+        scar2.length = r4[1]
+
+        for i, gene in enumerate(segment):
+            nodes = [gene.species,
+                     gene.gene_id,
+                     new_segment_1[i].species,
+                     new_segment_1[i].gene_id,
+                     new_segment_2[i].species,
+                     new_segment_2[i].gene_id]
+
+            gene.active = False
+
+            self.all_gene_families[gene.gene_family].register_event(time, "D", ";".join(map(str, nodes)))
+
+
     def choose_precise_distance_recipient(self, time, possible_recipients, donor):
 
         ### Deprecated
@@ -1202,18 +1285,46 @@ class GenomeSimulator():
             gene.active = False
             self.all_gene_families[gene.gene_family].register_event(time, "L", ";".join(map(str,[lineage, gene.gene_id])))
 
-    def make_loss_intergenic(self, p, lineage, time):
+    def make_loss_intergenic(self, c1, c2, d, lineage, time, pseudo =False):
 
         chromosome = self.all_genomes[lineage].select_random_chromosome()
-        affected_genes = chromosome.obtain_affected_genes(p)
-        segment = chromosome.obtain_segment(affected_genes)
+        r = chromosome.return_affected_region(c1, c2, d)
 
-        # Now we check we are not under the minimum size
+        if r == None:
+            return None
 
-        if len(chromosome) - len(affected_genes) <= 0:
-            return 0
+        else:
+            r1, r2, r3, r4 = r
 
-        chromosome.remove_segment(segment)
+            segment = chromosome.obtain_segment(r1)
+            intergene_segment = chromosome.obtain_intergenic_segment(r2[1:])
+
+            scar1 = chromosome.intergenes[r2[0]]
+
+            # Now we remove the genes
+
+            for gene in segment:
+                chromosome.genes.remove(gene)
+
+            # Now we remove the intergenes
+
+            for intergene in intergene_segment:
+                chromosome.intergenes.remove(intergene)
+
+            # We modify the length of the scar:
+
+            if d == "left":
+                r3, r4 = r4, r3
+
+            if pseudo == True:
+
+                # We need to add the lenght of the genes removed
+                scar1.length = sum(r3) + sum(r4) \
+                               + sum([x.length for x in segment]) \
+                               + sum([x.length for x in intergene_segment[:-1]])
+            else:
+
+                scar1.length = r3[0] + r4[1]
 
         # We have to register in the affected gene families that there has been as loss
         # All genes affected must be returned
@@ -1264,18 +1375,24 @@ class GenomeSimulator():
         
         chromosome = self.all_genomes[lineage].select_random_chromosome()
         r = chromosome.return_affected_region(c1, c2, d)
+
         if r== None:
+
             return None
         else:
+
             r1, r2, r3, r4 = r
+
             segment = chromosome.obtain_segment(r1)
             chromosome.invert_segment(r1)
-            left_intergene = chromosome.intergenes[r2[0]]
-            right_intergene = chromosome.intergenes[r2[-1]]
-            left_intergene.length -= r3[1]
-            left_intergene.length += r4[0]
-            right_intergene.length -= r4[0]
-            right_intergene.length += r3[1]
+
+            if d == "left":
+                r3, r4 = r4, r3
+
+            scar1 = chromosome.intergenes[r2[0]]
+            scar2 = chromosome.intergenes[r2[-1]]
+            scar1.length = r3[0] + r4[1]
+            scar2.length = r4[0] + r3[1]
 
             for i, gene in enumerate(segment):
                 self.all_gene_families[gene.gene_family].register_event(str(time), "I", ";".join(map(str,[lineage, gene.gene_id])))
@@ -1294,15 +1411,86 @@ class GenomeSimulator():
 
         chromosome = self.all_genomes[lineage].select_random_chromosome()
         r = chromosome.return_affected_region(c1, c2, d)
+
         if r == None:
             return None
+
         else:
             r1, r2, r3, r4 = r
-            segment = chromosome.obtain_segment(r1)
-            chromosome.cut_and_paste(segment)
 
-            for i, gene in enumerate(segment):
-                self.all_gene_families[gene.gene_family].register_event(str(time), "C", ";".join(map(str,[lineage, gene.gene_id])))
+        success = False
+        counter = 0
+        while success == False and counter < 100:
+            counter += 1
+            c3 = chromosome.select_random_coordinate_in_intergenic_regions()
+            l3 = chromosome.return_location_by_coordinate(c3, within_intergene=True)
+
+            tc3_1, tc3_2, sc3_1, sc3_2, p, t = l3
+            tc3_1, tc3_2, sc3_1, sc3_2, p = map(int, (tc3_1, tc3_2, sc3_1, sc3_2, p))
+
+            if p not in r2:
+                success = True
+
+        if success == False:
+            return None
+
+        segment = chromosome.obtain_segment(r1)
+        intergene_segment = chromosome.obtain_intergenic_segment(r2[1:])
+
+        scar1 = chromosome.intergenes[r2[0]]
+        scar2 = chromosome.intergenes[p]
+        scar3 = chromosome.intergenes[r2[-1]]
+
+        new_segment = list()
+        new_intergene_segment = list()
+
+        # If we insert in the intergene i, the gene must occupy the position i - 1
+        # We store it for reference
+
+        left_gene = chromosome.genes[p]
+
+        # Now we pop the genes
+
+        for gene in segment:
+            new_segment.append(chromosome.genes.pop(chromosome.genes.index(gene)))
+
+        # And now we insert the genes at the right of the gene we saved before
+
+        position = chromosome.genes.index(left_gene) + 1
+
+        for i, gene in enumerate(new_segment):
+            chromosome.genes.insert(position + i, gene)
+
+        # We move the intergene on the right also
+
+        # We save the position for insertion
+
+        left_intergene = chromosome.intergenes[p]
+
+        for intergene in intergene_segment:
+            new_intergene_segment.append(chromosome.intergenes.pop(chromosome.intergenes.index(intergene)))
+
+        # And now we insert the genes at the right of the gene we saved before
+
+        position = chromosome.intergenes.index(left_intergene) + 1
+
+        for i, intergene in enumerate(new_intergene_segment):
+            chromosome.intergenes.insert(position + i, intergene)
+
+        # Finally, we modify the segments so that they have the right length
+
+        r5 = (c3 - sc3_1, sc3_2 - c3)
+
+        if d == "left":
+            r3, r4 = r4, r3
+
+        scar1.length = r3[0] + r4[1]
+        scar2.length = r3[1] + r5[0]
+        scar3.length = r4[0] + r5[1]
+
+        for i, gene in enumerate(segment):
+            self.all_gene_families[gene.gene_family].register_event(str(time), "C", ";".join(map(str,[lineage, gene.gene_id])))
+
 
     def get_gene_family_tree(self):
 
@@ -1310,26 +1498,29 @@ class GenomeSimulator():
             return "None"
         else:
             return self.gene_family["Gene_tree"].write(format=1)
+
     
     def select_advanced_length(self, lineage, p, extension_multiplier):
 
         chromosome = self.all_genomes[lineage].select_random_chromosome()
-        
-        counter = 0
         total_genome_length = chromosome.map_of_locations[-1][1]
         success = False
+
+        counter = 0
 
         while counter <= 100 and success == False:
 
             counter += 1
+
             sc1 = chromosome.select_random_coordinate_in_intergenic_regions()
-            tc1 = chromosome.return_total_coordinate_from_specific_coordinate(sc1)
+            tc1 = chromosome.return_total_coordinate_from_specific_coordinate(sc1, "I")
             d = numpy.random.choice(("left", "right"), p=[0.5, 0.5])
             extension = numpy.random.geometric(p) * extension_multiplier
 
             if d == "right":
+
                 if tc1 + extension >= total_genome_length:
-                    tc2 = extension - (total_genome_length - tc1)
+                    tc2 = total_genome_length - (extension - tc1)
                     if tc2 < tc1:
                         success = True
                     else:
@@ -1337,7 +1528,7 @@ class GenomeSimulator():
                         pass
                 else:
                     tc2 = tc1 + extension
-                    success = True
+                    success = False
 
             elif d == "left":
 
@@ -1347,7 +1538,7 @@ class GenomeSimulator():
                         success = True
                     else:
                         # The event covers the whole genome
-                        pass
+                        success = False
                 else:
                     tc2 = tc1 - extension
                     success = True
@@ -1355,10 +1546,8 @@ class GenomeSimulator():
             if success == True and tc2 >= 0 and tc2 <= total_genome_length:
 
                 sc2 = chromosome.return_specific_coordinate_from_total_coordinate(tc2)
-
                 if sc2 == None:
                     success = False
                 else:
                     return sc1, sc2, d
-
         return None

@@ -486,27 +486,37 @@ class Chromosome():
 
         return random.randint(0, t)
 
-    def return_total_coordinate_from_specific_coordinate(self, c):
+    def return_total_coordinate_from_specific_coordinate(self, c, type = "I", debug = False):
 
         tc = None
-
         for r in self.map_of_locations:
             tc1, tc2, spc1, spc2, sp, t = r
-
+            if debug == True:
+                print(r)
+            if t != type:
+                continue
             if c >= spc1 and c <= spc2:
                 distance_to_lower_bound = c - spc1
                 tc = tc1 + distance_to_lower_bound
-
         return tc
 
-    def return_specific_coordinate_from_total_coordinate(self, c):
+    def return_specific_coordinate_from_total_coordinate(self, c, debug = False):
+
 
         sc = None
         for r in self.map_of_locations:
             tc1, tc2, spc1, spc2, sp, t = r
+            if debug == True:
+                print(r)
             if t == "I" and c >= tc1 and c <= tc2:
+
                 distance_to_lower_bound = c - tc1
                 sc = spc1 + distance_to_lower_bound
+
+                if debug == True:
+                    print("PRINTING R")
+                    print(r)
+
         return sc
 
     def return_location_by_coordinate(self, c, within_intergene = False):
@@ -648,10 +658,21 @@ class CircularChromosome(Chromosome):
 
         return segment
 
+    def obtain_intergenic_segment(self, affected_intergenes):
+
+        segment = [self.intergenes[x] for x in affected_intergenes]
+
+        return segment
+
     def remove_segment(self, segment):
 
         for gene in segment:
             self.genes.remove(gene)
+
+    def remove_intersegment(self, intersegment):
+
+        for intergene in intersegment:
+            self.intergenes.remove(intergene)
 
     def insert_segment(self, position, segment):
 
