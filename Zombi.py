@@ -226,7 +226,7 @@ if __name__ == "__main__":
 
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("mode", type=str, choices=["T","Ti","Tb","Tp","G","Gu","Gi","S","Su"], help="Mode")
+    parser.add_argument("mode", type=str, choices=["T","Ti","Tb","Tp","G","Gu","Gi","Gm","S","Su"], help="Mode")
     parser.add_argument("params",  type=str, help="Parameters file")
     parser.add_argument("output", type=str, help="Name of the experiment folder")
 
