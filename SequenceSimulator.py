@@ -1,6 +1,7 @@
 import pyvolve
 import os
 import ete3
+import numpy
 import AuxiliarFunctions as af
 
 class SequenceSimulator():
@@ -58,11 +59,29 @@ class SequenceSimulator():
         for node in my_tree.traverse():
             node.dist = node.dist * gf_multiplier * self.st_multipliers[node.name.split("_")[0]]
 
-
         tree = pyvolve.read_tree(tree=my_tree.write(format=5), scale_tree = self.parameters["SCALING"])
         partition = pyvolve.Partition(models=self.model, size=self.size)
         evolver = pyvolve.Evolver(tree=tree, partitions=partition)
         fasta_file = tree_file.split("/")[-1].replace("_completetree.nwk", "_") +  "complete.fasta"
+        evolver(seqfile=os.path.join(sequences_folder, fasta_file), ratefile=None, infofile=None)
+
+    def run_f(self, tree_file, gene_length, sequences_folder):
+
+        if self.parameters["SEQUENCE"] != "nucleotide":
+            self.model = self.get_nucleotide_model()
+
+        with open(tree_file) as f:
+
+            line = f.readline().strip()
+            if "(" not in line or line == ";":
+                return None
+            else:
+                my_tree = ete3.Tree(line, format=1)
+
+        tree = pyvolve.read_tree(tree=my_tree.write(format=5), scale_tree = self.parameters["SCALING"])
+        partition = pyvolve.Partition(models=self.model, size=gene_length)
+        evolver = pyvolve.Evolver(tree=tree, partitions=partition)
+        fasta_file = tree_file.split("/")[-1].replace("_completetree.nwk", "_complete") + ".fasta"
         evolver(seqfile=os.path.join(sequences_folder, fasta_file), ratefile=None, infofile=None)
 
     def get_nucleotide_model(self):
@@ -119,6 +138,12 @@ class SequenceSimulator():
             n.dist *= self.st_multipliers[n.name]
         with open(rates_tree, "w") as f:
             f.write(complete_tree.write(format=1))
+
+    def generate_intergenic_sequences(self, l):
+
+        return("".join(numpy.random.choice(["A", "T", "C", "G"], l)))
+
+
 
 
 

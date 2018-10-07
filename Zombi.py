@@ -123,17 +123,15 @@ class Zombi():
             gss.read_rates(rates_folder)
             gss.run_u()
 
-        elif advanced_mode == "i":
+        elif advanced_mode == "f":
 
-            #rates_folder = os.path.join(experiment_folder, "CustomRates")
-            #gss.read_rates(rates_folder)
-            gss.run_i()
+            gss.run_f()
 
         # We write the output
 
         print("Writing Genomes")
 
-        if advanced_mode == "i":
+        if advanced_mode == "f":
             gss.write_genomes(genomes_folder, intergenic_sequences = True)
         else:
             gss.write_genomes(genomes_folder, intergenic_sequences = False)
@@ -167,8 +165,6 @@ class Zombi():
             print("Writing Gene Trees")
             gene_trees_folder = os.path.join(genome_folder, "Gene_trees")
             gss.write_gene_trees(gene_trees_folder, reconciliations=True, gene_trees= False)
-
-
 
     def S(self, parameters_file, experiment_folder, advanced_mode):
 
@@ -212,7 +208,6 @@ class Zombi():
 
             complete_trees = [x for x in os.listdir(gene_trees_folder) if "complete" in x]
 
-
             for tree_file in complete_trees:
                 tree_path = os.path.join(gene_trees_folder, tree_file)
                 if parameters["VERBOSE"] == 1:
@@ -220,13 +215,78 @@ class Zombi():
                 ss.run_u(tree_path, sequences_folder)
                 af.write_pruned_sequences(tree_path.replace("complete", "pruned"), sequences_folder)
 
+        elif advanced_mode == "f":
+
+            complete_trees = [x for x in os.listdir(gene_trees_folder) if "complete" in x]
+
+            gf_lengths = dict()
+
+            genome_folder = os.path.join(experiment_folder, "G")
+
+            with open(os.path.join(genome_folder, "GeneFamily_lengths.tsv")) as f:
+                f.readline()
+                for line in f:
+                    gf, l = line.strip().split("\t")
+                    gf_lengths[gf] = int(l)
+
+            if parameters["SEQUENCE"] != "nucleotide":
+                print("Sequence mode will be changed to nucleotide for fully compatibility with Sf mode")
+
+            for tree_file in complete_trees:
+
+                gf = tree_file.split("_")[0]
+
+                tree_path = os.path.join(gene_trees_folder, tree_file)
+                if parameters["VERBOSE"] == 1:
+                    print("Simulating sequence for gene family %s" % gf)
+                ss.run_f(tree_path, gf_lengths[gf], sequences_folder)
+                af.write_pruned_sequences(tree_path.replace("complete", "pruned"), sequences_folder)
+
+            print("Writing whole genomes")
+
+            lengths_folder = os.path.join(genome_folder, "Genome")
+            genome_lengths = [x for x in os.listdir(genome_folder) if "LENGTH" in x]
+
+            for length_file in genome_lengths:
+
+                species = length_file.split("_")[0]
+                whole_genome = ""
+
+                length_path = os.path.join(genome_folder, length_file)
+
+                with open(length_path) as f:
+
+                    f.readline()
+
+                    for line in f:
+
+                        p,i,l = line.strip().split("\t")
+                        if i == "G":
+                            sequences_folder = ""
+
+                        elif i == "I":
+                            whole_genome += ss.generate_intergenic_sequences(int(l))
+
+
+
+
+
+
+
+
+
+
+            ss.write_whole_genome()
+
+
+
 
 
 if __name__ == "__main__":
 
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("mode", type=str, choices=["T","Ti","Tb","Tp","G","Gu","Gi","Gm","S","Su"], help="Mode")
+    parser.add_argument("mode", type=str, choices=["T","Ti","Tb","Tp","G","Gu","Gf","Gm","S","Su","Sf"], help="Mode")
     parser.add_argument("params",  type=str, help="Parameters file")
     parser.add_argument("output", type=str, help="Name of the experiment folder")
 

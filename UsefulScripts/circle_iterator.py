@@ -77,10 +77,16 @@ def start_cycling(position):
 
 
 
-mm = start_cycling(4)
+#mm = start_cycling(4)
 
-for i in start_cycling(4):
-    print(mm)
+#for i in start_cycling(4):
+#    print(mm)
+#
+#
+import numpy
+
+
+
 
 
 

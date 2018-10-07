@@ -490,7 +490,7 @@ class GenomeSimulator():
                 current_time += time_to_next_genome_event
                 self.advanced_evolve_genomes(current_time)
 
-    def run_i(self):
+    def run_f(self):
 
         d = af.obtain_value(self.parameters["DUPLICATION"])
         t = af.obtain_value(self.parameters["TRANSFER"])
@@ -568,7 +568,7 @@ class GenomeSimulator():
             else:
 
                 current_time += time_to_next_genome_event
-                self.advanced_evolve_genomes_i(d, t, l, i, c, o, current_time)
+                self.advanced_evolve_genomes_f(d, t, l, i, c, o, current_time)
 
     def generate_new_rates(self):
 
@@ -739,7 +739,7 @@ class GenomeSimulator():
 
             return "O", lineage
 
-    def advanced_evolve_genomes_i(self, duplication, transfer, loss, inversion, translocation, origination, time):
+    def advanced_evolve_genomes_f(self, duplication, transfer, loss, inversion, translocation, origination, time):
 
 
         d_e = af.obtain_value(self.parameters["DUPLICATION_EXTENSION"])
@@ -842,8 +842,6 @@ class GenomeSimulator():
             chromosome.insert_gene_within_intergene(intergene_coordinate, location, gene)
 
             return "O", lineage
-
-
 
     def get_time_to_next_event(self, n, d, t, l ,i , c, o):
 
