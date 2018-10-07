@@ -244,39 +244,39 @@ class Zombi():
 
             print("Writing whole genomes")
 
-            lengths_folder = os.path.join(genome_folder, "Genome")
-            genome_lengths = [x for x in os.listdir(genome_folder) if "LENGTH" in x]
+            lengths_folder = os.path.join(genome_folder, "Genomes")
+            genome_lengths = [x for x in os.listdir(lengths_folder) if
+                              "LENGTH" in x and "Initial" not in x and "Root" not in x]
 
             for length_file in genome_lengths:
 
                 species = length_file.split("_")[0]
                 whole_genome = ""
-
-                length_path = os.path.join(genome_folder, length_file)
+                length_path = os.path.join(lengths_folder, length_file)
+                orientation_path = os.path.join(lengths_folder, length_file)
 
                 with open(length_path) as f:
-
                     f.readline()
-
                     for line in f:
-
-                        p,i,l = line.strip().split("\t")
-                        if i == "G":
-                            sequences_folder = ""
-
-                        elif i == "I":
+                        p,id,l = line.strip().split("\t")
+                        if "G" in id:
+                            gf  = id.split("_")[0].split("(")[1]
+                            id  = id.split("_")[1].split(")")[0]
+                            name = species + "_" + id
+                            sequence = ss.retrieve_sequences(name, gf, sequences_folder)
+                            orientation = ss.retrieve_orientation(species, gf + "_" + id, lengths_folder)
+                            if orientation == "+":
+                                whole_genome += sequence
+                            elif orientation == "-":
+                                whole_genome += af.get_complementary_sequence(sequence)
+                            else:
+                                print("Error. Bad orientation of gene")
+                        elif id == "I":
                             whole_genome += ss.generate_intergenic_sequences(int(l))
 
+                entry = [(">"+species, whole_genome)]
+                af.fasta_writer(os.path.join(sequences_folder,species + "_Wholegenome.fasta"),entry)
 
-
-
-
-
-
-
-
-
-            ss.write_whole_genome()
 
 
 

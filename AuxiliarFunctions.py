@@ -116,6 +116,13 @@ def prepare_species_tree_parameters(parameters):
 
     return parameters
 
+def get_complementary_sequence(sequence):
+
+    new_sequence = sequence.replace("A","x").replace("T","y").replace("C","v").replace("G","w")
+    new_sequence = new_sequence.replace("x","T").replace("y","A").replace("v","G").replace("w","C")
+    new_sequence = new_sequence[::-1]
+    return new_sequence
+
 
 def fasta_reader(fasta_file):
 
@@ -602,6 +609,7 @@ def generate_gene_tree(events):
 
 
 def write_pruned_sequences(tree_file, fasta_folder):
+
     with open(tree_file) as f:
         line = f.readline().strip()
         if "(" not in line or line == ";":
