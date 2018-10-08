@@ -108,7 +108,6 @@ class GenomeSimulator():
                 if pruned_tree != None:
                     with open(os.path.join(gene_tree_folder, gene_family_name + "_prunedtree.nwk"), "w") as f:
                         f.write(pruned_tree)
-
             if reconciliations == True:
                 with open(os.path.join(gene_tree_folder, gene_family_name + "_rec.xml"), "w") as f:
                     f.write(rec_tree)

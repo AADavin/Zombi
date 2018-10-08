@@ -215,7 +215,7 @@ class GeneFamily():
 
         else:
 
-            extanttree = extanttree.write(format=1)
+            extanttree = extanttree.write(format=1, format_root_node=True)
 
 
         rec = completetree.getTreeRecPhyloXML()
@@ -225,7 +225,7 @@ class GeneFamily():
         elif len(completetree) == 1:
             completetree = completetree.get_leaves()[0].name + ";"
         else:
-            completetree = completetree.write(format=1)
+            completetree = completetree.write(format=1, format_root_node=True)
 
 
         return completetree, extanttree, rec
@@ -314,7 +314,7 @@ class GeneFamily():
             elif event == "F":
                 break
 
-        complete_tree = tree.write(format=1)
+        complete_tree = tree.write(format=1, format_root_node=True)
         active_nodes = [x for x in tree.get_leaves() if x.is_active == True]
 
         if len(active_nodes) < 3:
@@ -322,7 +322,7 @@ class GeneFamily():
 
         else:
             tree.prune(active_nodes, preserve_branch_length=True)
-            pruned_tree = tree.write(format=1)
+            pruned_tree = tree.write(format=1, format_root_node=True)
 
         return complete_tree, pruned_tree
 

@@ -594,7 +594,7 @@ def generate_gene_tree(events):
         completetree =  completetree.get_leaves()[0].name + ";"
 
     else:
-        completetree = completetree.write(format=1)
+        completetree = completetree.write(format=1, format_root_node=True)
 
     if len(extanttree) == 0:
         extanttree = ";"
@@ -603,7 +603,7 @@ def generate_gene_tree(events):
         extanttree = extanttree.get_leaves()[0].name + ";"
 
     else:
-        extanttree = extanttree.write(format=1)
+        extanttree = extanttree.write(format=1, format_root_node=True)
 
     return completetree, extanttree
 

@@ -185,10 +185,8 @@ class Zombi():
         if advanced_mode == "0":
 
             complete_trees = [x.replace("_pruned", "_complete") for x in os.listdir(gene_trees_folder) if "pruned" in x]
-
             for tree_file in complete_trees:
                 tree_path = os.path.join(gene_trees_folder, tree_file)
-
                 if parameters["VERBOSE"] == 1:
                     print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
                 ss.run(tree_path, sequences_folder)
@@ -230,7 +228,7 @@ class Zombi():
                     gf_lengths[gf] = int(l)
 
             if parameters["SEQUENCE"] != "nucleotide":
-                print("Sequence mode will be changed to nucleotide for fully compatibility with Sf mode")
+                print("Sequence mode will be changed to codon for fully compatibility with Sf mode")
 
             for tree_file in complete_trees:
 
@@ -253,15 +251,16 @@ class Zombi():
                 species = length_file.split("_")[0]
                 whole_genome = ""
                 length_path = os.path.join(lengths_folder, length_file)
-                orientation_path = os.path.join(lengths_folder, length_file)
 
                 with open(length_path) as f:
                     f.readline()
                     for line in f:
+
                         p,id,l = line.strip().split("\t")
+
                         if "G" in id:
-                            gf  = id.split("_")[0].split("(")[1]
-                            id  = id.split("_")[1].split(")")[0]
+                            gf = id.split("_")[0].split("(")[1]
+                            id = id.split("_")[1].split(")")[0]
                             name = species + "_" + id
                             sequence = ss.retrieve_sequences(name, gf, sequences_folder)
                             orientation = ss.retrieve_orientation(species, gf + "_" + id, lengths_folder)

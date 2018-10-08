@@ -76,25 +76,24 @@ class SequenceSimulator():
 
     def run_f(self, tree_file, gene_length, sequences_folder):
 
-        if self.parameters["SEQUENCE"] != "nucleotide":
-            self.model = self.get_nucleotide_model()
+        if self.parameters["SEQUENCE"] != "codon":
+            self.model = self.get_codon_model()
 
         with open(tree_file) as f:
 
             line = f.readline().strip()
             if "(" not in line or line == ";":
+                self.simulate_single_sequence(line.replace(";",""),gene_length, tree_file, sequences_folder)
                 return None
             else:
                 my_tree = ete3.Tree(line, format=1)
-
-        tree = pyvolve.read_tree(tree=my_tree.write(format=5), scale_tree = self.parameters["SCALING"])
-        name_mapping = self.get_mapping_internal_names(tree, my_tree)
-        partition = pyvolve.Partition(models=self.model, size=gene_length)
-        evolver = pyvolve.Evolver(tree=tree, partitions=partition)
-        fasta_file = tree_file.split("/")[-1].replace("_completetree.nwk", "_complete") + ".fasta"
-        evolver(seqfile=os.path.join(sequences_folder, fasta_file), ratefile=None, infofile=None, write_anc=True)
-        # Correct the names
-        self.correct_names(os.path.join(sequences_folder, fasta_file), name_mapping)
+                tree = pyvolve.read_tree(tree=my_tree.write(format=5), scale_tree = self.parameters["SCALING"])
+                name_mapping = self.get_mapping_internal_names(tree, my_tree)
+                partition = pyvolve.Partition(models=self.model, size=gene_length)
+                evolver = pyvolve.Evolver(tree=tree, partitions=partition)
+                fasta_file = tree_file.split("/")[-1].replace("_completetree.nwk", "_complete") + ".fasta"
+                evolver(seqfile=os.path.join(sequences_folder, fasta_file), ratefile=None, infofile=None, write_anc=True)
+                self.correct_names(os.path.join(sequences_folder, fasta_file), name_mapping)
 
 
     def get_nucleotide_model(self):
@@ -172,6 +171,27 @@ class SequenceSimulator():
                     return orientation
         return None
 
+    def simulate_single_sequence(self, name, gene_length, tree_file, sequences_folder):
+
+        my_tree = "(A:1,B:1);".replace("A",name)
+        tree = pyvolve.read_tree(tree=my_tree)
+        partition = pyvolve.Partition(models=self.model, size=gene_length)
+        evolver = pyvolve.Evolver(tree=tree, partitions=partition)
+
+        fasta_file = tree_file.split("/")[-1].replace("_completetree.nwk", "_complete") + ".fasta"
+        evolver(seqfile=os.path.join(sequences_folder, fasta_file), ratefile=None, infofile=None, write_anc=True)
+
+        # Select single sequence
+
+        entries = list()
+
+        for n, v in af.fasta_reader(os.path.join(sequences_folder, fasta_file)):
+            if n[1:] != name:
+                continue
+            else:
+                entries.append((n,v))
+        af.fasta_writer(os.path.join(sequences_folder, fasta_file), entries)
+
 
     def generate_intergenic_sequences(self, l):
 
@@ -192,6 +212,9 @@ class SequenceSimulator():
         traverse(pytree)
         good_mapping = dict()
 
+        etroot = ettree.get_tree_root().name
+        good_mapping["myroot"] = etroot
+
         for n in ettree.traverse(strategy="postorder"):
             if not n.is_leaf():
                 c1, c2 = n.get_children()
@@ -203,14 +226,17 @@ class SequenceSimulator():
                 if n2 in pyvolvemap:
                     good_mapping[pyvolvemap[n2]] = n.name
                     n.name = pyvolvemap[n2]
+
+
         return good_mapping
 
     def correct_names(self,fasta_file, good_mapping):
 
         entries = list()
+
         for n,v in af.fasta_reader(fasta_file):
-            if n==">root":
-                entries.append((">Root", v))
+            if "root" in n:
+                entries.append((">"+good_mapping["myroot"], v))
             elif "internal" in n:
                 entries.append((">"+good_mapping[n[1:]], v))
             else:
