@@ -1278,7 +1278,6 @@ class GenomeSimulator():
     def make_transfer_intergenic(self, c1, c2, d, donor, recipient, time):
 
         chromosome1 = self.all_genomes[donor].select_random_chromosome()
-
         r = chromosome1.return_affected_region(c1, c2, d)
 
         if r == None:
@@ -1287,115 +1286,60 @@ class GenomeSimulator():
         else:
             r1, r2, r3, r4 = r
             segment = chromosome1.obtain_segment(r1)
-            intergene_segment = chromosome1.obtain_intergenic_segment(r2[1:])
-
+            
         new_identifiers1 = self.return_new_identifiers_for_segment(segment)
         new_identifiers2 = self.return_new_identifiers_for_segment(segment)
-
-        inverted = False
 
         # Now we create two segments
 
         copied_segment1 = af.copy_segment(segment, new_identifiers1)
         copied_segment2 = af.copy_segment(segment, new_identifiers2)
 
+        new_intergene_segment = [copy.deepcopy(chromosome1.intergenes[x]) for x in r2[1:]]
+
         # We insert the first segment (leaving transfer) in the same position than the previous segment
         # We do this just to change the identifiers of the numbers
 
-        new_intergene_segment_1 = [copy.deepcopy(chromosome1.intergenes[x]) for x in r2[1:]]
-        new_intergene_segment_2 = [copy.deepcopy(chromosome1.intergenes[x]) for x in r2[1:]]
-
         # We insert in the same place
-        # I need to verify this
 
         position = r1[-1] + 1
 
-        for i, gene in enumerate(segment):
+        for i, gene in enumerate(copied_segment1):
             chromosome1.genes.insert(position + i, gene)
-
-        for i, intergene in enumerate(intergene_segment):
-            chromosome1.intergenes.insert(position + i, intergene)
 
         # We remove the old copies:
 
         chromosome1.remove_segment(segment)
-        chromosome1.remove_intersegment(intergene_segment)
 
-        # Now we insert the transfer segment in the recipient genome in one of the homologous position.
+        # Normal transfer
 
-        if numpy.random.uniform(0, 1) <= self.parameters["REPLACEMENT_TRANSFER"]:
+        chromosome2 = self.all_genomes[recipient].select_random_chromosome()
+        intergene_coordinate = chromosome2.elect_random_coordinate_in_intergenic_regions()
+        l = chromosome2.return_location_by_coordinate(intergene_coordinate, within_intergene=True)
+        position = int(l[4]) + 1
+        
+        for i, gene in enumerate(copied_segment2):
+            chromosome2.genes.insert(position + i, gene)
+        for i, intergene in enumerate(new_intergene_segment):
+            chromosome2.intergenes.insert(position + i, intergene)
 
-            possible_positions = list()
+        cut_position = (intergene_coordinate - l[2], l[3] - intergene_coordinate)
 
-            for chromosome in self.all_genomes[recipient]:
-                for direction, positions in chromosome.get_homologous_position(segment):
-                    possible_positions.append((direction, positions, chromosome))
+        scar1 = chromosome2.intergenes[int(l[4])]
+        scar2 = chromosome2.intergenes[position + i]
 
-            if len(possible_positions) != 0:
+        if d == "left":
+            r3,r4 = r4,r3
 
-                direction, positions, chromosome2 = random.choice(possible_positions)
-
-                if direction == "F":
-
-                    # I replace gene by gene the segment
-
-                    i = 0
-
-                    for position in positions:
-                        # First I inactivate the gene
-
-                        gene = chromosome2.genes[position]
-                        gene.active = False
-                        self.all_gene_families[gene.gene_family].register_event(time, "L", ";".join(
-                            map(str, [recipient, gene.gene_id])))
-
-                        # And then I replace
-
-                        chromosome2.genes[position] = copied_segment2[i]
-
-                        i += 1
-
-                elif direction == "B":
-                    # I invert the segment and I replace gene by gene the segment
-                    inverted = True
-
-                    copied_segment2 = copied_segment2[::-1]
-
-                    for gene in copied_segment2:
-                        gene.change_sense()
-
-                    i = 0
-                    for position in positions:
-                        # First I inactivate the gene
-                        gene = chromosome2.genes[position]
-                        gene.active = False
-                        self.all_gene_families[gene.gene_family].register_event(time, "L", ";".join(
-                            map(str, [recipient, gene.gene_id])))
-
-                        # And then I replace
-
-                        chromosome2.genes[position] = copied_segment2[i]
-
-                        i += 1
-            else:
-
-                # Normal transfers
-                chromosome2 = self.all_genomes[recipient].select_random_chromosome()
-                position = chromosome2.select_random_position()
-                chromosome2.insert_segment(position, copied_segment2)
-        else:
-            # Normal transfer
-            chromosome2 = self.all_genomes[recipient].select_random_chromosome()
-            position = chromosome2.select_random_position()
-            chromosome2.insert_segment(position, copied_segment2)
+        scar1.length = r3[1] + cut_position[0]
+        scar2.length = r4[0] + cut_position[1]
+                
 
         # We have to register in the affected gene families that there has been a transfer event
 
-        if inverted == True:
-            # We invert again to store the event
-            copied_segment2 = copied_segment2[::-1]
 
         for i, gene in enumerate(segment):
+
             gene.active = False
 
             # The code for the node is:

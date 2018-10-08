@@ -3,6 +3,8 @@ import GenomeClasses as GC
 import AuxiliarFunctions as af
 
 
+
+
 def fill_genome(intergenic_sequences = False):
 
         genome = GC.Genome()
@@ -31,7 +33,6 @@ def fill_genome(intergenic_sequences = False):
                 gene = GC.Gene()
                 gene.length = 3
                 gene.gene_family = i
-                gene.gene_id = 1
                 chromosome.genes.append(gene)
 
                 if intergenic_sequences == True:

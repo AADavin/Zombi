@@ -521,6 +521,12 @@ class Chromosome():
 
     def return_location_by_coordinate(self, c, within_intergene = False):
 
+        ### Returns
+        ### 1 and 2 Limits for total coordinates
+        ### 3 and 4 Limits for specific coordinates
+        ### 5  Position in the list of genes or itergenes
+        ### 6  Intergene (I) or Gene(G)
+
         if within_intergene == False:
 
             for l in self.map_of_locations:
