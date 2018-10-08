@@ -144,6 +144,13 @@ if r1 == r2:
     print("Success")
 
 
+
+mean_length = 100
+n_genes = 1000
+intergene_lengths = [int(x * mean_length * int(n_genes)) for x in af.sample_from_dirichlet(int(n_genes))]
+
+print(intergene_lengths)
+
 #make_transfer_intergenic(2, 5, "right", chr_donor, chr_recipient)
 #make_transfer_intergenic(2, 5, "right", chr_donor, chr_recipient)
 

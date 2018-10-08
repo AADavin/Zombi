@@ -251,6 +251,14 @@ class GenomeSimulator():
 
             if intergenic_sequences == True:
                 chromosome.has_intergenes = True
+                mean_length = int(self.parameters["INTERGENE_LENGTH"])
+                intergene_lengths = [int(x * mean_length * int(n_genes)) for x in
+                                     af.sample_from_dirichlet(int(n_genes))]
+
+                for i in range(int(n_genes)):
+                    intergenic_sequence = Intergene()
+                    intergenic_sequence.length = intergene_lengths[i]
+                    chromosome.intergenes.append(intergenic_sequence)
 
             for i in range(int(n_genes)):
 
@@ -262,11 +270,7 @@ class GenomeSimulator():
                 self.all_gene_families[str(self.gene_families_counter)] = gene_family
 
                 if intergenic_sequences == True:
-
                     gene.length = int(af.obtain_value(self.parameters["GENE_LENGTH"]))
-                    intergenic_sequence = Intergene()
-                    intergenic_sequence.length = int(af.obtain_value(self.parameters["INTERGENE_LENGTH"]))
-                    chromosome.intergenes.append(intergenic_sequence)
 
             if intergenic_sequences == True:
                 chromosome.obtain_flankings()
@@ -748,9 +752,9 @@ class GenomeSimulator():
         c_e = af.obtain_value(self.parameters["TRANSLOCATION_EXTENSION"])
 
 
-        mean_gene_length = float(self.parameters["GENE_LENGTH"].split(":")[1].split(";")[0])
-        mean_intergene_length = float(self.parameters["INTERGENE_LENGTH"].split(":")[1].split(";")[0])
-        multiplier = 1 / (mean_gene_length + mean_intergene_length)
+        mean_gene_length = int(self.parameters["GENE_LENGTH"].split(":")[1].split(";")[0])
+        mean_intergene_length = int(self.parameters["INTERGENE_LENGTH"])
+        multiplier = 1.0 / (mean_gene_length + mean_intergene_length)
 
 
         lineage = random.choice(list(self.active_genomes))
@@ -784,11 +788,12 @@ class GenomeSimulator():
                 donor = lineage
 
                 r = self.select_advanced_length(lineage, t_e * multiplier)
+
                 if r == None:
                     return None
                 else:
                     c1, c2, d = r
-                    self.make_transfer_intergenic(c1, c2, d, lineage, time)
+                    self.make_transfer_intergenic(c1, c2, d, donor, recipient, time)
 
                 return "T", donor + "->" + recipient
 
@@ -1314,9 +1319,15 @@ class GenomeSimulator():
         # Normal transfer
 
         chromosome2 = self.all_genomes[recipient].select_random_chromosome()
-        intergene_coordinate = chromosome2.elect_random_coordinate_in_intergenic_regions()
+        chromosome2.obtain_flankings()
+        chromosome2.obtain_locations()
+        intergene_coordinate = chromosome2.select_random_coordinate_in_intergenic_regions()
         l = chromosome2.return_location_by_coordinate(intergene_coordinate, within_intergene=True)
+
+
+
         position = int(l[4]) + 1
+
         
         for i, gene in enumerate(copied_segment2):
             chromosome2.genes.insert(position + i, gene)
@@ -1333,7 +1344,8 @@ class GenomeSimulator():
 
         scar1.length = r3[1] + cut_position[0]
         scar2.length = r4[0] + cut_position[1]
-                
+
+
 
         # We have to register in the affected gene families that there has been a transfer event
 

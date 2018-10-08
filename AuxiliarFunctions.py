@@ -75,13 +75,10 @@ def obtain_value(value):
         params = handle[1].split(";")
         value = abs(numpy.random.uniform(float(params[0]), float(params[1])))
 
-    elif handle[0] == "d":
-        # dirichlet distribution
-        params = handle[1].split(";")
-        value = abs(float(numpy.random.dirichlet(handle[1])))
-
-
     return value
+
+def sample_from_dirichlet(n):
+    return numpy.random.dirichlet([1] * n)
 
 
 def prepare_sequence_parameters(parameters):
