@@ -1,8 +1,6 @@
 
 
 <img src="https://github.com/AADavin/Zombi/blob/master/Images/ZombiLogo.png" alt="zombilogo" height = "100" width="200"/>
-=======
-
 
 ### **A simulator of species, genes and genomes that accounts for extinct lineages**
 
