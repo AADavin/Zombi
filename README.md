@@ -68,7 +68,7 @@ To start using Zombi just write:
 
     python3 Zombi.py T ./Parameters/SpeciesTreeParameters.tsv ./Output_folder
 
-These will generate a Species Tree along some other files in ./Output folder/T
+These will generate a Species Tree along with some other files in ./Output folder/T
 
 Then, you can simulate the evolution of genomes in that species tree using:
 
