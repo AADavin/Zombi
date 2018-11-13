@@ -54,7 +54,8 @@ Simply use the command pip3 to install the missing libraries. For instance:
 ### **Usage** ###
 
 **There is a detailed Wiki that explains how Zombi works [here](https://github.com/AADavin/ZOMBI/wiki)** and it takes around 15 minutes of your time reading it! But if you want to launch it
-right away, just read this.
+right away, just read this.  
+
 
 There are **three main modes** to run Zombi: **T** (species Tree), **G** (Genomes) and  **S** (Sequences) 
 
