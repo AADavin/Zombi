@@ -63,7 +63,7 @@ You must run the computations in sequential order. This means that:
 Computing **genomes** requires having computed previously a species tree computed with the T mode. 
 Computing **sequences** requires having computed previously **genomes** with the G mode.
 
-<img src="https://github.com/AADavin/Zombi/blob/master/Images/ZombiGraphicalAbstract.png" alt="zombipipeline" height = "200" width="600"/>
+<img src="https://github.com/AADavin/Zombi/blob/master/Images/ZombiGraphicAbstract.png" alt="zombipipeline" height = "200" width="600"/>
 
 The parameters are read from a .tsv file that can be modified with any text editor. 
 
