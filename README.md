@@ -65,7 +65,7 @@ Computing **sequences** requires having computed previously **genomes** with the
 
 
 
-<img src="https://github.com/AADavin/Zombi/blob/master/Images/ZombiGraphicAbstract.png" alt="zombipipeline" height = "350" width="800"/>
+<img src="https://github.com/AADavin/Zombi/blob/master/Images/ZombiGraphicAbstract.png" alt="zombipipeline" height = "300" width="800"/>
 
 
 
