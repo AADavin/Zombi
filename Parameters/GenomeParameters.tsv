@@ -1,6 +1,7 @@
-#### Genome evolution parameters
+### PARAMETERS GENOME LEVEL ###
+## Please refer to the manual for more details
 #
-#### Main events
+## Main events
 #
 DUPLICATION f:1
 TRANSFER f:2
@@ -9,7 +10,7 @@ INVERSION f:2
 TRANSLOCATION f:2
 ORIGINATION f:2
 #
-### Extensions
+## Extensions
 #
 DUPLICATION_EXTENSION f:1
 TRANSFER_EXTENSION f:1
@@ -17,24 +18,30 @@ LOSS_EXTENSION f:1
 INVERSION_EXTENSION f:0.05
 TRANSLOCATION_EXTENSION f:0.3
 #
-### Transfer related parameters
+## Transfer related parameters
+#
+## REPLACEMENT_TRANSFER gives the probability of the transfer being a replacement transfer. REPLACEMENT_TRANSFER = 0 if all transfers are additive transfers
 #
 REPLACEMENT_TRANSFER 1
 #
-### Genome size related parameters
+## Genome size related parameters
 #
 INITIAL_GENOME_SIZE	100
+#
+## MIN_GENOME_SIZE prevents genome to become too small. Any losses affecting genomes under this size will be ignored
+#
 MIN_GENOME_SIZE	10
 #
-###  ADVANCED MODES
-###
-GENE_LENGTH f:100
-INTERGENE_LENGTH 100
-PSEUDOGENIZATION 0.5
-#### OUTPUT
+## Output related parameters
 #
 EVENTS_PER_BRANCH 1
 PROFILES 1
 GENE_TREES 1
 RECONCILED_TREES 0
 VERBOSE 1
+#
+### GF SPECIFIC PARAMETERS ###
+#
+GENE_LENGTH f:100
+INTERGENE_LENGTH 100
+PSEUDOGENIZATION 0.5
