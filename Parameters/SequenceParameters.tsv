@@ -34,27 +34,34 @@ T	0.25
 #
 ## Required parameters if SEQUENCE='amino-acid'
 ## The empirical equilibrium frequencies are those published with each respective model’s original paper.
-# AA_MODEL can be either 'JTT', 'WAG', 'LG', 'DAYHOFF', 'MTMAM' or 'MTREV24'
+## AA_MODEL can be either 'JTT', 'WAG', 'LG', 'DAYHOFF', 'MTMAM' or 'MTREV24'
+#
 AA_MODEL	WAG
 #
-# *REQUIRED* parameters if SEQUENCE='codon'
-# CODON_MODEL can be either 'MG' (Muse-Gaut) or 'GY' (Goldman-Yang)
+### Required parameters if SEQUENCE='codon'
+#
+## CODON_MODEL can be either 'MG' (Muse-Gaut) or 'GY' (Goldman-Yang)
+#
 CODON_MODEL	MG
-# Alpha (dS) is the rate of synonymous change (positive value)
+#
+## Alpha (dS) is the rate of synonymous change (positive value)
+#
 ALPHA	1.0
-# Beta (dN) is the rate of non-synonymous change (positive value)
+#
+## Beta (dN) is the rate of non-synonymous change (positive value)
+#
 BETA	0.5
-# corresponds to the transition/transversion ratio (positive value)
+#
+## Corresponds to the transition/transversion ratio (positive value)
+#
 KAPPA	1.0
 #
-#
-#
-#
-#
-# *REQUIRED* parameters if mode == Su
-ST_RATE_MULTIPLIERS n:0.7;0.2
-GF_RATE_MULTIPLIERS n:0.7;0.2
-###
-#
+## Output related parameters
 #
 VERBOSE 1
+#
+### Su SPECIFIC PARAMETERS ###
+#
+ST_RATE_MULTIPLIERS n:0.7;0.2
+GF_RATE_MULTIPLIERS n:0.7;0.2
+#
