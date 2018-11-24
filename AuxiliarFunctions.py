@@ -182,10 +182,21 @@ def generate_events(tree_file):
     events = []
 
     with open(tree_file) as f:
-        tree = ete3.Tree(f.readline().strip(), format=1)
+        treeline = f.readline().strip()
+        tree = ete3.Tree(treeline, format=1)
 
     root = tree.get_tree_root()
     root.name = "Root"
+
+    ## There is probably a nicer way to do this, but as I don't know it...
+
+
+    try:
+        root.dist = float(treeline.split(")")[-1].split(":")[1].replace(";",""))
+
+    except:
+        pass
+
     total_time = root.get_farthest_leaf()[1]
 
     # There might be slighlty variations in the branch length that we have to account for. So all nodes
@@ -198,6 +209,7 @@ def generate_events(tree_file):
     for node in tree.traverse():
 
         node_dist = node.get_distance(root)
+
         if node.is_leaf():
             if  total_time <= node_dist + error_margin  and total_time >= node_dist - error_margin:
                 nodes.append((node, "A", node_dist))
@@ -211,15 +223,13 @@ def generate_events(tree_file):
     nodes = sorted(nodes, key = lambda x: x[2])
 
     for node, estate, time in nodes:
-
         if estate == "A":
-            events.append((str(time), "F", node.name))
-
+            events.append((str(time + root.dist), "F", node.name))
         elif estate == "E":
-            events.append((str(time), "E", node.name))
+            events.append((str(time + root.dist), "E", node.name))
         elif estate == "S":
             c1, c2 = node.get_children()
-            events.append((str(time), "S", ";".join((node.name, c1.name, c2.name))))
+            events.append((str(time + root.dist), "S", ";".join((node.name, c1.name, c2.name))))
 
     return events
 
