@@ -188,7 +188,7 @@ class SpeciesTreeGenerator():
     def run_p(self):
 
         self.start()
-        print("Computing tree with fine control of the population size")
+        print("Computing tree with fine control of the number of lineages")
 
         speciation = af.obtain_value(self.parameters["SPECIATION"])
         extinction = af.obtain_value(self.parameters["EXTINCTION"])
@@ -439,6 +439,7 @@ class SpeciesTreeGenerator():
         eroot.name = ""
         wroot = wholetree.get_tree_root()
         wroot.name = "Root"
+        wroot.dist = float(events[0][0]) # We add the root distance
 
         t = (len(events))
 
@@ -495,6 +496,7 @@ class SpeciesTreeGenerator():
                 if state == 1:  # Now the extant tree
 
                     c1name, c2name = surviving_nodes[p]["descendant"].split(";")
+
                     collapsed_nodes = surviving_nodes[p]["collapsed"]
                     if collapsed_nodes != "":
                         cp1, cp2 = collapsed_nodes.split("+")
@@ -507,6 +509,7 @@ class SpeciesTreeGenerator():
                         #print(p + " -> " + c2name + " : " + cp2)
 
                     extinct_nodes = surviving_nodes[p]["extinct"]
+
                     if extinct_nodes != "":
                         if "+" in extinct_nodes:
                             ep1, ep2 = extinct_nodes.split("+")
@@ -527,24 +530,29 @@ class SpeciesTreeGenerator():
                     if eroot.name == "":
                         eroot.name = p
                         equick_nodes[p] = eroot
+                        eroot.dist = events[0][0]
 
                     mynode = equick_nodes[p]
-
                     myc1 = mynode.add_child()
                     myc2 = mynode.add_child()
-
                     myc1.name = c1name
                     myc2.name = c2name
-
                     myc1.dist = times[c1name] - times[p]
                     myc2.dist = times[c2name] - times[p]
-
                     equick_nodes[c1name] = myc1
                     equick_nodes[c2name] = myc2
 
+        # There is a more efficient way to do this, I don't have the time to come up with that now
 
+        if eroot.name != "Root":
+            for time, event, nodes in events:
+                if event == "S":
+                    n0,n1,n2 = nodes.split(";")
+                    if n0 == eroot.name:
+                        eroot.dist = float(time)
+                        break
 
-        return wholetree.write(format=1), extanttree.write(format=1), map_collapsed
+        return wholetree.write(format=1, format_root_node = True), extanttree.write(format=1, format_root_node = True), map_collapsed
 
     def write_events_file(self, events_file):
 

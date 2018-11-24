@@ -4,7 +4,8 @@ from SequenceSimulator import SequenceSimulator
 import AuxiliarFunctions as af
 import argparse
 import os
-
+import sys
+import shutil
 
 class Zombi():
 
@@ -133,12 +134,13 @@ class Zombi():
 
         if advanced_mode == "f":
             gss.write_genomes(genomes_folder, intergenic_sequences = True)
+            gss.write_gene_family_lengths(genome_folder)
+
         else:
             gss.write_genomes(genomes_folder, intergenic_sequences = False)
 
         print("Writing Gene Families")
 
-        gss.write_gene_family_lengths(genome_folder)
         gss.write_gene_family_events(gene_families_folder)
 
         if parameters["PROFILES"] == 1:
@@ -277,15 +279,12 @@ class Zombi():
                 af.fasta_writer(os.path.join(sequences_folder,species + "_Wholegenome.fasta"),entry)
 
 
-
-
-
-
 if __name__ == "__main__":
 
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("mode", type=str, choices=["T","Ti","Tb","Tp","G","Gu","Gf","Gm","S","Su","Sf"], help="Mode")
+
+    parser.add_argument("mode", type=str, choices=["T","Ti","Tb","Tp","G","Gu","Gf","S","Su","Sf"], help="Mode")
     parser.add_argument("params",  type=str, help="Parameters file")
     parser.add_argument("output", type=str, help="Name of the experiment folder")
 
@@ -311,10 +310,22 @@ if __name__ == "__main__":
         if not os.path.isdir(experiment_folder):
             os.mkdir(experiment_folder)
 
-        if not os.path.isdir(os.path.join(experiment_folder,"T")):
+        if not os.path.isdir(os.path.join(experiment_folder, "T")):
             os.mkdir(os.path.join(experiment_folder, "T"))
+            Z.T(parameters_file, experiment_folder, advanced_mode)
 
-        Z.T(parameters_file, experiment_folder, advanced_mode)
+        else:
+
+            #print("T folder already present in experiment folder. Please, remove previous existing data to proceed.")
+            #print("For instance: rm -r ./" + (os.path.join(experiment_folder, "T")))
+
+            for myfile in os.listdir(os.path.join(experiment_folder, "T")):
+                file_path = os.path.join(os.path.join(experiment_folder, "T"), myfile)
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
+
+            Z.T(parameters_file, experiment_folder, advanced_mode)
+
 
     elif main_mode == "G":
 
@@ -322,8 +333,20 @@ if __name__ == "__main__":
 
         if not os.path.isdir(genome_folder):
             os.mkdir(genome_folder)
+            Z.G(parameters_file, experiment_folder, advanced_mode)
 
-        Z.G(parameters_file, experiment_folder, advanced_mode)
+        else:
+            #print("G folder already present in experiment folder. Please, remove previous existing data to proceed.")
+            #print("For instance: rm -r ./" + (os.path.join(experiment_folder, "G")))
+
+            for myfile in os.listdir(os.path.join(experiment_folder, "G")):
+                file_path = os.path.join(os.path.join(experiment_folder, "G"), myfile)
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
+
+            Z.G(parameters_file, experiment_folder, advanced_mode)
+
+
 
     elif main_mode == "S":
 
@@ -331,8 +354,17 @@ if __name__ == "__main__":
 
         if not os.path.isdir(sequences_folder):
             os.mkdir(sequences_folder)
+            Z.S(parameters_file, experiment_folder, advanced_mode)
+        else:
+            #print("S folder already present in experiment folder. Please, remove previous existing data to proceed.")
+            #print("For instance: rm -r ./" + (os.path.join(experiment_folder, "S")))
 
-        Z.S(parameters_file, experiment_folder, advanced_mode)
+            for myfile in os.listdir(os.path.join(experiment_folder, "S")):
+                file_path = os.path.join(os.path.join(experiment_folder, "S"), myfile)
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
+
+            Z.S(parameters_file, experiment_folder, advanced_mode)
 
 
     else:

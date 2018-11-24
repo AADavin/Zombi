@@ -16,7 +16,7 @@ TOTAL_TIME	1
 #
 TOTAL_LINEAGES	20
 #
-## The simulation fails (and tries again) if the number of lineages in the EST goes below MIN_LINEAGES
+## The simulation fails (and tries again) if the number of lineages in the EST goes below MIN_LINEAGES (when using the stopping rule = 0)
 #
 MIN_LINEAGES	1
 #

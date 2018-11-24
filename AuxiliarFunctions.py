@@ -1,6 +1,7 @@
 import ete3
 import numpy
 import copy
+import sys
 
 def normalize(array):
     total = numpy.sum(array)
@@ -644,3 +645,6 @@ def write_sampled_sequences(tree_file, infasta_folder, outfasta_folder):
             clean_entries.append((h, seq))
 
     fasta_writer(outfasta_folder + "/" + file_name + "_sampled.fasta", clean_entries)
+
+
+
