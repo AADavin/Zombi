@@ -338,12 +338,8 @@ if __name__ == "__main__":
         else:
             #print("G folder already present in experiment folder. Please, remove previous existing data to proceed.")
             #print("For instance: rm -r ./" + (os.path.join(experiment_folder, "G")))
-
-            for myfile in os.listdir(os.path.join(experiment_folder, "G")):
-                file_path = os.path.join(os.path.join(experiment_folder, "G"), myfile)
-                if os.path.isfile(file_path):
-                    os.unlink(file_path)
-
+            os.system("rm -r " + genome_folder)
+            os.mkdir(genome_folder)
             Z.G(parameters_file, experiment_folder, advanced_mode)
 
 
@@ -359,11 +355,7 @@ if __name__ == "__main__":
             #print("S folder already present in experiment folder. Please, remove previous existing data to proceed.")
             #print("For instance: rm -r ./" + (os.path.join(experiment_folder, "S")))
 
-            for myfile in os.listdir(os.path.join(experiment_folder, "S")):
-                file_path = os.path.join(os.path.join(experiment_folder, "S"), myfile)
-                if os.path.isfile(file_path):
-                    os.unlink(file_path)
-
+            os.system("rm -r " + os.path.join(experiment_folder, "S"))
             Z.S(parameters_file, experiment_folder, advanced_mode)
 
 

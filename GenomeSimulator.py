@@ -250,10 +250,16 @@ class GenomeSimulator():
                 chromosome.shape = "C"
 
             if intergenic_sequences == True:
+
                 chromosome.has_intergenes = True
+
                 mean_length = int(self.parameters["INTERGENE_LENGTH"])
-                intergene_lengths = [int(x * mean_length * int(n_genes)) for x in
-                                     af.sample_from_dirichlet(int(n_genes))]
+                #intergene_lengths = [int(x * mean_length * int(n_genes)) for x in
+                #                     af.sample_from_dirichlet(int(n_genes))]
+
+                ### CHANGE_HERE
+
+                intergene_lengths = [100] * int(n_genes)
 
                 for i in range(int(n_genes)):
                     intergenic_sequence = Intergene()
@@ -265,17 +271,13 @@ class GenomeSimulator():
                 # We fill the chromosomes and we create also the gene families
 
                 gene, gene_family = self.make_origination(genome.species, time)
-
                 chromosome.genes.append(gene)
                 self.all_gene_families[str(self.gene_families_counter)] = gene_family
-
                 if intergenic_sequences == True:
                     gene.length = int(af.obtain_value(self.parameters["GENE_LENGTH"]))
-
             if intergenic_sequences == True:
                 chromosome.obtain_flankings()
                 chromosome.obtain_locations()
-
             genome.chromosomes.append(chromosome)
         return genome
 
@@ -751,8 +753,19 @@ class GenomeSimulator():
         i_e = af.obtain_value(self.parameters["INVERSION_EXTENSION"])
         c_e = af.obtain_value(self.parameters["TRANSLOCATION_EXTENSION"])
 
+        mean_gene_length = int()
 
-        mean_gene_length = int(self.parameters["GENE_LENGTH"].split(":")[1].split(";")[0])
+        distribution  = self.parameters["GENE_LENGTH"].split(":")[0]
+
+        if distribution == "f" or distribution == "n":
+            mean_gene_length = int(self.parameters["GENE_LENGTH"].split(":")[1].split(";")[0])
+        elif distribution == "u":
+            u1,u0 = self.parameters["GENE_LENGTH"].split(":")[1].split(";")
+            mean_gene_length = (int(u1) - int(u0))/2
+        else:
+            print("Error, please switch the distribution type por the gene length")
+            return 0
+
         mean_intergene_length = int(self.parameters["INTERGENE_LENGTH"])
         multiplier = 1.0 / (mean_gene_length + mean_intergene_length)
 
