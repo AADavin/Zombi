@@ -254,12 +254,11 @@ class GenomeSimulator():
                 chromosome.has_intergenes = True
 
                 mean_length = int(self.parameters["INTERGENE_LENGTH"])
-                #intergene_lengths = [int(x * mean_length * int(n_genes)) for x in
-                #                     af.sample_from_dirichlet(int(n_genes))]
+                intergene_lengths = [int(x * mean_length * int(n_genes)) for x in
+                                     af.sample_from_dirichlet(int(n_genes))]
 
-                ### CHANGE_HERE
-
-                intergene_lengths = [100] * int(n_genes)
+                
+                #intergene_lengths = [100] * int(n_genes)
 
                 for i in range(int(n_genes)):
                     intergenic_sequence = Intergene()
