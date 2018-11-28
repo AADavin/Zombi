@@ -254,11 +254,13 @@ class GenomeSimulator():
                 chromosome.has_intergenes = True
 
                 mean_length = int(self.parameters["INTERGENE_LENGTH"])
-                intergene_lengths = [int(x * mean_length * int(n_genes)) for x in
-                                     af.sample_from_dirichlet(int(n_genes))]
 
-                
-                #intergene_lengths = [100] * int(n_genes)
+
+                # CHANGE HERE
+                #intergene_lengths = [int(x * mean_length * int(n_genes)) for x in
+                #                     af.sample_from_dirichlet(int(n_genes))]
+
+                intergene_lengths = [1000000] * int(n_genes)
 
                 for i in range(int(n_genes)):
                     intergenic_sequence = Intergene()
@@ -1512,8 +1514,9 @@ class GenomeSimulator():
 
             scar1 = chromosome.intergenes[r2[0]]
             scar2 = chromosome.intergenes[r2[-1]]
-            scar1.length = r3[0] + r4[1]
-            scar2.length = r4[0] + r3[1]
+
+            scar1.length = r3[0] + r4[0]
+            scar2.length = r4[1] + r3[1]
 
             for i, gene in enumerate(segment):
                 self.all_gene_families[gene.gene_family].register_event(str(time), "I", ";".join(map(str,[lineage, gene.gene_id])))
@@ -1637,7 +1640,10 @@ class GenomeSimulator():
             tc1 = chromosome.return_total_coordinate_from_specific_coordinate(sc1, "I")
             d = numpy.random.choice(("left", "right"), p=[0.5, 0.5])
 
-            extension = numpy.random.geometric(p)
+            ## CHANGE
+
+            # extension = numpy.random.geometric(p)
+            extension = numpy.random.randint(1000000+1000)
 
 
             if d == "right":

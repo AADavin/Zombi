@@ -483,8 +483,7 @@ class Chromosome():
         # We weight the position by the length of the region
 
         t = sum([x.length for x in self.intergenes]) + len(self.intergenes) - 1
-
-        return random.randint(0, t)
+        return random.randint(0, int(t))
 
     def return_total_coordinate_from_specific_coordinate(self, c, type = "I", debug = False):
 
