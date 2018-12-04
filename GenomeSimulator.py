@@ -1642,8 +1642,8 @@ class GenomeSimulator():
 
             ## CHANGE
 
-            # extension = numpy.random.geometric(p)
-            extension = numpy.random.randint(1000000+1000)
+            extension = numpy.random.geometric(p)
+            #extension = numpy.random.randint(1000000+1000)
 
 
             if d == "right":
