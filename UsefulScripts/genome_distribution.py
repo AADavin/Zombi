@@ -2,7 +2,7 @@ import os
 import ete3
 import pandas
 
-mainpath  = "/Users/davin/Desktop/Zombi/BRISBANE/TestSizes"
+mainpath  = "/Users/davin/Desktop/Zombi/BRISBANE/TestPhil"
 
 with open(os.path.join(mainpath, "T","CompleteTree.nwk")) as f:
     stree = ete3.Tree(f.readline().strip(), format=1)
@@ -49,6 +49,30 @@ with open(os.path.join(mainpath, "Summary.tsv"), "w") as f:
     for n in nodes:
         line = "\t".join([n, nodes[n]["type"], str(nodes[n]["size"])]) + "\n"
         f.write(line)
+
+events = {"C":0, "I":0, "D":0, "LT":0, "L":0, "O":0, "F":0, "AT":0}
+
+# Number of events
+
+
+event_files = os.listdir(os.path.join(mainpath, "G", "Events_per_branch"))
+
+for event_file in event_files:
+
+    with open(os.path.join(mainpath, "G","Events_per_branch", event_file)) as f:
+
+        f.readline()
+
+        for line in f:
+            event = line.strip().split("\t")[1]
+            events[event] +=1
+
+with open(os.path.join(mainpath, "TotalNumberOfEvents.tsv"), "w") as f:
+    f.write("Event\tNumber\n")
+    for k,v in events.items():
+        line = "\t".join([k, str(v)]) + "\n"
+        f.write(line)
+
 
 
 
