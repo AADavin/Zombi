@@ -288,8 +288,6 @@ def choose_advanced_recipient(self, time, alive_lineages, donor):
 
 def generate_newick_trees(events):
 
-    ### THIS IS FOR GENERATING SPECIES TREES, AND MOST LIKELY REDUNDANT
-
     def find_descendant(surviving_nodes, node):
 
         found = 0
@@ -431,7 +429,7 @@ def generate_newick_trees(events):
                 equick_nodes[c1name] = myc1
                 equick_nodes[c2name] = myc2
 
-    return completetree.write(format=1), extanttree.write(format=1)
+    return completetree.write(format=1, format_root_node=True), extanttree.write(format=1, format_root_node=True)
 
 
 

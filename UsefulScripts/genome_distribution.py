@@ -2,7 +2,7 @@ import os
 import ete3
 import pandas
 
-mainpath  = "/Users/davin/Desktop/Zombi/BRISBANE/TestPhil"
+mainpath  = "/Users/davin/Desktop/Zombi/BRISBANE/TestSample50"
 
 with open(os.path.join(mainpath, "T","CompleteTree.nwk")) as f:
     stree = ete3.Tree(f.readline().strip(), format=1)
@@ -73,6 +73,8 @@ with open(os.path.join(mainpath, "TotalNumberOfEvents.tsv"), "w") as f:
         line = "\t".join([k, str(v)]) + "\n"
         f.write(line)
 
+
+# Number of events per branch
 
 
 
