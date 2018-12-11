@@ -130,7 +130,7 @@ class SpeciesSampler():
         if self.computed_datasets[0] == True:
             stree = self.cut_st(species_to_sample)
             self.write_sampled_trees(stree)
-        if self.computed.datasets[1] == True:
+        if self.computed_datasets[1] == True:
             gtrees = self.cut_gt(species_to_sample)
             self.write_sampled_trees(gtrees)
         if self.computed_datasets[2] == True:
@@ -240,7 +240,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    mode, input, experiment_folder =  args.mode, args.input,args.output
+    mode, input, experiment_folder =  args.mode, args.input, args.output
 
     if mode == "i":
         ss = SpeciesSampler(experiment_folder)
