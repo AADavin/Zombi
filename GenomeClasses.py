@@ -4,6 +4,8 @@ import ete3
 import ReconciledTree as RT
 import random
 from itertools import cycle
+from functools import reduce
+import networkx as nx
 
 class GeneFamily():
 
@@ -379,7 +381,7 @@ class Gene():
         #myname = "_".join(map(str,(self.genome, self.orientation, self.gene_family, self.gene_id)))
         #myname = "_".join(map(str, (self.species, self.gene_family, self.gene_id)))
         #myname = "_".join(map(str, (self.gene_family, self.orientation)))
-        myname = str(self.gene_family)
+        myname = str(self.gene_family) + "_" + str(self.gene_id)
         #myname = "_".join(map(str, (self.gene_family, self.length)))
         return myname
 
@@ -731,9 +733,57 @@ class CircularChromosome(Chromosome):
                 affected_genes.append(i - total_length)
             else:
                 affected_genes.append(i)
-
         return affected_genes
 
+    def obtain_affected_genes_accounting_for_connectedness(self, p_extension, interactome):
+
+        # Returns N genes accounting for the inverse of the connectedness
+
+        node_degrees = {n:d for n,d in interactome.degree()}
+
+        corrected_node_degrees = list()
+        all_weights = list()
+
+        for gene in self.genes:
+
+            corrected_node_degrees.append(1/(node_degrees[str(gene)] + 1))
+
+        length = self.select_random_length(p_extension)
+        total_length = len(self.genes)
+
+        for each_start, gene in enumerate(self.genes):
+            position = each_start
+            affected_genes = list()
+
+            if length >= total_length:
+                # We select the whole genome
+                affected_genes = [x for x in range(total_length)]
+                return affected_genes
+
+            else:
+
+                for i in range(position, position + length):
+                    if i >= total_length:
+                        affected_genes.append(i - total_length)
+                    else:
+                        affected_genes.append(i)
+
+                # We obtain the total weight of this option
+                # This means, multiplying all the weights if we start in a given position
+
+                all_weights.append(reduce(lambda x, y: x * y, [corrected_node_degrees[x] for x in affected_genes]))
+
+        position = numpy.random.choice([i for i,g in enumerate(self.genes)], 1, p=af.normalize(all_weights))[0]
+        affected_genes = list()
+
+        # Returns the index list of the affected genes
+
+        for i in range(position, position + length):
+            if i >= total_length:
+                affected_genes.append(i - total_length)
+            else:
+                affected_genes.append(i)
+        return affected_genes
 
 
     def get_homologous_position(self, segment):
@@ -884,6 +934,25 @@ class Genome():
 
             for gene in ch:
                 gene.species = species
+
+    def create_interactome(self, network_model = "BA"):
+
+        import networkx as nx
+        import random
+
+        if network_model == "BA":
+            self.interactome  = nx.barabasi_albert_graph(len(self.chromosomes[0]), 1)
+        else:
+            self.interactome = nx.barabasi_albert_graph(len(self.chromosomes[0]), 1)
+
+        ## Need to shuffle the nodes!!
+
+        randomly_ordered_genes = list(self.chromosomes[0].genes)
+        random.shuffle(randomly_ordered_genes)
+
+        self.interactome = nx.relabel_nodes(self.interactome, {i:str(n) for i,n in enumerate(randomly_ordered_genes)})
+
+
 
     def __str__(self):
 

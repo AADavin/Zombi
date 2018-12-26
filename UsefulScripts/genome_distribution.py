@@ -2,7 +2,7 @@ import os
 import ete3
 import pandas
 
-mainpath  = "/Users/davin/Desktop/Zombi/BRISBANE/TestSample50"
+mainpath  = "/Users/davin/Desktop/Zombi/SELECTION/Test2"
 
 with open(os.path.join(mainpath, "T","CompleteTree.nwk")) as f:
     stree = ete3.Tree(f.readline().strip(), format=1)
