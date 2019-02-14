@@ -2,7 +2,7 @@ import os
 import ete3
 import pandas
 
-mainpath  = "/Users/davin/Desktop/Zombi/SELECTION/Test2"
+mainpath  = "/Users/davin/Desktop/Zombi/SELECTION/Test3"
 
 with open(os.path.join(mainpath, "T","CompleteTree.nwk")) as f:
     stree = ete3.Tree(f.readline().strip(), format=1)
@@ -38,22 +38,26 @@ with open(os.path.join(mainpath, "G","GenomeParameters.tsv")) as f:
 # Universality
 
 gene_families = dict()
-
 profiles = pandas.read_csv(os.path.join(mainpath, "G","Profiles","Profiles.tsv"), sep = "\t")
 leaf_profiles = profiles[list(leaves)]
 
 universality = (leaf_profiles.astype(bool).sum(axis=1))[1:]
-universality.to_csv(os.path.join(mainpath,"Universality.tsv"), index =False, header = False)
 
+universality.to_csv(os.path.join(mainpath,"Universality.tsv"), index =False, header = False)
 with open(os.path.join(mainpath, "Summary.tsv"), "w") as f:
     for n in nodes:
         line = "\t".join([n, nodes[n]["type"], str(nodes[n]["size"])]) + "\n"
         f.write(line)
 
-events = {"C":0, "I":0, "D":0, "LT":0, "L":0, "O":0, "F":0, "AT":0}
+
+
+
+
+
+
+events = {"C":0, "I":0, "D":0, "LT":0, "L":0, "O":0, "F":0, "AT":0, "RW":0, "RM":0}
 
 # Number of events
-
 
 event_files = os.listdir(os.path.join(mainpath, "G", "Events_per_branch"))
 
