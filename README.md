@@ -41,9 +41,9 @@ First, clone the repository to your computer
 
     git clone https://github.com/AADavin/ZOMBI
 
-Second, you need **python 3.6** installed with **ETE3**, **numpy** and pyvolve
+Second, you need **python 3.6** installed with **ETE3**, **numpy**, **networkx** and pyvolve
 
-    pip3 install ete3 numpy pyvolve
+    pip3 install ete3 numpy networkx pyvolve
     
 You might find some problems when installing the ete3 library, more specifically, when ete3 tries to install the library six.
 Simply use the command pip3 to install the missing libraries. For instance:
