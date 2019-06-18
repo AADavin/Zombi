@@ -542,7 +542,7 @@ class SpeciesTreeGenerator():
                     equick_nodes[c1name] = myc1
                     equick_nodes[c2name] = myc2
 
-        # There is a more efficient way to do this, I don't have the time to come up with that now
+        # There is a more efficient way to do this
 
         if eroot.name != "Root":
             for time, event, nodes in events:

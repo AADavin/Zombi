@@ -188,7 +188,7 @@ def generate_events(tree_file):
     root = tree.get_tree_root()
     root.name = "Root"
 
-    ## There is probably a nicer way to do this, but as I don't know it...
+    ## There is probably a better way to write this
 
 
     try:
@@ -200,7 +200,7 @@ def generate_events(tree_file):
     total_time = root.get_farthest_leaf()[1]
 
     # There might be slighlty variations in the branch length that we have to account for. So all nodes
-    # that are at 0.1% distance of the farthes leaf will be considered to be alive
+    # that are at 0.1% distance of the fathes leaf will be considered to be alive
 
     error_margin = total_time * 0.001
 
@@ -218,7 +218,7 @@ def generate_events(tree_file):
         else:
             nodes.append((node, "S", node_dist))
 
-    # We order the events # This can be more efficient. But who cares
+    # We order the events # This can be more efficient
 
     nodes = sorted(nodes, key = lambda x: x[2])
 
