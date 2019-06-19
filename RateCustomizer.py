@@ -121,7 +121,7 @@ class RateCustomizer():
             t = af.obtain_value(self.parameters["TRANSFER"])
             l = af.obtain_value(self.parameters["LOSS"])
             i = af.obtain_value(self.parameters["INVERSION"])
-            c = af.obtain_value(self.parameters["TRANSLOCATION"])
+            c = af.obtain_value(self.parameters["TRANSPOSITION"])
             o = af.obtain_value(self.parameters["ORIGINATION"])
 
             branch_rates[node.name] = (d,t,l,i,c,o)
@@ -155,7 +155,7 @@ class RateCustomizer():
             t = af.obtain_value(self.parameters["TRANSFER_EXTENSION"])
             l = af.obtain_value(self.parameters["LOSS_EXTENSION"])
             i = af.obtain_value(self.parameters["INVERSION_EXTENSION"])
-            c = af.obtain_value(self.parameters["TRANSLOCATION_EXTENSION"])
+            c = af.obtain_value(self.parameters["TRANSPOSITION_EXTENSION"])
 
             branch_rates[node.name] = (d,t,l,i,c)
 

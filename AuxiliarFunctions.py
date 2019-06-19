@@ -158,7 +158,7 @@ def prepare_genome_parameters(parameters):
 
         #if parameter == "DUPLICATION_EXTENSION" or parameter == "TRANSFER_EXTENSION" \
         #        or parameter == "LOSS_EXTENSION" or parameter == "INVERSION_EXTENSION" or \
-        #        parameter == "TRANSLOCATION_EXTENSION" or parameter == "ORIGINATION_EXTENSION":
+        #        parameter == "TRANSPOSITION_EXTENSION" or parameter == "ORIGINATION_EXTENSION":
 
         #    parameters[parameter] = obtain_value(value)
 

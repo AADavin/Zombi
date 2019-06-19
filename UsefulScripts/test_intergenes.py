@@ -281,7 +281,7 @@ def test_inversion(g, c1, c2, d):
     right_intergene.length -= r4[0]
     right_intergene.length += r3[1]
 
-def test_translocation(g, c1, c2, d):
+def test_transposition(g, c1, c2, d):
     r1, r2, r3, r4 = g.return_affected_region(c1, c2, d)
     g.cut_and_paste_within_intergene(r1, r2)
     left_intergene = g.intergenes[r2[0]]

@@ -7,6 +7,7 @@ import os
 import sys
 import shutil
 
+
 class Zombi():
 
     def __init__(self):
@@ -14,7 +15,6 @@ class Zombi():
         self.tree_parameters = dict()
         self.genome_parameters = dict()
         self.sequence_parameters = dict()
-
 
     def T(self, parameters_file, experiment_folder, advanced_mode):
 
@@ -65,7 +65,7 @@ class Zombi():
         success = False
 
         while success == False and run_counter <= 50:
-            run_counter+=1
+            run_counter += 1
             print("Computing Species Tree. Trial number %s" % str(run_counter))
             if advanced_mode == "0":
                 success = stg.run()
@@ -95,15 +95,14 @@ class Zombi():
 
         with open(collapsed_nodes_file, "w") as f:
             for k, v in collapsed_nodes.items():
-                line = "\t".join([k, v]) +"\n"
+                line = "\t".join([k, v]) + "\n"
                 f.write(line)
 
         if advanced_mode == "b" or advanced_mode == "a":
             rates_file = os.path.join(tree_folder, "Rates.tsv")
             stg.write_rates(rates_file)
 
-
-    def G(self,parameters_file, experiment_folder, advanced_mode):
+    def G(self, parameters_file, experiment_folder, advanced_mode):
 
         parameters = af.prepare_genome_parameters(af.read_parameters(parameters_file))
         events_file = os.path.join(experiment_folder, "T/Events.tsv")
@@ -137,11 +136,11 @@ class Zombi():
         print("Writing Genomes")
 
         if advanced_mode == "f":
-            gss.write_genomes(genomes_folder, intergenic_sequences = True)
+            gss.write_genomes(genomes_folder, intergenic_sequences=True)
             gss.write_gene_family_lengths(genome_folder)
 
         else:
-            gss.write_genomes(genomes_folder, intergenic_sequences = False)
+            gss.write_genomes(genomes_folder, intergenic_sequences=False)
 
         if advanced_mode == "i":
             print("Writing interactomes")
@@ -174,14 +173,13 @@ class Zombi():
         elif parameters["GENE_TREES"] == 0 and parameters["RECONCILED_TREES"] == 1:
             print("Writing Gene Trees")
             gene_trees_folder = os.path.join(genome_folder, "Gene_trees")
-            gss.write_gene_trees(gene_trees_folder, reconciliations=True, gene_trees= False)
+            gss.write_gene_trees(gene_trees_folder, reconciliations=True, gene_trees=False)
 
     def S(self, parameters_file, experiment_folder, advanced_mode):
 
         gene_trees_folder = os.path.join(experiment_folder, "G/Gene_trees")
         sequences_folder = os.path.join(experiment_folder, "S")
         os.system("cp " + parameters_file + " " + sequences_folder)
-
 
         if not os.path.isdir(sequences_folder):
             os.mkdir(sequences_folder)
@@ -266,7 +264,7 @@ class Zombi():
                     f.readline()
                     for line in f:
 
-                        p,id,l = line.strip().split("\t")
+                        p, id, l = line.strip().split("\t")
 
                         if "G" in id:
                             gf = id.split("_")[0].split("(")[1]
@@ -283,22 +281,22 @@ class Zombi():
                         elif id == "I":
                             whole_genome += ss.generate_intergenic_sequences(int(l))
 
-                entry = [(">"+species, whole_genome)]
-                af.fasta_writer(os.path.join(sequences_folder,species + "_Wholegenome.fasta"),entry)
+                entry = [(">" + species, whole_genome)]
+                af.fasta_writer(os.path.join(sequences_folder, species + "_Wholegenome.fasta"), entry)
 
 
 if __name__ == "__main__":
 
-
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("mode", type=str, choices=["T","Ti","Tb","Tp","G","Gu","Gf","Gi","S","Su","Sf"], help="Mode")
-    parser.add_argument("params",  type=str, help="Parameters file")
+    parser.add_argument("mode", type=str, choices=["T", "Ti", "Tb", "Tp", "G", "Gu", "Gf", "Gi", "S", "Su", "Sf"],
+                        help="Mode")
+    parser.add_argument("params", type=str, help="Parameters file")
     parser.add_argument("output", type=str, help="Name of the experiment folder")
 
     args = parser.parse_args()
 
-    mode, parameters_file, experiment_folder =  args.mode, args.params, args.output
+    mode, parameters_file, experiment_folder = args.mode, args.params, args.output
 
     if len(mode) == 1:
         main_mode = mode[0]
@@ -324,8 +322,8 @@ if __name__ == "__main__":
 
         else:
 
-            #print("T folder already present in experiment folder. Please, remove previous existing data to proceed.")
-            #print("For instance: rm -r ./" + (os.path.join(experiment_folder, "T")))
+            # print("T folder already present in experiment folder. Please, remove previous existing data to proceed.")
+            # print("For instance: rm -r ./" + (os.path.join(experiment_folder, "T")))
 
             for myfile in os.listdir(os.path.join(experiment_folder, "T")):
                 file_path = os.path.join(os.path.join(experiment_folder, "T"), myfile)
@@ -344,8 +342,8 @@ if __name__ == "__main__":
             Z.G(parameters_file, experiment_folder, advanced_mode)
 
         else:
-            #print("G folder already present in experiment folder. Please, remove previous existing data to proceed.")
-            #print("For instance: rm -r ./" + (os.path.join(experiment_folder, "G")))
+            # print("G folder already present in experiment folder. Please, remove previous existing data to proceed.")
+            # print("For instance: rm -r ./" + (os.path.join(experiment_folder, "G")))
             os.system("rm -r " + genome_folder)
             os.mkdir(genome_folder)
             Z.G(parameters_file, experiment_folder, advanced_mode)
@@ -360,8 +358,8 @@ if __name__ == "__main__":
             os.mkdir(sequences_folder)
             Z.S(parameters_file, experiment_folder, advanced_mode)
         else:
-            #print("S folder already present in experiment folder. Please, remove previous existing data to proceed.")
-            #print("For instance: rm -r ./" + (os.path.join(experiment_folder, "S")))
+            # print("S folder already present in experiment folder. Please, remove previous existing data to proceed.")
+            # print("For instance: rm -r ./" + (os.path.join(experiment_folder, "S")))
 
             os.system("rm -r " + os.path.join(experiment_folder, "S"))
             Z.S(parameters_file, experiment_folder, advanced_mode)
@@ -369,4 +367,3 @@ if __name__ == "__main__":
 
     else:
         print("Incorrect usage. Please select a mode: T, G or S")
-

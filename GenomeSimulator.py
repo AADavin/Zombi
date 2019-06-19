@@ -310,7 +310,7 @@ class GenomeSimulator():
         t = af.obtain_value(self.parameters["TRANSFER"])
         l = af.obtain_value(self.parameters["LOSS"])
         i = af.obtain_value(self.parameters["INVERSION"])
-        c = af.obtain_value(self.parameters["TRANSLOCATION"])
+        c = af.obtain_value(self.parameters["TRANSPOSITION"])
 
         o = af.obtain_value(self.parameters["ORIGINATION"])
 
@@ -387,7 +387,7 @@ class GenomeSimulator():
         t = af.obtain_value(self.parameters["TRANSFER"])
         l = af.obtain_value(self.parameters["LOSS"])
         i = af.obtain_value(self.parameters["INVERSION"])
-        c = af.obtain_value(self.parameters["TRANSLOCATION"])
+        c = af.obtain_value(self.parameters["TRANSPOSITION"])
         o = af.obtain_value(self.parameters["ORIGINATION"])
         rm = af.obtain_value(self.parameters["REMOVE"])
         rw = af.obtain_value(self.parameters["REWIRE"])
@@ -525,7 +525,7 @@ class GenomeSimulator():
         t = af.obtain_value(self.parameters["TRANSFER"])
         l = af.obtain_value(self.parameters["LOSS"])
         i = af.obtain_value(self.parameters["INVERSION"])
-        c = af.obtain_value(self.parameters["TRANSLOCATION"])
+        c = af.obtain_value(self.parameters["TRANSPOSITION"])
         o = af.obtain_value(self.parameters["ORIGINATION"])
 
         # First we prepare the first genome
@@ -605,7 +605,7 @@ class GenomeSimulator():
         t = af.obtain_value(self.parameters["TRANSFER"])
         l = af.obtain_value(self.parameters["LOSS"])
         i = af.obtain_value(self.parameters["INVERSION"])
-        c = af.obtain_value(self.parameters["TRANSLOCATION"])
+        c = af.obtain_value(self.parameters["TRANSPOSITION"])
         o = af.obtain_value(self.parameters["ORIGINATION"])
 
         return d,t,l,i,c,o
@@ -640,16 +640,16 @@ class GenomeSimulator():
                 self.transfer_rates[dn][rc] = float(wt)
 
 
-    def choose_event(self, duplication, transfer, loss, inversion, translocation, origination):
+    def choose_event(self, duplication, transfer, loss, inversion, transposition, origination):
 
         draw = numpy.random.choice(["D", "T", "L", "I", "C", "O"], 1,
-                                   p=af.normalize([duplication, transfer, loss, inversion, translocation, origination]))
+                                   p=af.normalize([duplication, transfer, loss, inversion, transposition, origination]))
         return draw
 
-    def choose_event_i(self, duplication, transfer, loss, inversion, translocation, origination, remove, rewire):
+    def choose_event_i(self, duplication, transfer, loss, inversion, transposition, origination, remove, rewire):
 
         draw = numpy.random.choice(["D", "T", "L", "I", "C", "O", "RM", "RW"], 1,
-                                   p=af.normalize([duplication, transfer, loss, inversion, translocation, origination, remove, rewire]))
+                                   p=af.normalize([duplication, transfer, loss, inversion, transposition, origination, remove, rewire]))
         return draw
 
     def choose_recipient(self, lineages_alive, donor):
@@ -660,16 +660,16 @@ class GenomeSimulator():
         else:
             return None
 
-    def evolve_genomes(self, duplication, transfer, loss, inversion, translocation, origination, time):
+    def evolve_genomes(self, duplication, transfer, loss, inversion, transposition, origination, time):
 
         d_e = af.obtain_value(self.parameters["DUPLICATION_EXTENSION"])
         t_e = af.obtain_value(self.parameters["TRANSFER_EXTENSION"])
         l_e = af.obtain_value(self.parameters["LOSS_EXTENSION"])
         i_e = af.obtain_value(self.parameters["INVERSION_EXTENSION"])
-        c_e = af.obtain_value(self.parameters["TRANSLOCATION_EXTENSION"])
+        c_e = af.obtain_value(self.parameters["TRANSPOSITION_EXTENSION"])
 
         lineage = random.choice(list(self.active_genomes))
-        event = self.choose_event(duplication, transfer, loss, inversion, translocation, origination)
+        event = self.choose_event(duplication, transfer, loss, inversion, transposition, origination)
 
         if event == "D":
             self.make_duplication(d_e, lineage, time)
@@ -702,7 +702,7 @@ class GenomeSimulator():
             return "I", lineage
 
         elif event == "C":
-            self.make_translocation(c_e, lineage, time)
+            self.make_transposition(c_e, lineage, time)
             return "C",lineage
 
         elif event == "O":
@@ -714,16 +714,16 @@ class GenomeSimulator():
             chromosome.insert_segment(position, segment)
             return "O", lineage
 
-    def evolve_genomes_i(self, duplication, transfer, loss, inversion, translocation, origination, remove, rewire, time):
+    def evolve_genomes_i(self, duplication, transfer, loss, inversion, transposition, origination, remove, rewire, time):
 
         d_e = af.obtain_value(self.parameters["DUPLICATION_EXTENSION"])
         t_e = af.obtain_value(self.parameters["TRANSFER_EXTENSION"])
         l_e = af.obtain_value(self.parameters["LOSS_EXTENSION"])
         i_e = af.obtain_value(self.parameters["INVERSION_EXTENSION"])
-        c_e = af.obtain_value(self.parameters["TRANSLOCATION_EXTENSION"])
+        c_e = af.obtain_value(self.parameters["TRANSPOSITION_EXTENSION"])
 
         lineage = random.choice(list(self.active_genomes))
-        event = self.choose_event_i(duplication, transfer, loss, inversion, translocation, origination, remove, rewire)
+        event = self.choose_event_i(duplication, transfer, loss, inversion, transposition, origination, remove, rewire)
 
         if event == "D":
 
@@ -756,7 +756,7 @@ class GenomeSimulator():
             return "I", lineage
 
         elif event == "C":
-            self.make_translocation(c_e, lineage, time)
+            self.make_transposition(c_e, lineage, time)
             return "C", lineage
 
         elif event == "O":
@@ -835,7 +835,7 @@ class GenomeSimulator():
             return "I", lineage
 
         elif event == "C":
-            self.make_translocation(c_e, lineage, time)
+            self.make_transposition(c_e, lineage, time)
             return "C",lineage
 
         elif event == "O":
@@ -849,14 +849,14 @@ class GenomeSimulator():
 
             return "O", lineage
 
-    def advanced_evolve_genomes_f(self, duplication, transfer, loss, inversion, translocation, origination, time):
+    def advanced_evolve_genomes_f(self, duplication, transfer, loss, inversion, transposition, origination, time):
 
 
         d_e = af.obtain_value(self.parameters["DUPLICATION_EXTENSION"])
         t_e = af.obtain_value(self.parameters["TRANSFER_EXTENSION"])
         l_e = af.obtain_value(self.parameters["LOSS_EXTENSION"])
         i_e = af.obtain_value(self.parameters["INVERSION_EXTENSION"])
-        c_e = af.obtain_value(self.parameters["TRANSLOCATION_EXTENSION"])
+        c_e = af.obtain_value(self.parameters["TRANSPOSITION_EXTENSION"])
 
         mean_gene_length = int()
 
@@ -876,7 +876,7 @@ class GenomeSimulator():
 
 
         lineage = random.choice(list(self.active_genomes))
-        event = self.choose_event(duplication, transfer, loss, inversion, translocation, origination)
+        event = self.choose_event(duplication, transfer, loss, inversion, transposition, origination)
 
         for chromosome in self.all_genomes[lineage]:
             chromosome.obtain_flankings()
@@ -951,7 +951,7 @@ class GenomeSimulator():
                 return None
             else:
                 c1, c2, d = r
-                self.make_translocation_intergenic(c1, c2, d, lineage, time)
+                self.make_transposition_intergenic(c1, c2, d, lineage, time)
 
             return "C", lineage
 
@@ -1885,7 +1885,7 @@ class GenomeSimulator():
             for i, gene in enumerate(segment):
                 self.all_gene_families[gene.gene_family].register_event(str(time), "I", ";".join(map(str,[lineage, gene.gene_id])))
 
-    def make_translocation(self, p, lineage, time):
+    def make_transposition(self, p, lineage, time):
 
         chromosome = self.all_genomes[lineage].select_random_chromosome()
         affected_genes = chromosome.obtain_affected_genes(p)
@@ -1895,7 +1895,7 @@ class GenomeSimulator():
         for i, gene in enumerate(segment):
             self.all_gene_families[gene.gene_family].register_event(str(time), "C", ";".join(map(str,[lineage, gene.gene_id])))
 
-    def make_translocation_intergenic(self, c1, c2, d, lineage, time):
+    def make_transposition_intergenic(self, c1, c2, d, lineage, time):
 
         chromosome = self.all_genomes[lineage].select_random_chromosome()
         r = chromosome.return_affected_region(c1, c2, d)
