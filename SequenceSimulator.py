@@ -13,8 +13,6 @@ class SequenceSimulator():
         self.parameters = parameters
 
         if self.parameters["SEED"] != 0:
-
-
             random.seed(parameters["SEED"])
             numpy.random.seed(parameters["SEED"])
 
