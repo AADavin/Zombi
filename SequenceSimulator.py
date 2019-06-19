@@ -11,6 +11,13 @@ class SequenceSimulator():
     def __init__(self, parameters):
 
         self.parameters = parameters
+
+        if self.parameters["SEED"] != 0:
+
+
+            random.seed(parameters["SEED"])
+            numpy.random.seed(parameters["SEED"])
+
         self.size = self.parameters["SEQUENCE_SIZE"]
         self.sequence = self.parameters["SEQUENCE"]
 

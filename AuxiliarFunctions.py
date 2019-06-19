@@ -86,7 +86,7 @@ def prepare_sequence_parameters(parameters):
 
     for parameter, value in parameters.items():
 
-        if parameter == "SEQUENCE_SIZE" or parameter == "VERBOSE":
+        if parameter == "SEQUENCE_SIZE" or parameter == "VERBOSE" or parameter == "SEED":
             parameters[parameter] = int(value)
 
         if parameter == "SCALING":
@@ -109,8 +109,9 @@ def prepare_species_tree_parameters(parameters):
 
         if parameter == "SPECIES_EVOLUTION_MODE" or parameter == "N_LINEAGES" or parameter == "MIN_LINEAGES" \
                 or parameter == "TOTAL_LINEAGES" or parameter == "STOPPING_RULE" or parameter == "MAX_LINEAGES"\
-                or parameter == "VERBOSE":
+                or parameter == "VERBOSE" or parameter == "SEED":
             parameters[parameter] = int(value)
+
 
     return parameters
 
@@ -171,7 +172,7 @@ def prepare_genome_parameters(parameters):
 
         if parameter == "PROFILES" or parameter == "EVENTS_PER_BRANCH" or parameter == "GENE_TREES" \
                 or parameter == "PRUNE_TREES" or parameter == "TRANSFER_PREFERENCE" or parameter == "RECONCILED_TREES" \
-                or parameter == "VERBOSE" or parameter == "EXTENSION_MULTIPLIER":
+                or parameter == "VERBOSE" or parameter == "EXTENSION_MULTIPLIER" or parameter == "SEED":
 
             parameters[parameter] = int(value)
 

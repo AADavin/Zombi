@@ -9,6 +9,11 @@ class SpeciesTreeGenerator():
 
         self.parameters = parameters
 
+        if self.parameters["SEED"] != 0:
+
+            random.seed(parameters["SEED"])
+            numpy.random.seed(parameters["SEED"])
+
     def start(self):
 
         self.whole_tree = ete3.Tree()

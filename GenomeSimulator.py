@@ -13,6 +13,11 @@ class GenomeSimulator():
     def __init__(self, parameters, events_file):
 
         self.parameters = parameters
+
+        if self.parameters["SEED"] != 0:
+            random.seed(parameters["SEED"])
+            numpy.random.seed(parameters["SEED"])
+
         self.tree_events = self._read_events_file(events_file)
 
         self.all_genomes = dict()

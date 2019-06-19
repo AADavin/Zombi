@@ -65,3 +65,9 @@ VERBOSE 1
 ST_RATE_MULTIPLIERS n:0.7;0.2
 GF_RATE_MULTIPLIERS n:0.7;0.2
 #
+#
+#
+#
+#
+## SEED : If 0, the SEED is chosen randomly
+SEED 0

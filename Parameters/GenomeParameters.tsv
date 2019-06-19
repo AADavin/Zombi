@@ -45,3 +45,9 @@ VERBOSE 1
 GENE_LENGTH f:100
 INTERGENE_LENGTH 100
 PSEUDOGENIZATION 0.5
+#
+#
+#
+#
+## SEED : If 0, the SEED is chosen randomly
+SEED 0
