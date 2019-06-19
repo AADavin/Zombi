@@ -3,14 +3,15 @@ import numpy
 import ete3
 import random
 
+
 class SpeciesTreeGenerator():
 
     def __init__(self, parameters):
 
         self.parameters = parameters
 
-        if self.parameters["SEED"] != 0:
-
+        mseed = self.parameters["SEED"]
+        if mseed != 0:
             random.seed(parameters["SEED"])
             numpy.random.seed(parameters["SEED"])
 

@@ -52,6 +52,28 @@ def read_parameters(parameters_file):
     return parameters
 
 
+def read_seed(parameters_file):
+
+    myseed = 0
+
+    with open(parameters_file) as f:
+
+        for line in f:
+
+            if line[0] == "#" or line == "\n":
+                continue
+            if "SEED" not in line:
+                continue
+
+            if "\t" in line:
+                _, value = line.strip().split("\t")
+                myseed = int(value)
+            elif " " in line:
+                _, value = line.strip().split(" ")
+                myseed = int(value)
+
+    return myseed
+
 
 def obtain_value(value):
 
