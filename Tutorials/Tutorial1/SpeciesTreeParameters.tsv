@@ -1,0 +1,43 @@
+### PARAMETERS SPECIES TREE LEVEL ###
+## Please refer to the manual for more details
+#
+SPECIATION	f:0.07
+#
+EXTINCTION	f:0.04
+#
+## STOPPING_RULE = 0 to control depending on TIME, = 1 to control depending on TOTAL_LINEAGES
+STOPPING_RULE	0
+#
+## TOTAL_TIME says when to stop if STOPPING_RULE = 0
+#
+TOTAL_TIME	100
+#
+## TOTAL_LINEAGES says when to stop if STOPPING_RULE = 1
+#
+TOTAL_LINEAGES	20
+#
+## The simulation fails (and tries again) if the number of lineages in the EST goes below MIN_LINEAGES (when using the stopping rule = 0)
+#
+MIN_LINEAGES	1
+#
+## The simulation fails (and tries again) if the number of lineages exceeds MAX_LINEAGES
+#
+MAX_LINEAGES	10000
+#
+## VERBOSE = 0 not to print progess, = 1 to do it
+#
+VERBOSE 1
+#
+### TP SPECIFIC PARAMETERS ###
+#
+TURNOVER f:0.0002
+#
+## LINEAGE_PROFILE: TIME1-LINEAGE_GOAL1;TIME2-LINEAGE_GOAL2;...;TIMEk-LINEAGE_GOALk
+#
+LINEAGE_PROFILE 100-100;300-15000;500-50
+#
+#
+#
+#
+## SEED : If 0, the SEED is chosen randomly
+SEED 237
