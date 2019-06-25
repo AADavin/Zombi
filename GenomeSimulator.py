@@ -72,6 +72,8 @@ class GenomeSimulator():
                             f.write(line)
                             i += 1
 
+
+
     def write_gene_family_lengths(self, genome_folder):
 
         with open(os.path.join(genome_folder, "GeneFamily_lengths.tsv"), "w") as f:
@@ -196,41 +198,42 @@ class GenomeSimulator():
 
 
         genome_names = [x for x in self.all_genomes.keys()]
+        gene_family_names = [str(x) for x in self.all_gene_families.keys()]
 
         # For clarity, I start with Initial Genome
 
         genome_names[0], genome_names[1] = genome_names[1], genome_names[0]
 
+        data = list()
+        data.append(["GENOME"] + gene_family_names)
+
+
+        for genome_name in genome_names:
+            line = dict()
+
+            genome = self.all_genomes[genome_name]
+
+            for gene_family_name in gene_family_names:
+                if gene_family_name not in line:
+                    line[gene_family_name] = 0
+
+            for chromosome in genome:
+                for index, gene in enumerate(chromosome):
+                    line[gene.gene_family] += 1
+
+            data.append([genome_name] + [str(line[fm]) for fm in gene_family_names])
+
+        # We will transpose the data
+
+        mlenx = len(data)
+        mleny = len(data[0])
+
         with open(os.path.join(profiles_folder, "Profiles.tsv"), "w") as f:
-
-            header = ["FAMILY"] + genome_names
-            header = "\t".join(map(str, header)) + "\n"
-
-            f.write(header)
-
-            for gene_family_name, gene_family in self.all_gene_families.items():
-
-                if self.parameters["VERBOSE"] == 1:
-                    print("Writing profile for family %s" % str(gene_family_name))
-
-                line = ["Fam" + gene_family_name]
-
-                for genome in genome_names:
-
-                    n = 0
-
-                    #print([gene_family_name]+[str(gene) for gene in gene_family])
-
-                    for gene in gene_family:
-
-                        if gene.species == genome:
-
-                            n+=1
-
-                    line.append(str(n))
-
-                line = "\t".join(line)+"\n"
-
+            for i in range(mleny):
+                line = list()
+                for j in range(mlenx):
+                    line.append(str(data[j][i]))
+                line = "\t".join(line) + "\n"
                 f.write(line)
 
     def write_interactomes(self, genome_folder):
@@ -308,6 +311,9 @@ class GenomeSimulator():
                 # We fill the chromosomes and we create also the gene families
 
                 gene, gene_family = self.make_origination(genome.species, time)
+                initial_gene = copy.deepcopy(gene)
+                initial_gene.species = "Initial"
+                gene_family.genes.append(initial_gene)
                 chromosome.genes.append(gene)
                 self.all_gene_families[str(self.gene_families_counter)] = gene_family
                 if intergenic_sequences == True:
