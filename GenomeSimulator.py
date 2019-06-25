@@ -219,7 +219,7 @@ class GenomeSimulator():
 
                     n = 0
 
-                    print([gene_family_name]+[str(gene) for gene in gene_family])
+                    #print([gene_family_name]+[str(gene) for gene in gene_family])
 
                     for gene in gene_family:
 
