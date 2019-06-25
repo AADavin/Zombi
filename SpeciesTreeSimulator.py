@@ -585,4 +585,44 @@ class SpeciesTreeGenerator():
                 line = "\t".join(map(str,[lineage, speciation, extinction])) + "\n"
                 f.write(line)
 
+    def write_lengths(self, length_file, complete_tree, extant_tree):
+
+        mcomplete_tree = ete3.Tree(complete_tree, format=1)
+        mextant_tree = ete3.Tree(complete_tree, format=1)
+
+        croot = mcomplete_tree.get_tree_root()
+        cleaf = mcomplete_tree.get_leaves()[0]
+
+        crown_length = croot.get_distance(cleaf)
+        stem_length = croot.dist
+
+        total_ed = 0
+
+        for n in mcomplete_tree.traverse():
+           total_ed +=  n.dist
+
+        crown_ed = total_ed - stem_length
+
+        with open(length_file, "w") as f:
+
+            f.write("### Extant Tree lengths \n")
+
+            line = "\t".join(["Total_length", str(stem_length + crown_length)]) + "\n"
+            f.write(line)
+
+            line = "\t".join(["Crown_length", str(crown_length)]) + "\n"
+            f.write(line)
+
+            line = "\t".join(["Stem_length", str(stem_length)]) + "\n"
+            f.write(line)
+
+            line = "\t".join(["Total_ED", str(total_ed)]) + "\n"
+            f.write(line)
+
+            line = "\t".join(["Crown_ED", str(crown_ed)]) + "\n"
+            f.write(line)
+
+            f.write("### Extant Tree lengths \n")
+
+
 

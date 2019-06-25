@@ -38,6 +38,7 @@ class Zombi():
             complete_tree_file = os.path.join(tree_folder, "CompleteTree.nwk")
             extant_tree_file = os.path.join(tree_folder, "ExtantTree.nwk")
             collapsed_nodes_file = os.path.join(tree_folder, "CollapsedNodes.tsv")
+            lengths_file = os.path.join(tree_folder, "Lengths.tsv")
 
             complete_tree, extant_tree, collapsed_nodes = stg.generate_newick_trees()
 
@@ -51,6 +52,8 @@ class Zombi():
                 for k, v in collapsed_nodes.items():
                     line = "\t".join([k, v]) + "\n"
                     f.write(line)
+
+            stg.write_lengths(lengths_file, complete_tree, extant_tree)
 
             return 0
 
@@ -97,6 +100,9 @@ class Zombi():
             for k, v in collapsed_nodes.items():
                 line = "\t".join([k, v]) + "\n"
                 f.write(line)
+
+        lengths_file = os.path.join(tree_folder, "Lengths.tsv")
+        stg.write_lengths(lengths_file, complete_tree, extant_tree)
 
         if advanced_mode == "b" or advanced_mode == "a":
             rates_file = os.path.join(tree_folder, "Rates.tsv")

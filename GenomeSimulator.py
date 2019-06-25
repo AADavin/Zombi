@@ -197,6 +197,10 @@ class GenomeSimulator():
 
         genome_names = [x for x in self.all_genomes.keys()]
 
+        # For clarity, I start with Initial Genome
+
+        genome_names[0], genome_names[1] = genome_names[1], genome_names[0]
+
         with open(os.path.join(profiles_folder, "Profiles.tsv"), "w") as f:
 
             header = ["FAMILY"] + genome_names
@@ -210,11 +214,19 @@ class GenomeSimulator():
                     print("Writing profile for family %s" % str(gene_family_name))
 
                 line = ["Fam" + gene_family_name]
+
                 for genome in genome_names:
+
                     n = 0
+
+                    print([gene_family_name]+[str(gene) for gene in gene_family])
+
                     for gene in gene_family:
+
                         if gene.species == genome:
+
                             n+=1
+
                     line.append(str(n))
 
                 line = "\t".join(line)+"\n"
@@ -1195,7 +1207,12 @@ class GenomeSimulator():
 
             gene.active = False
 
-            self.all_gene_families[gene.gene_family].register_event(time, "D", ";".join(map(str, nodes)))
+            # We add the genes to the list of genes in the gene family
+            gene_family = gene.gene_family
+
+            self.all_gene_families[gene_family].genes.append(copied_segment1[i])
+            self.all_gene_families[gene_family].genes.append(copied_segment2[i])
+            self.all_gene_families[gene_family].register_event(time, "D", ";".join(map(str, nodes)))
 
     def make_duplication_interactome(self, p, lineage, time):
 
@@ -1235,6 +1252,11 @@ class GenomeSimulator():
                      copied_segment2[i].gene_id]
 
             gene.active = False
+
+            gene_family = gene.gene_family
+
+            self.all_gene_families[gene_family].genes.append(copied_segment1[i])
+            self.all_gene_families[gene_family].genes.append(copied_segment2[i])
 
             self.all_gene_families[gene.gene_family].register_event(time, "D", ";".join(map(str, nodes)))
 
@@ -1338,6 +1360,11 @@ class GenomeSimulator():
                      new_segment_2[i].gene_id]
 
             gene.active = False
+
+            gene_family = gene.gene_family
+
+            self.all_gene_families[gene_family].genes.append(copied_segment1[i])
+            self.all_gene_families[gene_family].genes.append(copied_segment2[i])
 
             self.all_gene_families[gene.gene_family].register_event(time, "D", ";".join(map(str, nodes)))
 
@@ -2464,10 +2491,10 @@ class Gene():
             self.orientation = "+"
 
     def __str__(self):
-        #myname = "_".join(map(str,(self.genome, self.orientation, self.gene_family, self.gene_id)))
-        #myname = "_".join(map(str, (self.species, self.gene_family, self.gene_id)))
+
+        myname = "_".join(map(str, (self.species, self.gene_family, self.gene_id)))
         #myname = "_".join(map(str, (self.gene_family, self.orientation)))
-        myname = str(self.gene_family) + "_" + str(self.gene_id)
+        #myname = str(self.gene_family) + "_" + str(self.gene_id)
         #myname = "_".join(map(str, (self.gene_family, self.length)))
         return myname
 
