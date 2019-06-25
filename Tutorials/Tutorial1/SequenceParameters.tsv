@@ -36,7 +36,7 @@ T	0.25
 ## The empirical equilibrium frequencies are those published with each respective model’s original paper.
 ## AA_MODEL can be either 'JTT', 'WAG', 'LG', 'DAYHOFF', 'MTMAM' or 'MTREV24'
 #
-AA_MODEL	WAG
+AA_MODEL	LG
 #
 ### Required parameters if SEQUENCE='codon'
 #
