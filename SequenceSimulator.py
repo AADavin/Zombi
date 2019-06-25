@@ -65,7 +65,7 @@ class SequenceSimulator():
         # First we apply the multipliers per family
         # Second, the multipliers per species tree branch
 
-        gf_multiplier = self.gf_multipliers[tree_file.split("_")[1].split("/")[-1]]
+        gf_multiplier = self.gf_multipliers[tree_file.split("_")[-2].split("/")[-1]]
 
         for node in my_tree.traverse():
             node.dist = node.dist * gf_multiplier * self.st_multipliers[node.name.split("_")[0]]
