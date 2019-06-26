@@ -256,6 +256,23 @@ class GenomeSimulator():
                 for g1, g2 in genome.interactome.edges:
                     f.write("\t".join([g1, g2]) + "\n")
 
+    def write_family_rates(self, genome_folder):
+
+        with open(os.path.join(genome_folder, "FAMILY_RATES.tsv"), "w") as f:
+            header = ["GENE_FAMILY", "D", "T", "L", "I", "P"]
+            header = "\t".join(map(str, header)) + "\n"
+            f.write(header)
+
+            for gene_family_name, gene_family in self.all_gene_families.items():
+
+                d = gene_family.rates["DUPLICATION"]
+                t = gene_family.rates["TRANSFER"]
+                l = gene_family.rates["LOSS"]
+                i = gene_family.rates["INVERSION"]
+                p = gene_family.rates["TRANSPOSITION"]
+
+                f.write("\t".join(map(str,[gene_family_name, d,t,l,i,p])) + "\n")
+
 
     def _read_events_file(self, events_file):
 
@@ -278,7 +295,7 @@ class GenomeSimulator():
 
         return new_identifiers
 
-    def fill_genome(self, intergenic_sequences = False, interactome = False):
+    def fill_genome(self, intergenic_sequences = False, family_rates = False, interactome = False):
 
         genome = Genome()
         genome.species = "Root"
@@ -310,8 +327,10 @@ class GenomeSimulator():
             for i in range(int(n_genes)):
 
                 # We fill the chromosomes and we create also the gene families
-
-                gene, gene_family = self.make_origination(genome.species, time)
+                if family_rates == True:
+                    gene, gene_family = self.make_origination(genome.species, time, family_mode=True)
+                else:
+                    gene, gene_family = self.make_origination(genome.species, time)
                 initial_gene = copy.deepcopy(gene)
                 initial_gene.species = "Initial"
                 gene_family.genes.append(initial_gene)
@@ -325,8 +344,8 @@ class GenomeSimulator():
             genome.chromosomes.append(chromosome)
 
             if interactome == True:
-
                 genome.create_interactome()
+
 
         return genome
 
@@ -487,6 +506,79 @@ class GenomeSimulator():
 
                 current_time += time_to_next_genome_event
                 self.evolve_genomes_i(d, t, l, i, c, o, rm, rw, current_time)
+
+    def run_m(self):
+
+        # First we prepare the first genome
+
+        genome = self.fill_genome(family_rates=True)
+
+        # We prepare to important dicts in this mode
+
+        self.active_genomes.add(genome.species)
+        self.all_genomes["Root"] = genome
+
+        # We add the initial genome too
+
+        self.all_genomes["Initial"] = copy.deepcopy(genome)
+
+        current_species_tree_event = 0
+        current_time = 0.0
+        all_species_tree_events = len(self.tree_events)
+
+        # Second, we compute the time to the next event:
+
+        elapsed_time = 0.0
+
+
+        while current_species_tree_event < all_species_tree_events:
+
+            time_of_next_species_tree_event, event, nodes = self.tree_events[current_species_tree_event]
+            time_of_next_species_tree_event = float(time_of_next_species_tree_event)
+
+            if self.parameters["VERBOSE"] == 1:
+                print("Simulating genomes. Time %s" % str(current_time))
+
+            time_to_next_genome_event = self.get_time_to_next_event_family_mode()
+
+            elapsed_time = float(current_time) - elapsed_time
+
+            if time_to_next_genome_event + current_time >= float(time_of_next_species_tree_event):
+
+                current_species_tree_event +=1
+                current_time = time_of_next_species_tree_event
+
+                if event == "S":
+
+                    sp,c1,c2 = nodes.split(";")
+
+                    # First we keep track of the active and inactive genomes
+
+                    self.active_genomes.discard(sp)
+                    self.active_genomes.add(c1)
+                    self.active_genomes.add(c2)
+
+                    # Second, we speciate the genomes
+
+                    genome_c1, genome_c2 = self.make_speciation(sp, c1, c2, current_time)
+
+                    self.all_genomes[c1] = genome_c1
+                    self.all_genomes[c2] = genome_c2
+
+
+                elif event == "E":
+                    self.make_extinction(nodes, current_time)
+                    self.active_genomes.discard(nodes)
+
+                elif event == "F":
+                    self.make_end(current_time)
+                    break
+
+            else:
+
+                current_time += time_to_next_genome_event
+                self.evolve_genomes_m( current_time)
+
 
     def run_u(self):
 
@@ -819,6 +911,86 @@ class GenomeSimulator():
             return "RW", lineage
 
 
+    def evolve_genomes_m(self, time):
+
+        d_e = af.obtain_value(self.parameters["DUPLICATION_EXTENSION"])
+        t_e = af.obtain_value(self.parameters["TRANSFER_EXTENSION"])
+        l_e = af.obtain_value(self.parameters["LOSS_EXTENSION"])
+        i_e = af.obtain_value(self.parameters["INVERSION_EXTENSION"])
+        c_e = af.obtain_value(self.parameters["TRANSPOSITION_EXTENSION"])
+
+        ####
+
+        mactive_genomes = list(self.active_genomes)
+        mweights = list()
+        for genome in mactive_genomes:
+            lineage_weight = 0
+            for chromosome in self.all_genomes[genome]:
+                for gene in chromosome:
+                    for r,vl in self.all_gene_families[gene.gene_family].rates.items():
+                        lineage_weight += vl
+            mweights.append(lineage_weight)
+
+        lineage = numpy.random.choice(mactive_genomes, 1, p=af.normalize(mweights))[0]
+
+        d, t, l, i, p, o = 0, 0, 0, 0, 0, 0
+
+        for chromosome in self.all_genomes[lineage]:
+            for gene in chromosome:
+                d += self.all_gene_families[gene.gene_family].rates["DUPLICATION"]
+                t += self.all_gene_families[gene.gene_family].rates["TRANSFER"]
+                l += self.all_gene_families[gene.gene_family].rates["LOSS"]
+                i += self.all_gene_families[gene.gene_family].rates["INVERSION"]
+                p += self.all_gene_families[gene.gene_family].rates["TRANSPOSITION"]
+
+        event = self.choose_event(d, t, l, i, p, 0) ### CORRECT ORIGINATIONS
+
+        ####
+
+        if event == "D":
+
+            self.make_duplication(d_e, lineage, time, family_mode=True)
+            return "D", lineage
+
+        elif event == "T":
+
+            # We choose a recipient
+
+            possible_recipients = [x for x in self.active_genomes if x != lineage]
+
+            if len(possible_recipients) > 0:
+
+                recipient = random.choice(possible_recipients)
+                donor = lineage
+                self.make_transfer(t_e, donor, recipient, time, family_mode = True)
+                return "T", donor + "->" + recipient
+
+            else:
+                return None
+
+        elif event == "L":
+            self.make_loss(l_e, lineage, time, family_mode = True)
+            return "L", lineage
+
+        elif event == "I":
+            self.make_inversion(i_e, lineage, time)
+            return "I", lineage
+
+        elif event == "P":
+            self.make_transposition(c_e, lineage, time)
+            return "P", lineage
+
+        elif event == "O":
+
+            gene, gene_family = self.make_origination(lineage, time, family_mode=True)
+            chromosome = self.all_genomes[lineage].select_random_chromosome()
+            position = chromosome.select_random_position()
+            segment = [gene]
+            chromosome.insert_segment(position, segment)
+
+            return "O", lineage
+
+
     def advanced_evolve_genomes(self, time):
 
         active_genomes = list(self.active_genomes)
@@ -1017,12 +1189,30 @@ class GenomeSimulator():
         time = numpy.random.exponential(1 / total)
         return time
 
+    def get_time_to_next_event_family_mode(self):
+
+        # NEED TO ADD ORIGINATIONS
+
+        total = 0.0
+
+        for lineage in self.active_genomes:
+            for chromosome in self.all_genomes[lineage]:
+                for gene in chromosome:
+                    for r,vl in self.all_gene_families[gene.gene_family].rates.items():
+                        total += vl
+
+        if total == 0:
+            return 1000000000000000 # We sent an arbitrarily big number. Probably not the most elegant thing to do
+        time = numpy.random.exponential(1 / total)
+
+        return time
+
     def increase_distances(self, time_to_next_event, active_lineages):
 
         for node in active_lineages:
             node.dist += time_to_next_event
 
-    def make_origination(self, species_tree_node, time):
+    def make_origination(self, species_tree_node, time, family_mode = False):
 
         self.gene_families_counter += 1
         gene_family_id = str(self.gene_families_counter)
@@ -1042,6 +1232,15 @@ class GenomeSimulator():
 
         self.all_gene_families[gene_family_id] = gene_family
         self.all_gene_families[gene.gene_family].register_event(str(time), "O", species_tree_node)
+
+        if family_mode == True:
+
+            d, t,l, i, p, _ = self.generate_new_rates()
+            gene_family.rates["DUPLICATION"] = d
+            gene_family.rates["TRANSFER"] = t
+            gene_family.rates["LOSS"] = l
+            gene_family.rates["INVERSION"] = i
+            gene_family.rates["TRANSPOSITION"] = p
 
         return gene, gene_family
 
@@ -1179,10 +1378,15 @@ class GenomeSimulator():
                         map(str, [genome.species, gene.gene_id])))
 
 
-    def make_duplication(self, p, lineage, time):
+    def make_duplication(self, p, lineage, time, family_mode = False):
 
         chromosome = self.all_genomes[lineage].select_random_chromosome()
-        affected_genes = chromosome.obtain_affected_genes(p)
+
+        if family_mode == True:
+            affected_genes = chromosome.obtain_affected_genes_accounting_for_family_rates(p, self.all_gene_families, "DUPLICATION")
+        else:
+            affected_genes = chromosome.obtain_affected_genes(p)
+
         segment = chromosome.obtain_segment(affected_genes)
 
         new_identifiers1 = self.return_new_identifiers_for_segment(segment)
@@ -1303,6 +1507,7 @@ class GenomeSimulator():
 
 
 
+
     def make_duplication_within_intergene(self, c1, c2, d, lineage, time):
 
         chromosome = self.all_genomes[lineage].select_random_chromosome()
@@ -1409,10 +1614,15 @@ class GenomeSimulator():
 
         return draw
 
-    def make_transfer(self, p, donor, recipient, time):
+    def make_transfer(self, p, donor, recipient, time, family_mode = False):
 
         chromosome1 = self.all_genomes[donor].select_random_chromosome()
-        affected_genes = chromosome1.obtain_affected_genes(p)
+
+        if family_mode == True:
+            affected_genes = chromosome1.obtain_affected_genes_accounting_for_family_rates(p, self.all_gene_families, "TRANSFER")
+        else:
+            affected_genes = chromosome1.obtain_affected_genes(p)
+
         segment = chromosome1.obtain_segment(affected_genes)
         new_identifiers1 = self.return_new_identifiers_for_segment(segment)
         new_identifiers2 = self.return_new_identifiers_for_segment(segment)
@@ -1795,10 +2005,13 @@ class GenomeSimulator():
             self.all_gene_families[gene.gene_family].register_event(time, "T", ";".join(map(str, nodes)))
 
 
-    def make_loss(self, p, lineage, time):
+    def make_loss(self, p, lineage, time, family_mode = False):
 
         chromosome = self.all_genomes[lineage].select_random_chromosome()
-        affected_genes = chromosome.obtain_affected_genes(p)
+        if family_mode == True:
+            affected_genes = chromosome.obtain_affected_genes_accounting_for_family_rates(p, self.all_gene_families, "LOSS")
+        else:
+            affected_genes = chromosome.obtain_affected_genes(p)
         segment = chromosome.obtain_segment(affected_genes)
 
         # Now we check we are not under the minimum size
@@ -1855,6 +2068,27 @@ class GenomeSimulator():
             else:
 
                 scar1.length = r3[0] + r4[1]
+
+        # We have to register in the affected gene families that there has been as loss
+        # All genes affected must be returned
+
+        for gene in segment:
+            gene.active = False
+            self.all_gene_families[gene.gene_family].register_event(time, "L", ";".join(map(str,[lineage, gene.gene_id])))
+
+    def make_loss_family_mode(self, p, lineage, time):
+
+        chromosome = self.all_genomes[lineage].select_random_chromosome()
+
+        affected_genes = chromosome.obtain_affected_genes_accounting_for_family_rates(p, interactome)
+        segment = chromosome.obtain_segment(affected_genes)
+
+        # Now we check we are not under the minimum size
+
+        if len(chromosome) - len(affected_genes) <= 0:
+            return 0
+
+        chromosome.remove_segment(segment)
 
         # We have to register in the affected gene families that there has been as loss
         # All genes affected must be returned
@@ -2140,6 +2374,9 @@ class GeneFamily():
         self.gene_ids_counter = 0
 
         self.length = 0
+
+        self.rates = dict() # Only in Gm mode
+
 
     def register_event(self, time, event, genes):
 
@@ -2465,6 +2702,8 @@ class GeneFamily():
     def __iter__(self):
         for gene in self.genes:
             yield gene
+
+
 
 
 class Gene():
@@ -2854,6 +3093,18 @@ class CircularChromosome(Chromosome):
             else:
                 affected_genes.append(i)
         return affected_genes
+
+    def obtain_affected_genes_accounting_for_family_rates(self, p_extension, gene_families, mrate):
+
+        # In this first version, length is 1. For a more advanced version, I should extent the interactome model
+        # Returns N genes accounting for the family rates
+        gene2rate = {gene:gene_families[gene.gene_family].rates[mrate] for gene in self.genes}
+        norm = af.normalize([vl for x, vl in gene2rate.items()])
+        mgenes = [i for i in range(len(self.genes))]
+        affected_gene = numpy.random.choice(mgenes,size = 1,p=norm)
+
+        return affected_gene
+
 
     def obtain_affected_genes_accounting_for_connectedness(self, p_extension, interactome):
 

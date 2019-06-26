@@ -133,6 +133,10 @@ class Zombi():
 
             gss.run_f()
 
+        elif advanced_mode == "m":
+
+            gss.run_m()
+
         elif advanced_mode == "i":
 
             gss.run_i()
@@ -151,6 +155,10 @@ class Zombi():
         if advanced_mode == "i":
             print("Writing interactomes")
             gss.write_interactomes(genomes_folder)
+
+        if advanced_mode == "m":
+            print("Writing Family rates")
+            gss.write_family_rates(genome_folder)
 
         print("Writing Gene Families")
 
@@ -295,8 +303,10 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("mode", type=str, choices=["T", "Ti", "Tb", "Tp", "G", "Gu", "Gf", "Gi", "S", "Su", "Sf"],
-                        help="Mode")
+    #parser.add_argument("mode", type=str, choices=["T", "Ti", "Tb", "Tp", "G", "Gu", "Gf", "Gi", "S", "Su", "Sf"],
+    #                    help="Mode")
+    parser.add_argument("mode", type=str, choices=["T", "Ti", "Tb", "Tp", "G", "Gu", "Gf", "Gm", "S", "Su", "Sf"],
+                                            help="Mode")
     parser.add_argument("params", type=str, help="Parameters file")
     parser.add_argument("output", type=str, help="Name of the experiment folder")
 
