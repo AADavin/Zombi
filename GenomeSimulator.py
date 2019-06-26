@@ -236,6 +236,7 @@ class GenomeSimulator():
                 line = "\t".join(line) + "\n"
                 f.write(line)
 
+
     def write_interactomes(self, genome_folder):
 
         if not os.path.isdir(genome_folder):
