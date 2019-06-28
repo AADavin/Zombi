@@ -259,7 +259,7 @@ class GenomeSimulator():
     def write_family_rates(self, genome_folder):
 
         with open(os.path.join(genome_folder, "FAMILY_RATES.tsv"), "w") as f:
-            header = ["GENE_FAMILY", "D", "T", "L", "I", "P"]
+            header = ["GENE_FAMILY", "D", "T", "L"]
             header = "\t".join(map(str, header)) + "\n"
             f.write(header)
 
@@ -268,10 +268,8 @@ class GenomeSimulator():
                 d = gene_family.rates["DUPLICATION"]
                 t = gene_family.rates["TRANSFER"]
                 l = gene_family.rates["LOSS"]
-                i = gene_family.rates["INVERSION"]
-                p = gene_family.rates["TRANSPOSITION"]
 
-                f.write("\t".join(map(str,[gene_family_name, d,t,l,i,p])) + "\n")
+                f.write("\t".join(map(str,[gene_family_name, d,t,l])) + "\n")
 
 
     def _read_events_file(self, events_file):
@@ -940,10 +938,14 @@ class GenomeSimulator():
                 d += self.all_gene_families[gene.gene_family].rates["DUPLICATION"]
                 t += self.all_gene_families[gene.gene_family].rates["TRANSFER"]
                 l += self.all_gene_families[gene.gene_family].rates["LOSS"]
-                i += self.all_gene_families[gene.gene_family].rates["INVERSION"]
-                p += self.all_gene_families[gene.gene_family].rates["TRANSPOSITION"]
 
-        event = self.choose_event(d, t, l, i, p, 0) ### CORRECT ORIGINATIONS
+        i += af.obtain_value((self.parameters["INVERSION"]))
+        p += af.obtain_value((self.parameters["TRANSPOSITION"]))
+        o += af.obtain_value((self.parameters["ORIGINATION"]))
+
+        #print(d,t,l,i,p,o)
+
+        event = self.choose_event(d, t, l, i, p, o)
 
         ####
 
@@ -1191,8 +1193,6 @@ class GenomeSimulator():
 
     def get_time_to_next_event_family_mode(self):
 
-        # NEED TO ADD ORIGINATIONS
-
         total = 0.0
 
         for lineage in self.active_genomes:
@@ -1200,6 +1200,12 @@ class GenomeSimulator():
                 for gene in chromosome:
                     for r,vl in self.all_gene_families[gene.gene_family].rates.items():
                         total += vl
+
+        total_active =  len(self.active_genomes)
+
+        total += af.obtain_value((self.parameters["INVERSION"])) * total_active
+        total += af.obtain_value((self.parameters["TRANSPOSITION"])) * total_active
+        total += af.obtain_value((self.parameters["ORIGINATION"])) * total_active
 
         if total == 0:
             return 1000000000000000 # We sent an arbitrarily big number. Probably not the most elegant thing to do
@@ -1235,12 +1241,11 @@ class GenomeSimulator():
 
         if family_mode == True:
 
-            d, t,l, i, p, _ = self.generate_new_rates()
+            d, t,l, _, _, _ = self.generate_new_rates()
             gene_family.rates["DUPLICATION"] = d
             gene_family.rates["TRANSFER"] = t
             gene_family.rates["LOSS"] = l
-            gene_family.rates["INVERSION"] = i
-            gene_family.rates["TRANSPOSITION"] = p
+
 
         return gene, gene_family
 
@@ -3098,12 +3103,59 @@ class CircularChromosome(Chromosome):
 
         # In this first version, length is 1. For a more advanced version, I should extent the interactome model
         # Returns N genes accounting for the family rates
-        gene2rate = {gene:gene_families[gene.gene_family].rates[mrate] for gene in self.genes}
-        norm = af.normalize([vl for x, vl in gene2rate.items()])
-        mgenes = [i for i in range(len(self.genes))]
-        affected_gene = numpy.random.choice(mgenes,size = 1,p=norm)
 
-        return affected_gene
+
+        gene2rate = {gene: gene_families[gene.gene_family].rates[mrate] for gene in self.genes}
+
+        if p_extension == 1:
+
+            norm = af.normalize([vl for x, vl in gene2rate.items()])
+            mgenes = [i for i in range(len(self.genes))]
+            affected_genes = numpy.random.choice(mgenes,size = 1,p=norm)
+            return affected_genes
+
+        else:
+
+            # If there is an extension
+
+            length = self.select_random_length(p_extension)
+            total_length = len(self.genes)
+
+            if length >= total_length:
+                affected_genes = [x for x in range(total_length)]
+                return affected_genes
+            else:
+
+                all_weights = list()
+
+                # If the extension is shorter than the whole genome length
+
+                for each_start, gene in enumerate(self.genes):
+
+                    position = each_start
+                    affected_genes = list()
+
+                    for i in range(position, position + length):
+                        if i >= total_length:
+                            affected_genes.append(i - total_length)
+                        else:
+                            affected_genes.append(i)
+
+                    all_weights.append(reduce(lambda x, y: x * y, [gene2rate[self.genes[x]] for x in affected_genes]))
+                #print(all_weights)
+                position = numpy.random.choice([i for i, g in enumerate(self.genes)], 1, p=af.normalize(all_weights))[0]
+                affected_genes = list()
+
+                # Returns the index list of the affected genes
+
+                for i in range(position, position + length):
+                    if i >= total_length:
+                        affected_genes.append(i - total_length)
+                    else:
+                        affected_genes.append(i)
+
+
+                return affected_genes
 
 
     def obtain_affected_genes_accounting_for_connectedness(self, p_extension, interactome):
