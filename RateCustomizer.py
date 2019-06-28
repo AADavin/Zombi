@@ -121,10 +121,10 @@ class RateCustomizer():
             t = af.obtain_value(self.parameters["TRANSFER"])
             l = af.obtain_value(self.parameters["LOSS"])
             i = af.obtain_value(self.parameters["INVERSION"])
-            c = af.obtain_value(self.parameters["TRANSPOSITION"])
+            p = af.obtain_value(self.parameters["TRANSPOSITION"])
             o = af.obtain_value(self.parameters["ORIGINATION"])
 
-            branch_rates[node.name] = (d,t,l,i,c,o)
+            branch_rates[node.name] = (d,t,l,i,p,o)
 
         with open(os.path.join(experiment_folder,"CustomRates/Event_rates.tsv"),"w") as f:
 
@@ -133,9 +133,9 @@ class RateCustomizer():
 
             for lineage, values in branch_rates.items():
 
-                d,t,l,i,c,o = values
+                d,t,l,i,p,o = values
 
-                line = "\t".join(map(str,[lineage, d,t,l,i,c,o])) + "\n"
+                line = "\t".join(map(str,[lineage, d,t,l,i,p,o])) + "\n"
                 f.write(line)
 
     def generate_extension_file(self):
@@ -155,20 +155,39 @@ class RateCustomizer():
             t = af.obtain_value(self.parameters["TRANSFER_EXTENSION"])
             l = af.obtain_value(self.parameters["LOSS_EXTENSION"])
             i = af.obtain_value(self.parameters["INVERSION_EXTENSION"])
-            c = af.obtain_value(self.parameters["TRANSPOSITION_EXTENSION"])
+            p = af.obtain_value(self.parameters["TRANSPOSITION_EXTENSION"])
 
-            branch_rates[node.name] = (d,t,l,i,c)
+            branch_rates[node.name] = (d,t,l,i,p)
 
         with open(os.path.join(experiment_folder,"CustomRates/Extension_rates.tsv"),"w") as f:
 
-            line = "\t".join(["lineage","D_E","T_E","L_E","I_E","C_E"]) + "\n"
+            line = "\t".join(["lineage","D_E","T_E","L_E","I_E","P_E"]) + "\n"
             f.write(line)
 
             for lineage, values in branch_rates.items():
 
-                 d,t,l,i,c = values
-                 line = "\t".join(map(str,[lineage, d,t,l,i,c])) + "\n"
+                 d,t,l,i,p = values
+                 line = "\t".join(map(str,[lineage, d,t,l,i,p])) + "\n"
                  f.write(line)
+
+
+    def generate_genefamily_file(self):
+
+        nfamilies = int(self.parameters["INITIAL_GENOME_SIZE"])
+
+        with open(os.path.join(experiment_folder,"CustomRates/GeneFamiliy_rates.tsv"),"w") as f:
+
+            line = "\t".join(["GeneFamily","DUPLICATION","TRANSFER","LOSS"]) + "\n"
+            f.write(line)
+
+            for nf in range(nfamilies):
+
+                d = af.obtain_value(self.parameters["DUPLICATION"])
+                t = af.obtain_value(self.parameters["TRANSFER"])
+                l = af.obtain_value(self.parameters["LOSS"])
+
+                line = "\t".join(map(str,[nf, d,t,l])) + "\n"
+                f.write(line)
 
 
 if __name__ == "__main__":
@@ -176,7 +195,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("mode", type=str, choices = ["G", "S"], help="GenomeParameters.tsv")
+    parser.add_argument("mode", type=str, choices = ["G", "Gm", "S"], help="GenomeParameters.tsv")
     parser.add_argument("parameters", type=str,  help="GenomeParameters.tsv")
     parser.add_argument("output", type=str, help="Name of the experiment folder")
 
@@ -197,6 +216,10 @@ if __name__ == "__main__":
         rc.generate_transfers_file()
         rc.generate_events_file()
         rc.generate_extension_file()
+
+    if mode == "Gm":
+
+        rc.generate_genefamily_file()
 
     elif mode == "S":
 
