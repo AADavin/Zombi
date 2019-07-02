@@ -3,9 +3,14 @@
 #
 ## Main events
 #
+## The next three events can have gene-family rates when using the Gm mode
+#
 DUPLICATION f:1
 TRANSFER f:2
 LOSS f:3
+#
+## The next three events use always genome rates
+#
 INVERSION f:2
 TRANSPOSITION f:2
 ORIGINATION f:2
