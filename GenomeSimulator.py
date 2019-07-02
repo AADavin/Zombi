@@ -734,7 +734,8 @@ class GenomeSimulator():
 
     def generate_empirical_rates(self):
 
-        d,t,l = random.choice(self.empirical_rates, 1)
+        mlen = len(self.empirical_rates)
+        d,t,l = self.empirical_rates[numpy.random.randint(mlen)]
 
         return d,t,l
 
@@ -1258,11 +1259,10 @@ class GenomeSimulator():
             gene_family.rates["LOSS"] = l
 
         elif family_mode == True and empirical_rates == True:
-            d, t, l, _, _, _ = self.generate_new_rates()
+            d, t, l = self.generate_empirical_rates()
             gene_family.rates["DUPLICATION"] = d
             gene_family.rates["TRANSFER"] = t
             gene_family.rates["LOSS"] = l
-
 
         return gene, gene_family
 
