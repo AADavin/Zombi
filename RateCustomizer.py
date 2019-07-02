@@ -170,7 +170,6 @@ class RateCustomizer():
                  line = "\t".join(map(str,[lineage, d,t,l,i,p])) + "\n"
                  f.write(line)
 
-
     def generate_genefamily_file(self):
 
         nfamilies = int(self.parameters["INITIAL_GENOME_SIZE"])

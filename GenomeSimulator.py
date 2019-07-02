@@ -11,7 +11,6 @@ from functools import reduce
 
 # from GenomeClasses import GeneFamily, Gene, Intergene, CircularChromosome, LinearChromosome, Genome
 
-
 class GenomeSimulator():
 
     def __init__(self, parameters, events_file):
@@ -30,6 +29,9 @@ class GenomeSimulator():
 
         self.gene_families_counter = 0
         self.active_genomes = set()
+
+        if self.parameters["RATE_FILE"] != "False":
+            self.empirical_rates = af.read_empirical_rates(rates_file=self.parameters["RATE_FILE"])
 
 
     def write_genomes(self, genome_folder, intergenic_sequences = False):
@@ -325,8 +327,11 @@ class GenomeSimulator():
             for i in range(int(n_genes)):
 
                 # We fill the chromosomes and we create also the gene families
-                if family_rates == True:
-                    gene, gene_family = self.make_origination(genome.species, time, family_mode=True)
+                if family_rates == True and self.parameters["RATE_FILE"] == "False":
+                        gene, gene_family = self.make_origination(genome.species, time, family_mode=True)
+                elif family_rates == True and self.parameters["RATE_FILE"] != "False":
+                        gene, gene_family = self.make_origination(genome.species, time, family_mode=True,
+                                                                  empirical_rates=True)
                 else:
                     gene, gene_family = self.make_origination(genome.species, time)
                 initial_gene = copy.deepcopy(gene)
@@ -722,10 +727,16 @@ class GenomeSimulator():
         t = af.obtain_value(self.parameters["TRANSFER"])
         l = af.obtain_value(self.parameters["LOSS"])
         i = af.obtain_value(self.parameters["INVERSION"])
-        c = af.obtain_value(self.parameters["TRANSPOSITION"])
+        p = af.obtain_value(self.parameters["TRANSPOSITION"])
         o = af.obtain_value(self.parameters["ORIGINATION"])
 
-        return d,t,l,i,c,o
+        return d,t,l,i,p,o
+
+    def generate_empirical_rates(self):
+
+        d,t,l = random.choice(self.empirical_rates, 1)
+
+        return d,t,l
 
     def read_rates(self, rates_folder):
 
@@ -1218,7 +1229,7 @@ class GenomeSimulator():
         for node in active_lineages:
             node.dist += time_to_next_event
 
-    def make_origination(self, species_tree_node, time, family_mode = False):
+    def make_origination(self, species_tree_node, time, family_mode = False, empirical_rates = False):
 
         self.gene_families_counter += 1
         gene_family_id = str(self.gene_families_counter)
@@ -1239,9 +1250,15 @@ class GenomeSimulator():
         self.all_gene_families[gene_family_id] = gene_family
         self.all_gene_families[gene.gene_family].register_event(str(time), "O", species_tree_node)
 
-        if family_mode == True:
+        if family_mode == True and empirical_rates == False:
 
             d, t,l, _, _, _ = self.generate_new_rates()
+            gene_family.rates["DUPLICATION"] = d
+            gene_family.rates["TRANSFER"] = t
+            gene_family.rates["LOSS"] = l
+
+        elif family_mode == True and empirical_rates == True:
+            d, t, l, _, _, _ = self.generate_new_rates()
             gene_family.rates["DUPLICATION"] = d
             gene_family.rates["TRANSFER"] = t
             gene_family.rates["LOSS"] = l

@@ -74,6 +74,17 @@ def read_seed(parameters_file):
 
     return myseed
 
+def read_empirical_rates(rates_file):
+
+    empirical_rates = list()
+
+    with open(rates_file) as f:
+        f.readline()
+        for line in f:
+            _, d, t, l = line.strip().split("\t")
+            empirical_rates.append((float(d),float(t),float(l)))
+
+    return empirical_rates
 
 def obtain_value(value):
 
