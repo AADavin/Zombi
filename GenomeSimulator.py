@@ -31,7 +31,11 @@ class GenomeSimulator():
         self.active_genomes = set()
 
         if self.parameters["RATE_FILE"] != "False":
-            self.empirical_rates = af.read_empirical_rates(rates_file=self.parameters["RATE_FILE"])
+            if self.parameters["SCALE_RATES"] == "True":
+                self.crown_length = self._read_crown_length(events_file.replace("Events", "Lengths"))
+                self.empirical_rates = af.read_empirical_rates(rates_file=self.parameters["RATE_FILE"], scale_rates= self.crown_length)
+            else:
+                self.empirical_rates = af.read_empirical_rates(rates_file=self.parameters["RATE_FILE"])
 
 
     def write_genomes(self, genome_folder, intergenic_sequences = False):
@@ -260,7 +264,7 @@ class GenomeSimulator():
 
     def write_family_rates(self, genome_folder):
 
-        with open(os.path.join(genome_folder, "FAMILY_RATES.tsv"), "w") as f:
+        with open(os.path.join(genome_folder, "Family_rates.tsv"), "w") as f:
             header = ["GENE_FAMILY", "D", "T", "L"]
             header = "\t".join(map(str, header)) + "\n"
             f.write(header)
@@ -283,6 +287,16 @@ class GenomeSimulator():
                 handle = line.strip().split("\t")
                 events.append(handle)
         return events
+
+    def _read_crown_length(self, length_file):
+
+
+        with open(length_file) as f:
+            f.readline()
+            f.readline()
+            cl = float(f.readline().strip().split("\t")[-1])
+
+        return cl
 
     def return_new_identifiers_for_segment(self, segment):
 

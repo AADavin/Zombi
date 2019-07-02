@@ -48,6 +48,7 @@ PSEUDOGENIZATION 0.5
 #
 ### GM SPECIFIC PARAMETERS ###
 RATE_FILE False
+SCALE_RATES False
 #
 ## SEED : If 0, the SEED is chosen randomly
 SEED 0

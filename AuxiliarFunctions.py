@@ -74,7 +74,7 @@ def read_seed(parameters_file):
 
     return myseed
 
-def read_empirical_rates(rates_file):
+def read_empirical_rates(rates_file, scale_rates = 1.0):
 
     empirical_rates = list()
 
@@ -82,7 +82,8 @@ def read_empirical_rates(rates_file):
         f.readline()
         for line in f:
             _, d, t, l = line.strip().split("\t")
-            empirical_rates.append((float(d),float(t),float(l)))
+            d, t, l = [x/scale_rates for x in map(float,[d, t, l])]
+            empirical_rates.append((float(d), float(t), float(l)))
 
     return empirical_rates
 
