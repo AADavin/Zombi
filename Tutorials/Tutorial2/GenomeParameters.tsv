@@ -9,11 +9,11 @@ DUPLICATION f:1
 TRANSFER f:2
 LOSS f:3
 #
-## The next three events use always genome-wise rates
+## The next three events use always genome rates
 #
-INVERSION f:2
-TRANSPOSITION f:2
-ORIGINATION f:2
+INVERSION f:0
+TRANSPOSITION f:0
+ORIGINATION f:0
 #
 ## Extensions
 #
@@ -31,7 +31,7 @@ REPLACEMENT_TRANSFER 1
 #
 ## Genome size related parameters
 #
-INITIAL_GENOME_SIZE	100
+INITIAL_GENOME_SIZE	500
 #
 ## MIN_GENOME_SIZE prevents genome to become too small. Any losses affecting genomes under this size will be ignored
 #
@@ -52,8 +52,8 @@ INTERGENE_LENGTH 100
 PSEUDOGENIZATION 0.5
 #
 ### GM SPECIFIC PARAMETERS ###
-RATE_FILE False
-SCALE_RATES False
+RATE_FILE ./Tutorials/Tutorial2/CyanoRates.tsv
+SCALE_RATES True
 #
 ## SEED : If 0, the SEED is chosen randomly
 SEED 0
