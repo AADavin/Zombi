@@ -1,0 +1,59 @@
+### PARAMETERS GENOME LEVEL ###
+## Please refer to the manual for more details
+#
+## Main events
+#
+## The next three events can have gene-family rates when using the Gm mode
+#
+DUPLICATION f:2
+TRANSFER f:0
+LOSS f:3
+#
+## The next three events use always genome rates
+#
+INVERSION f:0
+TRANSPOSITION f:0
+ORIGINATION f:2000
+#
+## Extensions
+#
+DUPLICATION_EXTENSION f:1
+TRANSFER_EXTENSION f:1
+LOSS_EXTENSION f:1
+INVERSION_EXTENSION f:0.05
+TRANSPOSITION_EXTENSION f:0.3
+#
+## Transfer related parameters
+#
+## REPLACEMENT_TRANSFER gives the probability of the transfer being a replacement transfer. REPLACEMENT_TRANSFER = 0 if all transfers are additive transfers
+#
+REPLACEMENT_TRANSFER 1
+#
+## Genome size related parameters
+#
+INITIAL_GENOME_SIZE	1
+#
+## MIN_GENOME_SIZE prevents genome to become too small. Any losses affecting genomes under this size will be ignored
+#
+MIN_GENOME_SIZE	1
+#
+## Output related parameters
+#
+EVENTS_PER_BRANCH 1
+PROFILES 1
+GENE_TREES 1
+RECONCILED_TREES 0
+VERBOSE 1
+#
+### GF SPECIFIC PARAMETERS ###
+#
+GENE_LENGTH f:100
+INTERGENE_LENGTH 100
+PSEUDOGENIZATION 0.5
+#
+### GM SPECIFIC PARAMETERS ###
+RATE_FILE False
+SCALE_RATES False
+#
+## SEED : If 0, the SEED is chosen randomly
+SEED 0
