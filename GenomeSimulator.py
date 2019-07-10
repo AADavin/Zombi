@@ -23,6 +23,8 @@ class GenomeSimulator():
             numpy.random.seed(parameters["SEED"])
 
         self.tree_events = self._read_events_file(events_file)
+        self.distances_to_start = self._read_distances_to_start(events_file) # Only useful when computing assortative transfers
+        self.complete_tree = self._read_tree(events_file.replace("Events.tsv", "CompleteTree.nwk"))
 
         self.all_genomes = dict()
         self.all_gene_families = dict()
@@ -288,6 +290,21 @@ class GenomeSimulator():
                 events.append(handle)
         return events
 
+    def _read_distances_to_start(self, events_file):
+
+        # This function could be fusion with the function above
+
+        distances_to_start = dict()
+
+        with open(events_file) as f:
+            f.readline()
+            for line in f:
+                time, _, nodes = line.strip().split("\t")
+                n = nodes.split(";")[0]
+                distances_to_start[n] = float(time)
+        return distances_to_start
+
+
     def _read_crown_length(self, length_file):
 
 
@@ -297,6 +314,12 @@ class GenomeSimulator():
             cl = float(f.readline().strip().split("\t")[-1])
 
         return cl
+
+    def _read_tree(self, tree_file):
+
+        with open(tree_file) as f:
+            t = ete3.Tree(f.readline().strip(), format=1)
+        return t
 
     def return_new_identifiers_for_segment(self, segment):
 
@@ -820,15 +843,19 @@ class GenomeSimulator():
 
         elif event == "T":
 
-            # We choose a recipient
-
             possible_recipients = [x for x in self.active_genomes if x != lineage]
 
             if len(possible_recipients) > 0:
 
-
-                recipient = random.choice(possible_recipients)
                 donor = lineage
+
+                # We choose a recipient
+
+                if self.parameters["ASSORTATIVE_TRANSFER"] == "True":
+                    recipient = self.choose_assortative_recipient(time, possible_recipients, donor)
+                else:
+                    recipient = random.choice(possible_recipients)
+
                 self.make_transfer(t_e, donor, recipient, time)
                 return "T", donor+"->"+recipient
 
@@ -881,7 +908,11 @@ class GenomeSimulator():
 
             if len(possible_recipients) > 0:
 
-                recipient = random.choice(possible_recipients)
+                if self.parameters["ASSORTATIVE_TRANSFER"] == "True":
+                    recipient = self.choose_assortative_recipient(time, possible_recipients, donor)
+                else:
+                    recipient = random.choice(possible_recipients)
+
                 donor = lineage
                 self.make_transfer_interactome(t_e, donor, recipient, time)
                 return "T", donor + "->" + recipient
@@ -988,7 +1019,11 @@ class GenomeSimulator():
 
             if len(possible_recipients) > 0:
 
-                recipient = random.choice(possible_recipients)
+                if self.parameters["ASSORTATIVE_TRANSFER"] == "True":
+                    recipient = self.choose_assortative_recipient(time, possible_recipients, donor)
+                else:
+                    recipient = random.choice(possible_recipients)
+
                 donor = lineage
                 self.make_transfer(t_e, donor, recipient, time, family_mode = True)
                 return "T", donor + "->" + recipient
@@ -1129,7 +1164,11 @@ class GenomeSimulator():
 
             if len(possible_recipients) > 0:
 
-                recipient = random.choice(possible_recipients)
+                if self.parameters["ASSORTATIVE_TRANSFER"] == "True":
+                    recipient = self.choose_assortative_recipient(time, possible_recipients, donor)
+                else:
+                    recipient = random.choice(possible_recipients)
+
                 donor = lineage
 
                 r = self.select_advanced_length(lineage, t_e * multiplier)
@@ -1617,21 +1656,23 @@ class GenomeSimulator():
             self.all_gene_families[gene.gene_family].register_event(time, "D", ";".join(map(str, nodes)))
 
 
-    def choose_precise_distance_recipient(self, time, possible_recipients, donor):
+    def choose_assortative_recipient(self, time, possible_recipients, donor):
 
-        ### Deprecated
-
+        alpha = self.parameters["ALPHA"]
         weights = list()
-        mydonor = self.distances_to_root[donor][0]
+
+        mdonor = self.complete_tree&donor
 
         for recipient in possible_recipients:
-
-            myrecipient = self.distances_to_root[recipient][0]
-            phylo_d = mydonor.get_distance(myrecipient)
-            td = phylo_d + (2 * time) - self.distances_to_root[donor][1] - self.distances_to_root[recipient][1]
+            mrecipient = self.complete_tree&recipient
+            ca = self.complete_tree.get_common_ancestor(mrecipient, mdonor).name
+            x1 = self.distances_to_start[ca]
+            td =  time - x1
             weights.append(td)
 
-        draw = numpy.random.choice(possible_recipients, 1, p=af.normalize(af.inverse(weights)))[0]
+
+        draw = numpy.random.choice(possible_recipients, 1, p=af.normalize(numpy.exp(-alpha * af.normalize(weights))))[0]
+
 
         return draw
 

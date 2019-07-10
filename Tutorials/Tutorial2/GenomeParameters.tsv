@@ -29,6 +29,12 @@ TRANSPOSITION_EXTENSION f:0.3
 #
 REPLACEMENT_TRANSFER 1
 #
+# If ASSORTATIVE_TRANSFER is True, the transfer occur preferentially between closely related lineages. The weighted probability is proportional to the normalized phylogenetic
+# distance ^ - ALPHA. Can be computationally expensive, use at your discretion
+#
+ASSORTATIVE_TRANSFER False
+ALPHA 1
+#
 ## Genome size related parameters
 #
 INITIAL_GENOME_SIZE	500

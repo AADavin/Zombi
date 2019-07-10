@@ -11,6 +11,8 @@ def inverse(array):
     transformed_array = 1./numpy.array(array)
     return (transformed_array)
 
+
+
 def logtransform(array):
     transformed_array = numpy.log(array)
     return (transformed_array)
@@ -201,7 +203,7 @@ def prepare_genome_parameters(parameters):
         if parameter == "ROOT_GENOME":
             parameters[parameter] = value.split(";")
 
-        if parameter == "REPLACEMENT_TRANSFER":
+        if parameter == "REPLACEMENT_TRANSFER" or parameter == "ALPHA":
             parameters[parameter] = float(value)
 
         if parameter == "PROFILES" or parameter == "EVENTS_PER_BRANCH" or parameter == "GENE_TREES" \

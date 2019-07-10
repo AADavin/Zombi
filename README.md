@@ -41,7 +41,7 @@ First, clone the repository to your computer
 
     git clone https://github.com/AADavin/ZOMBI
 
-Second, you need **python 3.6** installed with **ETE3**, **numpy**, **networkx** and pyvolve
+Second, you need **python 3.6** installed with **ETE3**, **numpy**, **networkx** and **pyvolve**
 
     pip3 install ete3 numpy networkx pyvolve
     
