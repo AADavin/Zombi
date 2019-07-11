@@ -1115,11 +1115,13 @@ class GenomeSimulator():
     def advanced_evolve_genomes_f(self, duplication, transfer, loss, inversion, transposition, origination, time):
 
 
-        d_e = self.parameters["DUPLICATION_EXTENSION"]
-        t_e = self.parameters["TRANSFER_EXTENSION"]
-        l_e = self.parameters["LOSS_EXTENSION"]
-        i_e = self.parameters["INVERSION_EXTENSION"]
-        c_e = self.parameters["TRANSPOSITION_EXTENSION"]
+        d_e = int(af.obtain_value(self.parameters["DUPLICATION_EXTENSION"]))
+        t_e = int(af.obtain_value(self.parameters["TRANSFER_EXTENSION"]))
+        l_e = int(af.obtain_value(self.parameters["LOSS_EXTENSION"]))
+        i_e = int(af.obtain_value(self.parameters["INVERSION_EXTENSION"]))
+        c_e = int(af.obtain_value(self.parameters["TRANSPOSITION_EXTENSION"]))
+
+        #print(d_e, t_e, l_e, i_e, c_e)
 
         mean_gene_length = int()
 
@@ -1582,8 +1584,6 @@ class GenomeSimulator():
             self.all_genomes[lineage].interactome.add_edges_from(edges_to_add_to_new_node)
 
 
-
-
     def make_duplication_within_intergene(self, c1, c2, d, lineage, time):
 
         chromosome = self.all_genomes[lineage].select_random_chromosome()
@@ -1651,8 +1651,8 @@ class GenomeSimulator():
 
             gene_family = gene.gene_family
 
-            self.all_gene_families[gene_family].genes.append(copied_segment1[i])
-            self.all_gene_families[gene_family].genes.append(copied_segment2[i])
+            self.all_gene_families[gene_family].genes.append(new_segment_1[i])
+            self.all_gene_families[gene_family].genes.append(new_segment_2[i])
 
             self.all_gene_families[gene.gene_family].register_event(time, "D", ";".join(map(str, nodes)))
 
@@ -3415,8 +3415,11 @@ class Genome():
 
         # I have to weight by the length of each chromosome
 
-        chromosome = numpy.random.choice(self.chromosomes, 1, p=af.normalize([len(x) for x in self.chromosomes]))[0]
-        return chromosome
+        #chromosome = numpy.random.choice(self.chromosomes, 1, p=af.normalize([len(x) for x in self.chromosomes]))[0]
+
+        # So far, only one chromosome per genome, I can safely return the first chromosome
+
+        return self.chromosomes[0]
 
     def update_genome_species(self, species):
 
