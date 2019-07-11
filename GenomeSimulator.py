@@ -2093,7 +2093,7 @@ class GenomeSimulator():
 
         # Now we check we are not under the minimum size
 
-        if len(chromosome) - len(affected_genes) <= 0:
+        if len(chromosome) - len(affected_genes) <= self.parameters["MIN_GENOME_SIZE"]:
             return 0
 
         chromosome.remove_segment(segment)
@@ -2162,7 +2162,7 @@ class GenomeSimulator():
 
         # Now we check we are not under the minimum size
 
-        if len(chromosome) - len(affected_genes) <= 0:
+        if len(chromosome) - len(affected_genes) <= self.parameters["MIN_GENOME_SIZE"]:
             return 0
 
         chromosome.remove_segment(segment)
