@@ -828,20 +828,17 @@ class GenomeSimulator():
 
     def evolve_genomes(self, duplication, transfer, loss, inversion, transposition, origination, time):
 
-        d_e = af.obtain_value(self.parameters["DUPLICATION_EXTENSION"])
-        t_e = af.obtain_value(self.parameters["TRANSFER_EXTENSION"])
-        l_e = af.obtain_value(self.parameters["LOSS_EXTENSION"])
-        i_e = af.obtain_value(self.parameters["INVERSION_EXTENSION"])
-        c_e = af.obtain_value(self.parameters["TRANSPOSITION_EXTENSION"])
-
         lineage = random.choice(list(self.active_genomes))
         event = self.choose_event(duplication, transfer, loss, inversion, transposition, origination)
 
         if event == "D":
+            d_e = self.parameters["DUPLICATION_EXTENSION"]
             self.make_duplication(d_e, lineage, time)
             return "D", lineage
 
         elif event == "T":
+
+            t_e = self.parameters["TRANSFER_EXTENSION"]
 
             possible_recipients = [x for x in self.active_genomes if x != lineage]
 
@@ -864,14 +861,18 @@ class GenomeSimulator():
 
         elif event == "L":
 
+            l_e = self.parameters["LOSS_EXTENSION"]
+
             self.make_loss(l_e, lineage, time)
             return "L", lineage
 
         elif event == "I":
+            i_e = self.parameters["INVERSION_EXTENSION"]
             self.make_inversion(i_e, lineage, time)
             return "I", lineage
 
         elif event == "P":
+            c_e = self.parameters["TRANSPOSITION_EXTENSION"]
             self.make_transposition(c_e, lineage, time)
             return "P",lineage
 
@@ -886,11 +887,11 @@ class GenomeSimulator():
 
     def evolve_genomes_i(self, duplication, transfer, loss, inversion, transposition, origination, remove, rewire, time):
 
-        d_e = af.obtain_value(self.parameters["DUPLICATION_EXTENSION"])
-        t_e = af.obtain_value(self.parameters["TRANSFER_EXTENSION"])
-        l_e = af.obtain_value(self.parameters["LOSS_EXTENSION"])
-        i_e = af.obtain_value(self.parameters["INVERSION_EXTENSION"])
-        c_e = af.obtain_value(self.parameters["TRANSPOSITION_EXTENSION"])
+        d_e = self.parameters["DUPLICATION_EXTENSION"]
+        t_e = self.parameters["TRANSFER_EXTENSION"]
+        l_e = self.parameters["LOSS_EXTENSION"]
+        i_e = self.parameters["INVERSION_EXTENSION"]
+        c_e = self.parameters["TRANSPOSITION_EXTENSION"]
 
         lineage = random.choice(list(self.active_genomes))
         event = self.choose_event_i(duplication, transfer, loss, inversion, transposition, origination, remove, rewire)
@@ -968,11 +969,11 @@ class GenomeSimulator():
 
     def evolve_genomes_m(self, time):
 
-        d_e = af.obtain_value(self.parameters["DUPLICATION_EXTENSION"])
-        t_e = af.obtain_value(self.parameters["TRANSFER_EXTENSION"])
-        l_e = af.obtain_value(self.parameters["LOSS_EXTENSION"])
-        i_e = af.obtain_value(self.parameters["INVERSION_EXTENSION"])
-        c_e = af.obtain_value(self.parameters["TRANSPOSITION_EXTENSION"])
+        d_e = self.parameters["DUPLICATION_EXTENSION"]
+        t_e = self.parameters["TRANSFER_EXTENSION"]
+        l_e = self.parameters["LOSS_EXTENSION"]
+        i_e = self.parameters["INVERSION_EXTENSION"]
+        c_e = self.parameters["TRANSPOSITION_EXTENSION"]
 
         ####
 
@@ -1114,11 +1115,11 @@ class GenomeSimulator():
     def advanced_evolve_genomes_f(self, duplication, transfer, loss, inversion, transposition, origination, time):
 
 
-        d_e = af.obtain_value(self.parameters["DUPLICATION_EXTENSION"])
-        t_e = af.obtain_value(self.parameters["TRANSFER_EXTENSION"])
-        l_e = af.obtain_value(self.parameters["LOSS_EXTENSION"])
-        i_e = af.obtain_value(self.parameters["INVERSION_EXTENSION"])
-        c_e = af.obtain_value(self.parameters["TRANSPOSITION_EXTENSION"])
+        d_e = self.parameters["DUPLICATION_EXTENSION"]
+        t_e = self.parameters["TRANSFER_EXTENSION"]
+        l_e = self.parameters["LOSS_EXTENSION"]
+        i_e = self.parameters["INVERSION_EXTENSION"]
+        c_e = self.parameters["TRANSPOSITION_EXTENSION"]
 
         mean_gene_length = int()
 
@@ -3058,12 +3059,8 @@ class Chromosome():
 
     def select_random_length(self, p):
 
-        # Watch out here
+        return int(af.obtain_value(p))
 
-        if not self.has_intergenes:
-            return numpy.random.geometric(p)
-        else:
-            return numpy.random.geometric(p)
 
     def __len__(self):
 
