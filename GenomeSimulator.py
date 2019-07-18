@@ -366,7 +366,9 @@ class GenomeSimulator():
                 # We fill the chromosomes and we create also the gene families
                 if family_rates == True and self.parameters["RATE_FILE"] == "False":
                         gene, gene_family = self.make_origination(genome.species, time, family_mode=True)
+
                 elif family_rates == True and self.parameters["RATE_FILE"] != "False":
+
                         gene, gene_family = self.make_origination(genome.species, time, family_mode=True,
                                                                   empirical_rates=True)
                 else:
@@ -1046,7 +1048,14 @@ class GenomeSimulator():
 
         elif event == "O":
 
-            gene, gene_family = self.make_origination(lineage, time, family_mode=True)
+            if family_rates == True and self.parameters["RATE_FILE"] == "False":
+                gene, gene_family = self.make_origination(genome.species, time, family_mode=True)
+
+            elif family_rates == True and self.parameters["RATE_FILE"] != "False":
+
+                gene, gene_family = self.make_origination(genome.species, time, family_mode=True,
+                                                          empirical_rates=True)
+
             chromosome = self.all_genomes[lineage].select_random_chromosome()
             position = chromosome.select_random_position()
             segment = [gene]
