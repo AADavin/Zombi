@@ -12,6 +12,9 @@
 Zombi's output is especially simple and easy to read, understand and parse. 
 
 
+**Zombi current version**: **Zombi 1.0.0**
+
+
 ----------
 
 Writen by Adrián A. Davín 
