@@ -1,6 +1,6 @@
 
 
-<img src="https://github.com/AADavin/Zombi/blob/master/Images/ZombiLogo.png" alt="zombilogo" height = "300" width="600"/>
+<img src="https://github.com/AADavin/Zombi/blob/master/Images/ZombiLogo.png" alt="zombilogo" height = "150" width="300"/>
 
 ### **Zombi: A phylogenetic simulator of trees, genomes and sequences that accounts for dead lineages**
 
