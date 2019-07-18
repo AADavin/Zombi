@@ -2852,13 +2852,14 @@ class Chromosome():
         self.total_locations = list()
         self.map_of_locations = list()
 
+        self.total_rates = 0
+
     def obtain_total_itergenic_length(self):
 
         total_length = 0
         for intergene in self.intergenes:
             total_length += intergene.length
         return total_length
-
 
     def select_random_position(self):
 
@@ -3060,6 +3061,22 @@ class Chromosome():
     def select_random_length(self, p):
 
         return int(af.obtain_value(p))
+
+    def return_rates(self):
+
+        # NOT WORKING FOR NOW
+
+        self.total_rates = 0.0
+
+        for gene in self.genes:
+            d = gene.gene_family.rates["DUPLICATION"] ## GENE.GENE_FAMILY SHOULD POINT TO A GENE FAMILY OBJECT, NOT A STR
+            t = gene.gene_family.rates["TRANSFER"]
+            l = gene.gene_family.rates["LOSS"]
+
+            self.total_rates += d + t +l
+
+        return self.total_rates
+
 
 
     def __len__(self):

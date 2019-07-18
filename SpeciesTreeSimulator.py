@@ -10,10 +10,15 @@ class SpeciesTreeGenerator():
 
         self.parameters = parameters
 
-        mseed = self.parameters["SEED"]
-        if mseed != 0:
-            random.seed(parameters["SEED"])
-            numpy.random.seed(parameters["SEED"])
+        try:
+
+
+            mseed = self.parameters["SEED"]
+            if mseed != 0:
+                random.seed(parameters["SEED"])
+                numpy.random.seed(parameters["SEED"])
+        except:
+            pass
 
     def start(self):
 
