@@ -307,11 +307,9 @@ class GenomeSimulator():
 
     def _read_crown_length(self, length_file):
 
-
         with open(length_file) as f:
-            f.readline()
-            f.readline()
-            cl = float(f.readline().strip().split("\t")[-1])
+
+            cl = float(f.readlines()[-1].strip().split("\t")[-1])
 
         return cl
 
@@ -979,6 +977,9 @@ class GenomeSimulator():
 
         ####
 
+
+        ####
+
         mactive_genomes = list(self.active_genomes)
         mweights = list()
         for genome in mactive_genomes:
@@ -1048,14 +1049,13 @@ class GenomeSimulator():
 
         elif event == "O":
 
-            if family_rates == True and self.parameters["RATE_FILE"] == "False":
-                gene, gene_family = self.make_origination(genome.species, time, family_mode=True)
 
-            elif family_rates == True and self.parameters["RATE_FILE"] != "False":
+            if  self.parameters["RATE_FILE"] == "False":
+                gene, gene_family = self.make_origination(lineage, time, family_mode=True)
 
-                gene, gene_family = self.make_origination(genome.species, time, family_mode=True,
+            elif  self.parameters["RATE_FILE"] != "False":
+                gene, gene_family = self.make_origination(lineage, time, family_mode=True,
                                                           empirical_rates=True)
-
             chromosome = self.all_genomes[lineage].select_random_chromosome()
             position = chromosome.select_random_position()
             segment = [gene]
