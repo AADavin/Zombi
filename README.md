@@ -2,13 +2,13 @@
 
 <img src="https://github.com/AADavin/Zombi/blob/master/Images/ZombiLogo.png" alt="zombilogo" height = "100" width="200"/>
 
-### **A simulator of species, genes and genomes that accounts for extinct lineages**
+### **Zombi: A phylogenetic simulator of trees, genomes and sequences that accounts for dead lineages**
 
 ----------
 
 ### **Introduction** ###
 
-**Zombi** is a flexible platform of genome evolution which can be of great interest to those who want to test different evolutionary hypotheses under simulations and need to use a fast and easy to use tool to generate species trees, gene trees or sequences.
+**Zombi** is a flexible platform of genome evolution which can be of great interest to those who want to test different evolutionary hypotheses under simulations and need to use a fast and easy-to-use tool to generate species trees, gene trees or sequences.
 Zombi's output is especially simple and easy to read, understand and parse. 
 
 
