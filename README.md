@@ -67,7 +67,6 @@ Computing **genomes** requires having computed previously a species tree compute
 Computing **sequences** requires having computed previously **genomes** with the G mode.
 
 
-
 <img src="https://github.com/AADavin/Zombi/blob/master/Images/ZombiGraphicAbstract.png" alt="zombipipeline" height = "300" width="800"/>
 
 
