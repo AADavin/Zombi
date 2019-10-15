@@ -114,7 +114,13 @@ def obtain_value(value):
 
     elif handle[0] == "g":
         # geometric distribution
-        value = numpy.random.geometric(float(handle[1]))
+        params = handle[1].split(";")
+        value = abs(numpy.random.geometric(float(params[0])))
+
+    elif handle[0] == "e":
+        # exponential distribution
+        params = handle[1].split(";")
+        value = abs(numpy.random.exponential(float(params[0])))
 
     return value
 
