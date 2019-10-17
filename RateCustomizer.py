@@ -151,11 +151,11 @@ class RateCustomizer():
 
         for node in mytree.traverse():
 
-            d = af.obtain_value(self.parameters["DUPLICATION_EXTENSION"])
-            t = af.obtain_value(self.parameters["TRANSFER_EXTENSION"])
-            l = af.obtain_value(self.parameters["LOSS_EXTENSION"])
-            i = af.obtain_value(self.parameters["INVERSION_EXTENSION"])
-            p = af.obtain_value(self.parameters["TRANSPOSITION_EXTENSION"])
+            d = self.parameters["DUPLICATION_EXTENSION"]
+            t = self.parameters["TRANSFER_EXTENSION"]
+            l = self.parameters["LOSS_EXTENSION"]
+            i = self.parameters["INVERSION_EXTENSION"]
+            p = self.parameters["TRANSPOSITION_EXTENSION"]
 
             branch_rates[node.name] = (d,t,l,i,p)
 

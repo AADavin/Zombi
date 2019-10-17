@@ -792,7 +792,7 @@ class GenomeSimulator():
             f.readline()
             for line in f:
                 sp, d, t, l, i, c,  = line.split("\t")
-                self.branch_extension_rates[sp] = tuple([float(x) for x in (d, t, l, i, c)])
+                self.branch_extension_rates[sp] = tuple([x for x in (d, t, l, i, c)])
 
         with open(os.path.join(rates_folder, "Transfer_rates.tsv")) as f:
             f.readline()
