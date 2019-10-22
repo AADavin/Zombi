@@ -1689,7 +1689,7 @@ class GenomeSimulator():
             weights.append(td)
 
         pvector = af.normalize(numpy.exp(-alpha * af.normalize(weights)))
-        if sum(pvector) == 1:
+        if round(sum(pvector),4) == 1:
             draw = numpy.random.choice(possible_recipients, 1, p=pvector)[0]
             return draw
 
