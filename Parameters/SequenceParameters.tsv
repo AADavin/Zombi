@@ -33,7 +33,7 @@ G	0.25
 T	0.25
 #
 ## Required parameters if SEQUENCE='amino-acid'
-## The empirical equilibrium frequencies are those published with each respective model’s original paper.
+## The empirical equilibrium frequencies are those published with each respective model's original paper.
 ## AA_MODEL can be either 'JTT', 'WAG', 'LG', 'DAYHOFF', 'MTMAM' or 'MTREV24'
 #
 AA_MODEL	WAG
