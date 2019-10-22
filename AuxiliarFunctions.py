@@ -5,12 +5,14 @@ import sys
 
 def normalize(array):
     total = numpy.sum(array)
-    return (array/total)
+    if total != 0:
+        return (array/total)
+    else:
+        return array
 
 def inverse(array):
     transformed_array = 1./numpy.array(array)
     return (transformed_array)
-
 
 
 def logtransform(array):

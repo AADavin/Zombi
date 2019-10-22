@@ -850,6 +850,8 @@ class GenomeSimulator():
 
                 if self.parameters["ASSORTATIVE_TRANSFER"] == "True":
                     recipient = self.choose_assortative_recipient(time, possible_recipients, donor)
+                    if recipient == None:
+                        return None
                 else:
                     recipient = random.choice(possible_recipients)
 
@@ -911,6 +913,8 @@ class GenomeSimulator():
 
                 if self.parameters["ASSORTATIVE_TRANSFER"] == "True":
                     recipient = self.choose_assortative_recipient(time, possible_recipients, donor)
+                    if recipient == None:
+                        return None
                 else:
                     recipient = random.choice(possible_recipients)
 
@@ -1025,6 +1029,8 @@ class GenomeSimulator():
 
                 if self.parameters["ASSORTATIVE_TRANSFER"] == "True":
                     recipient = self.choose_assortative_recipient(time, possible_recipients, donor)
+                    if recipient == None:
+                        return None
                 else:
                     recipient = random.choice(possible_recipients)
 
@@ -1178,6 +1184,8 @@ class GenomeSimulator():
 
                 if self.parameters["ASSORTATIVE_TRANSFER"] == "True":
                     recipient = self.choose_assortative_recipient(time, possible_recipients, donor)
+                    if recipient == None:
+                        return None
                 else:
                     recipient = random.choice(possible_recipients)
 
@@ -1680,11 +1688,13 @@ class GenomeSimulator():
             td =  time - x1
             weights.append(td)
 
+        pvector = af.normalize(numpy.exp(-alpha * af.normalize(weights)))
+        if sum(pvector) == 1:
+            draw = numpy.random.choice(possible_recipients, 1, p=pvector)[0]
+            return draw
 
-        draw = numpy.random.choice(possible_recipients, 1, p=af.normalize(numpy.exp(-alpha * af.normalize(weights))))[0]
-
-
-        return draw
+        else:
+            return None
 
     def choose_advanced_recipient(self, possible_recipients, donor):
 
