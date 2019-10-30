@@ -1688,13 +1688,13 @@ class GenomeSimulator():
             td =  time - x1
             weights.append(td)
 
-        pvector = af.normalize(numpy.exp(-alpha * af.normalize(weights)))
-        if round(sum(pvector),4) == 1:
-            draw = numpy.random.choice(possible_recipients, 1, p=pvector)[0]
-            return draw
+        beta = min(alpha * af.normalize(weights))
+        val = (alpha * af.normalize(weights)) - beta
+        pvector = af.normalize(numpy.exp(-val))
 
-        else:
-            return None
+        draw = numpy.random.choice(possible_recipients, 1, p=pvector)[0]
+
+        return draw
 
     def choose_advanced_recipient(self, possible_recipients, donor):
 
