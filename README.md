@@ -30,13 +30,14 @@ Please, if you have any doubts or need a hand, **just contact me here: aaredav@g
 
 Please, if you use Zombi, cite:
 
-**Zombi: A simulator of species, genes and genomes that accounts for extinct lineages.**
+**Zombi: A phylogenetic simulator of trees, genomes and sequences that accounts for dead lineages.**
 
 Adrian A. Davin, Theo Tricou, Eric Tannier, Damien M. de Vienne, Gergely J. Szollosi
 
-bioRxiv 339473; doi: https://doi.org/10.1101/339473
+Bioinformatics, btz710, https://doi.org/10.1093/bioinformatics/btz710
 
-https://www.biorxiv.org/content/early/2018/06/07/339473
+[Link to the paper](https://watermark.silverchair.com/btz710.pdf?token=AQECAHi208BE49Ooan9kkhW_Ercy7Dm3ZL_9Cf3qfKAc485ysgAAAq8wggKrBgkqhkiG9w0BBwagggKcMIICmAIBADCCApEGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMeuxJkjvPpGqRHF73AgEQgIICYmMCnTbF25wuitWpQMCfPQmPqS9VBWumzI0oQ8Cd8qf-lZ9AO1BfOp6AphbqD9HGqJHniR6gDnjxze2O2t0pLReW9mJ27Zev2OVx5wLluGysTxK3ddTN7UT81omAUQj43IGkOMF3mE039d-dwleAcT2OX0iXAR8kZoOGRXIl13PYEiPeZqai1SUbGfd9plkECzJbhFaHKb-SvOAPzyxwaNDhDrRPWxaTdAAnhcSLL3w-uUHwW43P91gHXUHrpDxd1K5U-sGZx7Ej538eJ6tVKhO_GEyLuyFqpNFKnOyAvtw_364ivK6DWyFblvLI4yS275Iq3g77EZ8Ezm7NJxdn4-2tiy84X_uUKijMewA3AxWdOyA7u8WqBYQ6khBDeiN9rw5v8QaCNGc4ZWy41psqxqKobXx4fIjrvNBXBT05XF6IQ_YkyMXcwfgVMewmeO_VsQftgJ4_yO3fTvr3qZlqbcTzLs_6W9Kj3WU8xcK_MuXQr_hUaI6DnFY5MG6aAXtS8cc6_DyzAddHIkZ7qroF52m-hIEz4GhBU_Cou16ftDygxJQbUQMLHFeLPQv1dJFWZVyDwQvj14-3tmZpf8jq7tOs4PrqnrUrcB6X6ZpnHEdSEL-T1eJeRoHuDIlbm8pHhvxRB0DSuOjktR54h0R1fX7uppgRdLvC6tu8Qu6-KG6q23nzrjXQ2XvI8z5EikM46QL4RQaZN58yVuKowXMB-4EdaNsePr89XQ37Q9yc18o9uiSHqVAiry5-T3FEd_2EhmqnsEraHkLvduchvBp4-w94BlY9utjTGFYs-n0cyOw4xGg)
+
 
 ### **Installation** ###
 
