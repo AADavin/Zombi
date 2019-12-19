@@ -67,7 +67,7 @@ class Zombi():
         run_counter = 0
         success = False
 
-        while success == False and run_counter <= 50:
+        while success == False and run_counter < 100:
             run_counter += 1
             print("Computing Species Tree. Trial number %s" % str(run_counter))
             if advanced_mode == "0":
@@ -76,6 +76,8 @@ class Zombi():
                 success = stg.run_b()
             if advanced_mode == "p":
                 success = stg.run_p()
+            if advanced_mode == "m":
+                success = stg.run_m()
 
         if run_counter >= 100:
             print("Aborting computation of the Species Tree. Please use other speciation and extinction rates!")
@@ -168,7 +170,7 @@ class Zombi():
         if advanced_mode == "m":
             print("Writing Family rates")
             gss.write_family_rates(genome_folder)
-
+        
         print("Writing Gene Families")
 
         gss.write_gene_family_events(gene_families_folder)
@@ -315,7 +317,7 @@ if __name__ == "__main__":
 
     #parser.add_argument("mode", type=str, choices=["T", "Ti", "Tb", "Tp", "G", "Gu", "Gf", "Gi", "S", "Su", "Sf"],
     #                    help="Mode")
-    parser.add_argument("mode", type=str, choices=["T", "Ti", "Tb", "Tp", "G", "Gu", "Gf", "Gm", "S", "Su", "Sf"],
+    parser.add_argument("mode", type=str, choices=["T", "Ti", "Tb", "Tp", "Tm", "Ts", "G", "Gu", "Gf", "Gm", "S", "Su", "Sf"],
                                             help="Mode")
     parser.add_argument("params", type=str, help="Parameters file")
     parser.add_argument("output", type=str, help="Name of the experiment folder")

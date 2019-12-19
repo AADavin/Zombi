@@ -152,7 +152,10 @@ def prepare_species_tree_parameters(parameters):
 
         if parameter == "LINEAGE_PROFILE":
             parameters[parameter] = [tuple([int(j) for j in x.split("-")]) for x in value.split(";")]
-
+            
+        if parameter == "MASSIVE_EXTINCTION":
+            parameters[parameter] = [tuple([float(j) for j in x.split("-")]) for x in value.split(";")]
+            
         if parameter == "SPECIES_EVOLUTION_MODE" or parameter == "N_LINEAGES" or parameter == "MIN_LINEAGES" \
                 or parameter == "TOTAL_LINEAGES" or parameter == "STOPPING_RULE" or parameter == "MAX_LINEAGES"\
                 or parameter == "VERBOSE" or parameter == "SEED" or parameter == "SCALE_TREE":

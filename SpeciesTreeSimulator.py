@@ -272,6 +272,93 @@ class SpeciesTreeGenerator():
                     lineage = random.sample(self.active_lineages, 1)[0]
                     self._get_extinct(lineage, time)
                     n_lineages_alive -= 1
+                    
+    def run_m(self):
+
+        self.start()
+
+        speciation = af.obtain_value(self.parameters["SPECIATION"])
+        extinction = af.obtain_value(self.parameters["EXTINCTION"])
+        stopping_rule = self.parameters["STOPPING_RULE"]
+        total_time = self.parameters["TOTAL_TIME"]
+        total_lineages = self.parameters["TOTAL_LINEAGES"]
+        max_lineages = self.parameters["MAX_LINEAGES"]
+        
+        handle = self.parameters["MASS_EXTINCTION"].split("-") # I should add the possibility of having several extinctions
+        extinction_time, p_extinction = float(handle[0]), float(handle[1])
+        time = 0
+
+        n_lineages_alive = 1
+        
+        is_extinction_over = False
+        
+        while True:
+
+            if n_lineages_alive == 0:
+
+                print("All dead")
+                success = False
+                return success
+                                 
+            if self.parameters["VERBOSE"] == 1:
+                print("Time: %s ; Number of lineages alive: %s" % (str(time), str(n_lineages_alive)))
+
+            time_to_next_event = self.get_time_to_next_event(n_lineages_alive, (speciation, extinction))
+            
+            if time + time_to_next_event >= extinction_time and is_extinction_over == False:
+                
+                self.increase_distances(extinction_time - time)
+                
+                time = extinction_time
+                extinctions = set()
+                for lineage in self.active_lineages:
+                    if numpy.random.uniform(0, 1) <= p_extinction:                                        
+                        extinctions.add(lineage)
+                for lineage in extinctions:
+                    self._get_extinct(lineage, time)                
+                    self.events.append((time, "E", lineage))
+                    n_lineages_alive -= 1 
+                is_extinction_over = True
+            
+            elif stopping_rule == 0 and time + time_to_next_event >= total_time:
+
+                self.increase_distances(total_time - time)
+                for lineage in self.active_lineages:
+                    self.events.append((total_time, "F", lineage))
+                success = True
+                return success
+
+            elif stopping_rule == 1 and n_lineages_alive == total_lineages:
+
+                self.increase_distances(time_to_next_event)
+                for lineage in self.active_lineages:
+                    self.events.append((time + time_to_next_event, "F", lineage))
+                success = True
+                return success
+            
+            elif n_lineages_alive >= max_lineages:
+
+                print("Aborting. Max n of lineages attained")
+                success = True
+                return success
+
+            else:
+                # In this case we do the normal the computation
+
+                time += time_to_next_event
+
+                self.increase_distances(time_to_next_event)
+                event = self.choose_event(speciation, extinction)
+                lineage = random.sample(self.active_lineages, 1)[0]
+
+                if event == "S":
+                    self._get_speciated(lineage, time)
+                    n_lineages_alive += 1
+
+                elif event == "E":
+                    self._get_extinct(lineage, time)
+                    n_lineages_alive -= 1                
+    
 
     def increase_distances(self, time):
 
