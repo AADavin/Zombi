@@ -46,13 +46,14 @@ INITIAL_GENOME_SIZE	100
 #
 MIN_GENOME_SIZE	10
 #
-## Output related parameters
+## Output related parameters. Use SCALE_TREE != 0 only if you used that too in the Species Tree mode. Use the same number
 #
 EVENTS_PER_BRANCH 1
 PROFILES 1
 GENE_TREES 1
 RECONCILED_TREES 0
 VERBOSE 1
+SCALE_TREE 0 
 #
 ### GF SPECIFIC PARAMETERS ###
 #

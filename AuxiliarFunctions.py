@@ -218,7 +218,7 @@ def prepare_genome_parameters(parameters):
 
         if parameter == "PROFILES" or parameter == "EVENTS_PER_BRANCH" or parameter == "GENE_TREES" \
                 or parameter == "PRUNE_TREES" or parameter == "TRANSFER_PREFERENCE" or parameter == "RECONCILED_TREES" \
-                or parameter == "VERBOSE" or parameter == "MIN_GENOME_SIZE" or parameter == "EXTENSION_MULTIPLIER" or parameter == "SEED":
+                or parameter == "VERBOSE" or parameter == "MIN_GENOME_SIZE" or parameter == "EXTENSION_MULTIPLIER" or parameter == "SEED" or parameter == "SCALE_TREE":
 
             parameters[parameter] = int(value)
 

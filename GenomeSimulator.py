@@ -133,7 +133,7 @@ class GenomeSimulator():
                 with open(os.path.join(gene_tree_folder, gene_family_name + "_rec.xml"), "w") as f:
                     f.write(rec_tree)
 
-    def write_events_per_branch(self, events_per_branch_folder):
+    def write_events_per_branch(self, events_per_branch_folder, scale, scaled_file, events_file):
 
         if not os.path.isdir(events_per_branch_folder):
             os.mkdir(events_per_branch_folder)
@@ -197,7 +197,54 @@ class GenomeSimulator():
                     line = [str(time), event, nodes]
                     line = "\t".join(line) + "\n"
                     f.write(line)
+        
+            if scale != 0: # Only working if Species Tree has been scaled too the same distance!
 
+                # First I read where the root is:
+
+                with open(scaled_file) as f:
+                    f.readline()
+                    for l in f:
+                        t, event, nodes = l.strip().split("\t")
+                        if float(t) == 0:
+                            eroot = nodes.split(";")[0]
+
+
+                # Second, I read the total length of the tree
+
+                with open(events_file) as f:                
+                    for l in f:                    
+                        t, event, nodes = l.strip().split("\t")
+                        node1 = nodes.split(";")[0]
+                        if node1 == eroot:
+                            beginning_time = float(t)
+                        continue
+                    t, event, nodes = l.strip().split("\t")
+
+                    totaltime = float(t) - beginning_time
+
+                    mfactor = scale / totaltime
+
+
+                with open(os.path.join(events_per_branch_folder, name + "_brancheventsscaled.tsv"), "w") as f:
+
+                    header = ["TIME", "EVENT", "NODES"]
+                    header = "\t".join(map(str, header)) + "\n"
+
+                    f.write(header)
+
+                    for time, event, nodes in sorted(events, key = lambda x: float(x[0])):
+                        time = (float(time) - beginning_time) * mfactor
+                        line = [str(time), event, nodes]
+                        line = "\t".join(line) + "\n"
+                        f.write(line)
+
+            
+        
+        
+        
+        
+        
 
     def write_profiles(self, profiles_folder):
 

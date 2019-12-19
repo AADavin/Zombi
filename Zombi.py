@@ -120,6 +120,7 @@ class Zombi():
 
         parameters = af.prepare_genome_parameters(af.read_parameters(parameters_file))
         events_file = os.path.join(experiment_folder, "T/Events.tsv")
+        scaled_file = os.path.join(experiment_folder, "T/ScaledEvents.tsv")
         genome_folder = os.path.join(experiment_folder, "G")
         os.system("cp " + parameters_file + " " + genome_folder)
 
@@ -176,12 +177,13 @@ class Zombi():
             print("Writing Profiles")
             profiles_folder = os.path.join(genome_folder, "Profiles")
             gss.write_profiles(profiles_folder)
-
+                        
         if parameters["EVENTS_PER_BRANCH"] == 1:
+            scale = parameters["SCALE_TREE"]
             print("Writing Events Per Branch")
-            events_per_branch_folder = os.path.join(genome_folder, "Events_per_branch")
-            gss.write_events_per_branch(events_per_branch_folder)
-
+            events_per_branch_folder = os.path.join(genome_folder, "Events_per_branch")            
+            gss.write_events_per_branch(events_per_branch_folder, scale, scaled_file, events_file)
+            
         if parameters["GENE_TREES"] == 1 and parameters["RECONCILED_TREES"] == 1:
             print("Writing Gene Trees")
             gene_trees_folder = os.path.join(genome_folder, "Gene_trees")
