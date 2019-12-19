@@ -56,12 +56,12 @@ class SpeciesTreeGenerator():
                 print("All dead")
                 success = False
                 return success
-
+                                 
             if self.parameters["VERBOSE"] == 1:
                 print("Time: %s ; Number of lineages alive: %s" % (str(time), str(n_lineages_alive)))
 
             time_to_next_event = self.get_time_to_next_event(n_lineages_alive, (speciation, extinction))
-
+            
             if stopping_rule == 0 and time + time_to_next_event >= total_time:
 
                 self.increase_distances(total_time - time)
@@ -77,7 +77,7 @@ class SpeciesTreeGenerator():
                     self.events.append((time + time_to_next_event, "F", lineage))
                 success = True
                 return success
-
+            
             elif n_lineages_alive >= max_lineages:
 
                 print("Aborting. Max n of lineages attained")
@@ -564,6 +564,37 @@ class SpeciesTreeGenerator():
                         break
 
         return wholetree.write(format=1, format_root_node = True), extanttree.write(format=1, format_root_node = True), map_collapsed
+    
+    def scale_trees(self, extant_tree, scaling):
+        
+        mextant_tree = ete3.Tree(extant_tree, format=1)
+        eroot = mextant_tree.get_tree_root()
+        eleaf = mextant_tree.get_leaves()[0]
+        crown_length = eroot.get_distance(eleaf)
+        
+        mfactor = scaling / float(crown_length)
+        
+        for n in mextant_tree.traverse():
+            n.dist *= mfactor
+        
+        scaled_events = list()        
+        
+        beginning = ""
+        
+        for t, kind, nodes in self.events:
+            if kind == "S" and eroot.name == nodes.split(";")[0]:
+                beginning = float(t)
+                break
+        if beginning == "":
+            beginning = 0
+            
+            
+        for t, kind, nodes in self.events:           
+            scaled_events.append(( (float(t) - beginning) * mfactor, kind, nodes))
+        
+        print(mfactor, beginning, eroot.name)
+        
+        return (mextant_tree.write(format=1), scaled_events)
 
     def write_events_file(self, events_file):
 
@@ -627,4 +658,20 @@ class SpeciesTreeGenerator():
 
             #line = "\t".join(["Crown_ED", str(crown_ed)]) + "\n"
             #f.write(line)
-
+    def write_scaled_files(self, scaled_tree, scaled_extant_tree_file, scaled_events,                                      scaled_events_file):
+        
+        stree = ete3.Tree(scaled_tree, format=1)
+        with open(scaled_extant_tree_file, "w") as f:
+            f.write(stree.write(format=1, format_root_node = True))
+        with open(scaled_events_file, "w") as f:
+            
+            header = ["SCALED_TIME","EVENT","NODES"]
+            header = "\t".join(map(str, header)) + "\n" 
+            f.write(header)
+            for tp in scaled_events:
+                f.write("\t".join(list(map(str,tp)))+"\n")
+            
+        
+        
+        
+        

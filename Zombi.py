@@ -80,16 +80,17 @@ class Zombi():
         if run_counter >= 100:
             print("Aborting computation of the Species Tree. Please use other speciation and extinction rates!")
             return 0
-
+                        
+        complete_tree, extant_tree, collapsed_nodes = stg.generate_newick_trees()       
+                
         events_file = os.path.join(tree_folder, "Events.tsv")
         stg.write_events_file(events_file)
 
         complete_tree_file = os.path.join(tree_folder, "CompleteTree.nwk")
         extant_tree_file = os.path.join(tree_folder, "ExtantTree.nwk")
         collapsed_nodes_file = os.path.join(tree_folder, "CollapsedNodes.tsv")
-
-        complete_tree, extant_tree, collapsed_nodes = stg.generate_newick_trees()
-
+        
+        
         with open(complete_tree_file, "w") as f:
             f.write(complete_tree)
 
@@ -100,10 +101,17 @@ class Zombi():
             for k, v in collapsed_nodes.items():
                 line = "\t".join([k, v]) + "\n"
                 f.write(line)
-
+        
         lengths_file = os.path.join(tree_folder, "Lengths.tsv")
         stg.write_lengths(lengths_file, complete_tree, extant_tree)
-
+        
+        if parameters["SCALE_TREE"] != 0:
+            scaled_extant_tree_file = os.path.join(tree_folder, "ScaledExtantTree.tsv")
+            scaled_events_file = os.path.join(tree_folder, "ScaledEvents.tsv")
+            scaled_tree, scaled_events = stg.scale_trees(extant_tree,parameters["SCALE_TREE"])
+            stg.write_scaled_files(scaled_tree, scaled_extant_tree_file,
+                                   scaled_events, scaled_events_file)
+        
         if advanced_mode == "b" or advanced_mode == "a":
             rates_file = os.path.join(tree_folder, "Rates.tsv")
             stg.write_rates(rates_file)

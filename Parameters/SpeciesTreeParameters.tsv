@@ -3,7 +3,7 @@
 #
 SPECIATION	f:0.1
 #
-EXTINCTION	f:0.02
+EXTINCTION	f:0.1
 #
 ## STOPPING_RULE = 0 to control depending on TIME, = 1 to control depending on TOTAL_LINEAGES
 STOPPING_RULE	1
@@ -26,7 +26,11 @@ MAX_LINEAGES	10000
 #
 ## VERBOSE = 0 not to print progess, = 1 to do it
 #
-VERBOSE 1
+VERBOSE 0
+#
+## SCALE_TREE = 0 not scale, SCALE_TREE != 0 scale CROWN to that number
+#
+SCALE_TREE 1 
 #
 ### TP SPECIFIC PARAMETERS ###
 #

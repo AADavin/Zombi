@@ -155,7 +155,7 @@ def prepare_species_tree_parameters(parameters):
 
         if parameter == "SPECIES_EVOLUTION_MODE" or parameter == "N_LINEAGES" or parameter == "MIN_LINEAGES" \
                 or parameter == "TOTAL_LINEAGES" or parameter == "STOPPING_RULE" or parameter == "MAX_LINEAGES"\
-                or parameter == "VERBOSE" or parameter == "SEED":
+                or parameter == "VERBOSE" or parameter == "SEED" or parameter == "SCALE_TREE":
             parameters[parameter] = int(value)
 
 
