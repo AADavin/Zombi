@@ -1,7 +1,7 @@
 ### PARAMETERS SPECIES TREE LEVEL ###
 ## Please refer to the manual for more details
 #
-SPECIATION	f:0.1
+SPECIATION	f:1
 #
 EXTINCTION	f:0.1
 #
@@ -30,7 +30,7 @@ VERBOSE 0
 #
 ## SCALE_TREE = 0 not scale, SCALE_TREE != 0 scale CROWN to that number
 #
-SCALE_TREE 1 
+SCALE_TREE 0 
 #
 ### TP SPECIFIC PARAMETERS ###
 #
