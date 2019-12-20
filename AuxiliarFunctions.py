@@ -2,6 +2,9 @@ import ete3
 import numpy
 import copy
 import sys
+import scipy
+import scipy.stats as ss
+
 
 def normalize(array):
     total = numpy.sum(array)
@@ -124,9 +127,28 @@ def obtain_value(value):
 
     return value
 
+def discretize(alpha, ncat, dist="lognorm"):
+
+    # adapted from Kevin Gori
+    # Taken from https://gist.github.com/kgori/95f604131ce92ec15f4338635a86dfb9
+    
+    if dist == "gamma":
+        dist = ss.gamma(alpha, scale=1 / alpha)
+    elif dist == "lognorm":
+        dist = ss.lognorm(s=alpha, scale=numpy.exp(0.5 * alpha**2))
+   
+    quantiles = dist.ppf(numpy.arange(0, ncat) / ncat)    
+    rates = numpy.zeros(ncat, dtype=numpy.double)
+    
+    for i in range(ncat-1):
+        rates[i] = ncat * scipy.integrate.quad(lambda x: x * dist.pdf(x), 
+                                               quantiles[i], quantiles[i+1])[0]
+    rates[ncat-1] = ncat * scipy.integrate.quad(lambda x: x * dist.pdf(x), 
+                                                quantiles[ncat-1], numpy.inf)[0]
+    return rates
+
 def sample_from_dirichlet(n):
     return numpy.random.dirichlet([1] * n)
-
 
 def prepare_sequence_parameters(parameters):
 
@@ -158,9 +180,9 @@ def prepare_species_tree_parameters(parameters):
             
         if parameter == "SPECIES_EVOLUTION_MODE" or parameter == "N_LINEAGES" or parameter == "MIN_LINEAGES" \
                 or parameter == "TOTAL_LINEAGES" or parameter == "STOPPING_RULE" or parameter == "MAX_LINEAGES"\
-                or parameter == "VERBOSE" or parameter == "SEED" or parameter == "SCALE_TREE":
+                or parameter == "VERBOSE" or parameter == "SEED" or parameter == "SCALE_TREE" \
+                or parameter == "NUM_SPECIATION_RATE_CATEGORIES" or parameter == "NUM_EXTINCTION_RATE_CATEGORIES":
             parameters[parameter] = int(value)
-
 
     return parameters
 

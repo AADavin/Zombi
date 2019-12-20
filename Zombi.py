@@ -78,6 +78,8 @@ class Zombi():
                 success = stg.run_p()
             if advanced_mode == "m":
                 success = stg.run_m()
+            if advanced_mode == "s":
+                success = stg.run_s()
 
         if run_counter >= 100:
             print("Aborting computation of the Species Tree. Please use other speciation and extinction rates!")
@@ -117,6 +119,10 @@ class Zombi():
         if advanced_mode == "b" or advanced_mode == "a":
             rates_file = os.path.join(tree_folder, "Rates.tsv")
             stg.write_rates(rates_file)
+            
+        #if advanced_move == "s":
+        #    shift_file = os.path.join(tree_folder, "Shifts.tsv")
+        #    stg.write_shifts(shift_file)
 
     def G(self, parameters_file, experiment_folder, advanced_mode):
 
@@ -317,7 +323,7 @@ if __name__ == "__main__":
 
     #parser.add_argument("mode", type=str, choices=["T", "Ti", "Tb", "Tp", "G", "Gu", "Gf", "Gi", "S", "Su", "Sf"],
     #                    help="Mode")
-    parser.add_argument("mode", type=str, choices=["T", "Ti", "Tb", "Tp", "Tm", "Ts", "G", "Gu", "Gf", "Gm", "S", "Su", "Sf"],
+    parser.add_argument("mode", type=str, choices=["T", "Ti", "Tb", "Tp", "Tm", "Ts", "F", "G", "Gu", "Gf", "Gm", "S", "Su", "Sf", "Ss"],
                                             help="Mode")
     parser.add_argument("params", type=str, help="Parameters file")
     parser.add_argument("output", type=str, help="Name of the experiment folder")
