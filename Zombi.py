@@ -258,6 +258,45 @@ class Zombi():
                     print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
                 ss.run_u(tree_path, sequences_folder)
                 af.write_pruned_sequences(tree_path.replace("complete", "pruned"), sequences_folder)
+                
+        elif advanced_mode == "s":
+
+            # First we simulate the sequence shifts in the Complete Tree
+            
+            ss.simulate_shifts(experiment_folder + "/T/Events.tsv")
+            ss.write_events(experiment_folder + "/S/ShiftEvents.tsv")
+            
+            # We create a table with, the name of the branch and the effective subsitution rate for every time interval
+            
+            ss.write_table_effective_rates()
+            
+            # We modify the length of the complete gene trees according to the previous table
+            
+            ss.write_effective_stree(experiment_folder + "/T/CompleteTree.nwk", experiment_folder + "/S/EffectiveTree.nwk")
+            
+            # We simulate the sequence along these new trees
+            
+            
+            
+            
+            #ss.obtain_rates_multipliers(experiment_folder + "/CustomRates/GT_Substitution_rates.tsv",
+            #                            experiment_folder + "/CustomRates/ST_Substitution_rates.tsv")
+
+            # And we save it
+
+            #ss.write_rates_sttree(experiment_folder + "/T/CompleteTree.nwk",
+            #                      os.path.join(experiment_folder, "T/RatesTree.nwk"))
+
+            #complete_trees = [x for x in os.listdir(gene_trees_folder) if "complete" in x]
+
+            #for tree_file in complete_trees:
+            #    tree_path = os.path.join(gene_trees_folder, tree_file)
+            #    if parameters["VERBOSE"] == 1:
+            #        print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
+            #    ss.run_u(tree_path, sequences_folder)
+            #    af.write_pruned_sequences(tree_path.replace("complete", "pruned"), sequences_folder)
+                
+                
 
         elif advanced_mode == "f":
 

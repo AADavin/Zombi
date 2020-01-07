@@ -2,6 +2,8 @@ import pyvolve
 import os
 import ete3
 import numpy
+import random
+import itertools
 import AuxiliarFunctions as af
 
 
@@ -99,6 +101,13 @@ class SequenceSimulator():
                 fasta_file = tree_file.split("/")[-1].replace("_completetree.nwk", "_complete") + ".fasta"
                 evolver(seqfile=os.path.join(sequences_folder, fasta_file), ratefile=None, infofile=None, write_anc=True)
                 self.correct_names(os.path.join(sequences_folder, fasta_file), name_mapping)
+                
+                
+    def run_s(self, tree_file, gene_length, sequences_folder):
+
+        # 
+        
+        pass
 
 
     def get_nucleotide_model(self):
@@ -248,8 +257,228 @@ class SequenceSimulator():
                 entries.append((n, v))
 
         af.fasta_writer(fasta_file, entries)
+        
+    def _read_events_file(self, events_file):
 
+        events = list()
+        with open(events_file) as f:
+            f.readline()
+            for line in f:
+                handle = line.strip().split("\t")
+                if handle[1] == "SE" or handle[1] == "SS":
+                    continue
+                events.append(handle)
+        return events
+    
+    def get_time_to_next_event(self, n, events):
 
+        total = 0.0
+        for __ in range(n):
+            total += sum(events)
+
+        if total == 0:
+            return 1000000000000000 # We sent an arbitrarily big number. Probably not the most elegant thing to do
+        else:
+            time = numpy.random.exponential(1/total)
+            return time
+    
+    def simulate_shifts(self, events_file):
+        
+        sr = float(self.parameters["SHIFT_SUBSTITUTION_RATE"])
+        cats = int(self.parameters["SHIFT_CATEGORIES"])
+        hbase_rate = self.parameters["BASE_RATE"]
+       
+        # We get the categories for speciations
+        
+        distribution, value = hbase_rate.split(":")
+        value = float(value)
+        
+        if distribution == "g":
+            substitution_rates = af.discretize(value,cats,"gamma")        
+        elif distribution == "l":
+            substitution_rates = af.discretize(value,cats,"lognorm")        
+        else:
+            print("Unrecognized distribution. Please, use g or l")
+            return False
+        
+        
+        self.tree_events = self._read_events_file(events_file)
+        self.shift_events = list()
+        
+        current_species_tree_event = 0
+        current_time = 0.0
+        all_species_tree_events = len(self.tree_events)
+        
+        self.category_position = dict()
+        self.category_position["Root"] = int(len(substitution_rates)/2)     
+        
+        self.branchwise_rates = dict()
+        self.branchwise_rates["Root"] = list()
+        self.branchwise_rates["Root"].append((0, "S", substitution_rates[self.category_position["Root"]]))
+        
+        # Second, we compute the time to the next event:
+        
+        elapsed_time = 0.0
+        self.active_genomes = set()
+        self.active_genomes.add("Root")
+
+        while current_species_tree_event < all_species_tree_events:
+
+            time_of_next_species_tree_event, event, nodes = self.tree_events[current_species_tree_event]
+            time_of_next_species_tree_event = float(time_of_next_species_tree_event)
+
+            if self.parameters["VERBOSE"] == 1:
+                print("Simulating shifts. Time %s" % str(current_time))
+            time_to_next_genome_event = self.get_time_to_next_event(len(self.active_genomes), [sr])
+            elapsed_time = float(current_time) - elapsed_time
+            if time_to_next_genome_event + current_time >= float(time_of_next_species_tree_event):
+                current_species_tree_event +=1
+                current_time = time_of_next_species_tree_event
+                if event == "S":
+                    sp,c1,c2 = nodes.split(";")
+                    # First we keep track of the active and inactive genomes
+                    self.active_genomes.discard(sp)
+                    self.active_genomes.add(c1)
+                    self.active_genomes.add(c2)
+                    
+                    self.category_position[c1] = self.category_position[sp]
+                    self.category_position[c2] = self.category_position[sp]
+                    
+                    
+                    self.branchwise_rates[sp].append((current_time, "ES", substitution_rates[self.category_position[sp]]))
+                    
+                    self.branchwise_rates[c1] = list()
+                    self.branchwise_rates[c1].append((current_time, "S", substitution_rates[self.category_position[c1]]))
+                    
+                    self.branchwise_rates[c2] = list()
+                    self.branchwise_rates[c2].append((current_time, "S", substitution_rates[self.category_position[c2]]))
+                                        
+                elif event == "E":                    
+                    self.active_genomes.discard(nodes)
+                    self.branchwise_rates[nodes].append((current_time, "E", substitution_rates[self.category_position[nodes]]))
+                                        
+                elif event == "F":                    
+                    self.branchwise_rates[nodes].append((current_time, "F", substitution_rates[self.category_position[nodes]]))
+                    
+            else:
+                
+                current_time += time_to_next_genome_event
+                # A shift event occurs in a randomly selected lineage
+                # First we select that lineage
+                
+                lineage = random.choice(list(self.active_genomes))
+                
+                # The substitution rate changes                
+                    
+                cat = self.category_position[lineage]                  
+                oldcat = cat
+                if cat == cats-1:         # Meaning that we are in the border
+                    direction = numpy.random.choice([-1,0])
+                elif cat == 0:
+                    direction = numpy.random.choice([0,1])            
+                else:
+                    direction = numpy.random.choice([-1,1], p = [0.5,0.5])
+
+                p = self.category_position[lineage]                    
+                self.category_position[lineage] = p + direction
+
+                new_rate = substitution_rates[self.category_position[lineage]]                                        
+                
+                self.shift_events.append((current_time, "SR",  lineage + ";" + str(substitution_rates[oldcat]) + "->" + str(new_rate)))
+                self.branchwise_rates[lineage].append((current_time, "SS", substitution_rates[self.category_position[lineage]]))
+                
+              
+    def write_events(self, events_file):
+
+        header = ["TIME","EVENT","NODES"]
+        header = "\t".join(map(str, header)) + "\n"
+
+        with open(events_file, "w") as f:
+            f.write(header)
+            for item in self.shift_events:
+                line = "\t".join(map(str,item)) + "\n"
+                f.write(line)
+    
+    def write_table_effective_rates(self):
+        
+        # We start by intermixing both list of events in order:
+            
+        all_events = dict()        
+        
+        for vls in self.tree_events:
+            t, event, nodes = vls
+            all_events[float(t)] = vls
+            
+        for vls in self.shift_events:
+            t, event, nodes = vls
+            all_events[float(t)] = vls
+                        
+        mkeys = sorted(all_events.keys())
+        
+        # We create a dictionary of lists
+        
+        self.effective_rates = dict()
+        
+    
+            
+            
+    def write_effective_stree(self, complete_tree, effective_tree_file):
+
+        with open(complete_tree) as f:
+            complete_tree = ete3.Tree(f.readline().strip(), format=1)
+        r = complete_tree.get_tree_root()
+        r.name = "Root"
+        
+        # We transform the branchwise rates into intervals:
+        
+        self.eff_multiplier = dict()
+        
+        for node, vls in self.branchwise_rates.items():
+            
+        
+            self.eff_multiplier[node] = 0
+            
+            # There are as many intervals as n - 1
+            
+            # We get the total time the branch exists (first event and last event)
+            
+            t1, *_ = vls[0]
+            t2, *_ = vls[-1]
+            
+            tt = float(t2) - float(t1)            
+       
+            for vl1, vl2 in zip(vls, vls[1:]):             
+                t1, e1, sr1 = vl1
+                t2, e2, sr2 = vl2
+             
+                
+                t = float(t2 - t1) / tt
+                
+                self.eff_multiplier[node] += t * float(sr1)
+                  
+        for n in complete_tree.traverse():
+            n.dist *= self.eff_multiplier[n.name]
+        with open(effective_tree_file, "w") as f:
+            f.write(complete_tree.write(format=1))  
+            
+            
+            
+            
+            
+            
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
 
 
