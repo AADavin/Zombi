@@ -359,7 +359,6 @@ class SpeciesTreeGenerator():
                     self._get_extinct(lineage, time)
                     n_lineages_alive -= 1                
                     
-    
     def run_s(self):
 
         # Shift-birth-death model
@@ -397,7 +396,10 @@ class SpeciesTreeGenerator():
             print("Unrecognized distribution. Please, use g or l")
             return False
         
-        # We will write the shif events 
+        self.extinction_rates = extinction_rates
+        self.speciation_rates = speciation_rates
+        
+        # We will write the shift events 
         
         self.shift_events = list()
         
@@ -501,8 +503,7 @@ class SpeciesTreeGenerator():
                         
                     # Shift speciation
                     
-                    cat = self.category_position[lineage][0]
-                    
+                    cat = self.category_position[lineage][0]                    
                     if cat == cat_speciation-1:        
                         direction = numpy.random.choice([-1,0])
                     elif cat == 0:
@@ -511,38 +512,28 @@ class SpeciesTreeGenerator():
                         direction = numpy.random.choice([-1,1], p = [0.5,0.5])
                     
                     p_sp, p_ex = self.category_position[lineage]                    
-                    self.category_position[lineage] = (p_sp + direction, p_ex)
-                    
-                    new_speciation = speciation_rates[self.category_position[lineage][0]]                    
-                    
+                    self.category_position[lineage] = (p_sp + direction, p_ex)                    
+                    new_speciation = speciation_rates[self.category_position[lineage][0]]                                        
                     self.shift_events.append((time, "SS", lineage, self.branchwise_rates[lineage][0], new_speciation))                    
                     self.events.append((time, "SS",  lineage + ";" + str(self.branchwise_rates[lineage][0]) + "->" + str(new_speciation)))
-                    
                     self.branchwise_rates[lineage] = (new_speciation, myextinction, myshiftspeciation, myshiftextinction) 
-                    
-                    
+                                        
                     
                 elif event == "SE":
                     
-                    # Shift event
-                        
-                    cat = self.category_position[lineage][1]
-                    
+                    # Shift event                        
+                    cat = self.category_position[lineage][1]                    
                     if cat == cat_extinction-1:        
                         direction = numpy.random.choice([-1,0])
                     elif cat == 0:
                         direction = numpy.random.choice([0,1])            
                     else:
-                        direction = numpy.random.choice([-1,0,1], p = [0.25,0.5,0.25])
-                    
-                    
+                        direction = numpy.random.choice([-1,1], p = [0.5,0.5])
                     p_sp, p_ex = self.category_position[lineage]                    
-                    self.category_position[lineage] = (p_sp, p_ex + direction)
-                    
-                    new_extinction = extinction_rates[self.category_position[lineage][1]]                    
-                    
+                    self.category_position[lineage] = (p_sp, p_ex + direction)                    
+                    new_extinction = extinction_rates[self.category_position[lineage][1]]
                     self.shift_events.append((time, "SE", lineage, self.branchwise_rates[lineage][1], new_extinction))   
-                    self.events.append((time, "SS", lineage + ";" + str(self.branchwise_rates[lineage][1]) + "->" + str(new_extinction)))
+                    self.events.append((time, "SE", lineage + ";" + str(self.branchwise_rates[lineage][1]) + "->" + str(new_extinction)))
                     self.branchwise_rates[lineage] = (myspeciation, new_extinction, myshiftspeciation, myshiftextinction)        
                     
                     
@@ -873,7 +864,7 @@ class SpeciesTreeGenerator():
         for t, kind, nodes in self.events:           
             scaled_events.append(( (float(t) - beginning) * mfactor, kind, nodes))
         
-        print(mfactor, beginning, eroot.name)
+        #print(mfactor, beginning, eroot.name)
         
         return (mextant_tree.write(format=1), scaled_events)
 
@@ -939,7 +930,8 @@ class SpeciesTreeGenerator():
 
             #line = "\t".join(["Crown_ED", str(crown_ed)]) + "\n"
             #f.write(line)
-    def write_scaled_files(self, scaled_tree, scaled_extant_tree_file, scaled_events,                                      scaled_events_file):
+    
+    def write_scaled_files(self, scaled_tree, scaled_extant_tree_file, scaled_events, scaled_events_file):
         
         stree = ete3.Tree(scaled_tree, format=1)
         with open(scaled_extant_tree_file, "w") as f:
@@ -951,6 +943,33 @@ class SpeciesTreeGenerator():
             f.write(header)
             for tp in scaled_events:
                 f.write("\t".join(list(map(str,tp)))+"\n")
+    
+    #def write_shifts(self, shift_file):
+        
+    #    with open(shift_file, "w") as f:
+            
+    #        header = ["NODE", "TIME_INTERVAL", "EFFECTIVE_RATE"]
+    #        header = "\t".join(map(str, header)) + "\n" 
+    #        f.write(header)
+            
+    def write_categories(self, categories_file):        
+        
+        with open(categories_file, "w") as f:
+            
+            f.write("SPECIATION_RATE_CATEGORIES\n")
+            f.write("\t".join(map(str,self.speciation_rates))+"\n")
+            f.write("EXTINCTION_RATE_CATEGORIES\n")
+            f.write("\t".join(map(str,self.extinction_rates))+"\n")
+            
+            
+        
+    
+    
+    
+    
+            
+            
+            
             
         
         

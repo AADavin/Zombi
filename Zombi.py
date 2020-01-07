@@ -120,9 +120,15 @@ class Zombi():
             rates_file = os.path.join(tree_folder, "Rates.tsv")
             stg.write_rates(rates_file)
             
-        #if advanced_move == "s":
-        #    shift_file = os.path.join(tree_folder, "Shifts.tsv")
-        #    stg.write_shifts(shift_file)
+        if advanced_mode == "s":
+            #shift_s_file = os.path.join(tree_folder, "ShiftsSpeciations.tsv")
+            #shift_e_file = os.path.join(tree_folder, "ShiftsExtinctions.tsv")
+            cat_file = os.path.join(tree_folder, "ShiftsCategories.tsv")
+            
+            #stg.write_shifts(shift_s_file)
+            #stg.write_shifts(shift_e_file)            
+            stg.write_categories(cat_file)
+            
 
     def G(self, parameters_file, experiment_folder, advanced_mode):
 
