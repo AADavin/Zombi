@@ -398,31 +398,8 @@ class SequenceSimulator():
             for item in self.shift_events:
                 line = "\t".join(map(str,item)) + "\n"
                 f.write(line)
-    
-    def write_table_effective_rates(self):
-        
-        # We start by intermixing both list of events in order:
-            
-        all_events = dict()        
-        
-        for vls in self.tree_events:
-            t, event, nodes = vls
-            all_events[float(t)] = vls
-            
-        for vls in self.shift_events:
-            t, event, nodes = vls
-            all_events[float(t)] = vls
-                        
-        mkeys = sorted(all_events.keys())
-        
-        # We create a dictionary of lists
-        
-        self.effective_rates = dict()
-        
-    
-            
-            
-    def write_effective_stree(self, complete_tree, effective_tree_file):
+                
+    def write_effective_stree(self, complete_tree, effective_tree_file, branchwise_file):
 
         with open(complete_tree) as f:
             complete_tree = ete3.Tree(f.readline().strip(), format=1)
@@ -434,7 +411,6 @@ class SequenceSimulator():
         self.eff_multiplier = dict()
         
         for node, vls in self.branchwise_rates.items():
-            
         
             self.eff_multiplier[node] = 0
             
@@ -460,6 +436,16 @@ class SequenceSimulator():
             n.dist *= self.eff_multiplier[n.name]
         with open(effective_tree_file, "w") as f:
             f.write(complete_tree.write(format=1))  
+        
+        with open(branchwise_file, "w") as f:
+            for node, vls in self.branchwise_rates.items(): 
+                line = node + "\t" + "\t".join([";".join([str(x) for x in vl]) for vl in vls]) + "\n"
+                f.write(line)
+                
+            
+            
+            
+            
             
             
             
