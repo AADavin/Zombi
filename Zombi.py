@@ -264,17 +264,35 @@ class Zombi():
             # First we simulate the sequence shifts in the Complete Tree
             
             ss.simulate_shifts(experiment_folder + "/T/Events.tsv")
-            ss.write_events(experiment_folder + "/S/ShiftEvents.tsv")
-                                                            
-            # We modify the length of the complete gene trees according to the previous table
+            ss.write_events(experiment_folder + "/S/ShiftEvents.tsv")                                                           
+            ss.write_categories(experiment_folder + "/S/Categories.tsv")
+            # We create a new Species Tree with the branch modified to reflect these changes
             
             ss.write_effective_stree(experiment_folder + "/T/CompleteTree.nwk", 
                                      experiment_folder + "/S/EffectiveTree.nwk",
                                     experiment_folder + "/S/Branchwise_rates.nwk")
             
-            # We simulate the sequence along these new trees
             
+            # We modify the length of the complete gene trees according to the previous table
             
+            complete_trees = [x for x in os.listdir(gene_trees_folder) if "complete" in x]
+            
+            scaled_trees_folder = experiment_folder + "/S/ScaledTrees/"
+            os.mkdir(scaled_trees_folder)
+            
+            for tree in complete_trees:
+                ntree = ss.write_effective_gtree(experiment_folder + "/G/Gene_trees/" + tree, 
+                                                 experiment_folder + "/G/Gene_families/" + tree.split("_")[0] + "_events.tsv")
+                
+                # We write the trees
+                if ntree != None:
+                    with open(os.path.join(scaled_trees_folder, tree.split("_")[0] + "_scaled.nwk"), "w") as f:                    
+                        f.write(ntree)
+                    
+                
+                
+                
+                
             #ss.obtain_rates_multipliers(experiment_folder + "/CustomRates/GT_Substitution_rates.tsv",
             #                            experiment_folder + "/CustomRates/ST_Substitution_rates.tsv")
 
@@ -283,7 +301,7 @@ class Zombi():
             #ss.write_rates_sttree(experiment_folder + "/T/CompleteTree.nwk",
             #                      os.path.join(experiment_folder, "T/RatesTree.nwk"))
 
-            #complete_trees = [x for x in os.listdir(gene_trees_folder) if "complete" in x]
+            #
 
             #for tree_file in complete_trees:
             #    tree_path = os.path.join(gene_trees_folder, tree_file)

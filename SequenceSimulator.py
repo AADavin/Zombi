@@ -301,6 +301,7 @@ class SequenceSimulator():
             print("Unrecognized distribution. Please, use g or l")
             return False
         
+        self.substitution_rates = substitution_rates
         
         self.tree_events = self._read_events_file(events_file)
         self.shift_events = list()
@@ -426,10 +427,7 @@ class SequenceSimulator():
             for vl1, vl2 in zip(vls, vls[1:]):             
                 t1, e1, sr1 = vl1
                 t2, e2, sr2 = vl2
-             
-                
-                t = float(t2 - t1) / tt
-                
+                t = float(t2 - t1) / tt                
                 self.eff_multiplier[node] += t * float(sr1)
                   
         for n in complete_tree.traverse():
@@ -442,40 +440,109 @@ class SequenceSimulator():
                 line = node + "\t" + "\t".join([";".join([str(x) for x in vl]) for vl in vls]) + "\n"
                 f.write(line)
                 
+                
+    def write_effective_gtree(self, complete_gtree, events_gtree):
+        
+        # Parser of the effective lengths
+        
+        def parse_eff(eff):            
+            it = iter(eff)
+            for x in it:
+                yield (x, next(it), next(it))
+        
+        # We read the tree
+        
+        with open(complete_gtree) as f:
+            line = f.readline().strip()
+            if "(" not in line or line == ";":
+                # the tree is too small
+                return None
+            else:
+                gtree = ete3.Tree(line, format=1)
+        
+        # We get all the nodes
+        
+        #all_nodes = {n.name:0 for n in gtree.traverse()}
+        
+        # We read the events and the beginning point of a node and the ending
+        all_nodes = dict()
+        
+        with open(events_gtree) as f:              
             
+            vls = f.readlines()[1:]            
+            vls = [x.strip().split("\t") for x in vls if x.split("\t")[1] in ["S","O","D","T","L","E","F"]]
             
+            for t, event, nodes in vls:                  
+                
+                if event == "O":
+                    all_nodes[nodes.strip() + "_1"] = [t]                    
+                else:
+                    nodes = nodes.split(";")                
+                    it = iter(nodes)                
+                    for x in it:
+                        mnode = x + "_" + next(it)
+                        if mnode not in all_nodes:
+                            all_nodes[mnode] = [t]
+                        else:
+                            all_nodes[mnode].append(t)
+        node2eff = dict()                
+        for node, time in all_nodes.items():
             
+            eff = []
+            o_t, e_t = time # Origin time, ending time
+            o_t, e_t = float(o_t), float(e_t)
+            tt = e_t - o_t
+            sp_n = node.split("_")[0]    
+                        
+            # First we get the first substitution rate
             
+            vls = self.branchwise_rates[node.split("_")[0]]       
             
-            
-            
-            
-            
-            
+            origin_found = False
+            ending_found = False
+                        
+            for vl in vls:                                             
+                t, e, sr = vl                
+                if origin_found == False and float(t) <= o_t:
+                    eff.append(o_t)
+                    eff.append(sr)
+                    origin_found = True   
+                    
+                if origin_found == True and e_t <= float(t):                    
+                    eff.append(e_t)      
+                    break
+                    
+                elif origin_found == True and e == "SS":
+                    # Switch in the substitution rate
+                    eff.append(t)
+                    eff.append(t)
+                    eff.append(sr)
+                    
+                    
+            #print(sp_n, o_t, e_t, self.branchwise_rates[sp_n], eff)
+            t_eff = 0
+            for x in parse_eff(eff):
+                
+                t1, cat, t2 = x
+                t_eff += ((t2 - t1) / tt) * cat
+        
+            node2eff[node] = t_eff
+        # We multiply the tree
+        
+        for n in gtree.traverse():
+            if n.name == "Root":
+                name = "Root_1"
+            else:
+                name = n.name
+            n.dist *= node2eff[name]
+                
+        return gtree.write(format=1, format_root_node=True)
         
         
+    def write_categories(self, categories_file):        
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+        with open(categories_file, "w") as f:
 
-
-
-
-
-
-
-
-
-
-
-
-
+            f.write("SUBSTITUTION_RATE_CATEGORIES\n")
+            f.write("\t".join(map(str,self.substitution_rates))+"\n")
 
