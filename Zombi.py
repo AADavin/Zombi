@@ -110,8 +110,8 @@ class Zombi():
         stg.write_lengths(lengths_file, complete_tree, extant_tree)
         
         if parameters["SCALE_TREE"] != 0:
-            scaled_extant_tree_file = os.path.join(tree_folder, "ScaledExtantTree.tsv")
-            scaled_events_file = os.path.join(tree_folder, "ScaledEvents.tsv")
+            scaled_extant_tree_file = os.path.join(tree_folder, "REDScaledExtantTree.tsv")
+            scaled_events_file = os.path.join(tree_folder, "REDScaledEvents.tsv")
             scaled_tree, scaled_events = stg.scale_trees(extant_tree,parameters["SCALE_TREE"])
             stg.write_scaled_files(scaled_tree, scaled_extant_tree_file,
                                    scaled_events, scaled_events_file)
@@ -268,29 +268,29 @@ class Zombi():
             ss.write_categories(experiment_folder + "/S/Categories.tsv")
             # We create a new Species Tree with the branch modified to reflect these changes
             
-            ss.write_effective_stree(experiment_folder + "/T/CompleteTree.nwk", 
-                                     experiment_folder + "/S/EffectiveTree.nwk",
+            ss.write_substitution_scaled_stree(experiment_folder + "/T/CompleteTree.nwk", 
+                                      experiment_folder + "/T/ExtantTree.nwk",       
+                                     experiment_folder + "/S/SubstitutionScaledCompleteTree.nwk",
+                                     experiment_folder + "/S/SubstitutionScaledExtantTree.nwk",
                                     experiment_folder + "/S/Branchwise_rates.nwk")
             
             
             # We modify the length of the complete gene trees according to the previous table
             
-            complete_trees = [x for x in os.listdir(gene_trees_folder) if "complete" in x]
-            
-            scaled_trees_folder = experiment_folder + "/S/ScaledTrees/"
-            os.mkdir(scaled_trees_folder)
-            
-            for tree in complete_trees:
-                ntree = ss.write_effective_gtree(experiment_folder + "/G/Gene_trees/" + tree, 
-                                                 experiment_folder + "/G/Gene_families/" + tree.split("_")[0] + "_events.tsv")
+            if int(parameters["SCALE_GENE_TREES"]) == 1:
                 
-                # We write the trees
-                if ntree != None:
-                    with open(os.path.join(scaled_trees_folder, tree.split("_")[0] + "_scaled.nwk"), "w") as f:                    
-                        f.write(ntree)
-                    
-                
-                
+                complete_trees = [x for x in os.listdir(gene_trees_folder) if "complete" in x]            
+                scaled_trees_folder = experiment_folder + "/S/SubstitutionScaledTrees/"
+                os.mkdir(scaled_trees_folder)
+
+                for tree in complete_trees:
+                    ntree = ss.write_effective_gtree(experiment_folder + "/G/Gene_trees/" + tree, 
+                                                     experiment_folder + "/G/Gene_families/" + tree.split("_")[0] + "_events.tsv")
+
+                    # We write the trees
+                    if ntree != None:
+                        with open(os.path.join(scaled_trees_folder, tree.split("_")[0] + "_substitution_scaled.nwk"), "w") as f:                    
+                            f.write(ntree)
                 
                 
             #ss.obtain_rates_multipliers(experiment_folder + "/CustomRates/GT_Substitution_rates.tsv",

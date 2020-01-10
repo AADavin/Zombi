@@ -400,12 +400,21 @@ class SequenceSimulator():
                 line = "\t".join(map(str,item)) + "\n"
                 f.write(line)
                 
-    def write_effective_stree(self, complete_tree, effective_tree_file, branchwise_file):
+    def write_substitution_scaled_stree(self, complete_tree, extant_tree, substitution_scaled_complete_tree_file, 
+                                        substitution_scaled_extant_tree_file, branchwise_file):
 
         with open(complete_tree) as f:
             complete_tree = ete3.Tree(f.readline().strip(), format=1)
+        
         r = complete_tree.get_tree_root()
         r.name = "Root"
+        
+        
+        with open(extant_tree) as f:            
+            extant_tree= ete3.Tree(f.readline().strip(), format=1)
+            er = extant_tree.get_tree_root()
+        
+        extant_sps = {x.name for x in extant_tree.get_leaves()}
         
         # We transform the branchwise rates into intervals:
         
@@ -432,14 +441,71 @@ class SequenceSimulator():
                   
         for n in complete_tree.traverse():
             n.dist *= self.eff_multiplier[n.name]
-        with open(effective_tree_file, "w") as f:
+            
+        with open(substitution_scaled_complete_tree_file, "w") as f:
             f.write(complete_tree.write(format=1))  
         
+        with open(substitution_scaled_extant_tree_file, "w") as f:
+        
+            f.write(self.quick_pruner(complete_tree, extant_sps, er.name).write(format=1, format_root_node = True))
+        
+            
         with open(branchwise_file, "w") as f:
             for node, vls in self.branchwise_rates.items(): 
                 line = node + "\t" + "\t".join([";".join([str(x) for x in vl]) for vl in vls]) + "\n"
                 f.write(line)
                 
+    def quick_pruner(self, complete_tree, extant_sps, initial_node):       
+        
+        initial_node = complete_tree&initial_node
+                
+        # Now, we need to assign to every branch a number (0:dead, 1:preserved, 2:extant)
+        
+        for n in initial_node.iter_descendants("postorder"):
+            if n.is_leaf(): 
+                if n.name in extant_sps:
+                    n.add_feature("state",2)
+                else:                    
+                    n.add_feature("state",0)
+                
+            else:                
+                
+                c1,c2 = n.get_children()
+                
+                if c1.state == 2 and c2.state == 2:
+                    n.add_feature("state", 2)
+                if c1.state == 1 and c2.state == 1:
+                    n.add_feature("state", 2)
+                if c1.state == 0 and c2.state == 0:
+                    n.add_feature("state", 0)
+                if (c1.state == 1 and c2.state == 0) or (c2.state == 1 and c1.state == 0):
+                    n.add_feature("state", 1)
+                if (c1.state == 2 and c2.state == 0) or (c2.state == 2 and c1.state == 0):
+                    n.add_feature("state", 1)
+                if (c1.state == 2 and c2.state == 1) or (c2.state == 2 and c1.state == 1):
+                    n.add_feature("state", 2)
+        
+        initial_node.state = 2 
+        
+        # Now we create modify the extant tree
+        
+        carrying = 0
+        n2dist = dict()
+        
+        for n in initial_node.traverse("preorder"):            
+            if n.state == 1:
+                carrying += n.dist                
+                n.delete(prevent_nondicotomic=True, preserve_branch_length=False)
+            elif n.state == 2:
+                n2dist[n.name] = n.dist + carrying                  
+                carrying = 0                  
+            elif n.state == 0:
+                n.delete(prevent_nondicotomic=True, preserve_branch_length=True)
+        
+        for n in initial_node.traverse("preorder"):
+            n.dist = n2dist[n.name]
+        
+        return initial_node                
                 
     def write_effective_gtree(self, complete_gtree, events_gtree):
         
