@@ -12,6 +12,16 @@ def normalize(array):
         return (array/total)
     else:
         return array
+    
+    
+def normalize_middle(array):
+    middle = array[int(len(array)/2)]
+    
+    if middle != 0:
+        return array/middle
+    else:
+        return array
+    
 
 def inverse(array):
     transformed_array = 1./numpy.array(array)

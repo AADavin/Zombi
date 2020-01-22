@@ -376,9 +376,9 @@ class SpeciesTreeGenerator():
         value = float(value)
         
         if distribution == "g":
-            speciation_rates = af.discretize(value,cat_speciation,"gamma")        
+            speciation_rates = af.normalize_middle(af.discretize(value,cat_speciation,"gamma"))        
         elif distribution == "l":
-            speciation_rates = af.discretize(value,cat_speciation,"lognorm")        
+            speciation_rates = af.normalize_middle(af.discretize(value,cat_speciation,"lognorm"))        
         else:
             print("Unrecognized distribution. Please, use g or l")
             return False
@@ -389,9 +389,9 @@ class SpeciesTreeGenerator():
         value = float(value)
         
         if distribution == "g":
-            extinction_rates = af.discretize(value,cat_extinction,"gamma")        
+            extinction_rates = af.normalize_middle(af.discretize(value,cat_extinction,"gamma"))        
         elif distribution == "l":
-            extinction_rates = af.discretize(value,cat_extinction,"lognorm")
+            extinction_rates = af.normalize_middle(af.discretize(value,cat_extinction,"lognorm"))
         else:
             print("Unrecognized distribution. Please, use g or l")
             return False
@@ -867,6 +867,12 @@ class SpeciesTreeGenerator():
         #print(mfactor, beginning, eroot.name)
         
         return (mextant_tree.write(format=1), scaled_events)
+    
+    
+    def quick_pruner():
+        
+        mextant_tree
+        
 
     def write_events_file(self, events_file):
 
