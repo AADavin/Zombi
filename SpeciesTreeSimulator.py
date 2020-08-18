@@ -56,12 +56,12 @@ class SpeciesTreeGenerator():
                 print("All dead")
                 success = False
                 return success
-                                 
+
             if self.parameters["VERBOSE"] == 1:
                 print("Time: %s ; Number of lineages alive: %s" % (str(time), str(n_lineages_alive)))
 
             time_to_next_event = self.get_time_to_next_event(n_lineages_alive, (speciation, extinction))
-            
+
             if stopping_rule == 0 and time + time_to_next_event >= total_time:
 
                 self.increase_distances(total_time - time)
@@ -77,7 +77,7 @@ class SpeciesTreeGenerator():
                     self.events.append((time + time_to_next_event, "F", lineage))
                 success = True
                 return success
-            
+
             elif n_lineages_alive >= max_lineages:
 
                 print("Aborting. Max n of lineages attained")
@@ -91,7 +91,7 @@ class SpeciesTreeGenerator():
 
                 self.increase_distances(time_to_next_event)
                 event = self.choose_event(speciation, extinction)
-                lineage = random.sample(self.active_lineages, 1)[0]
+                lineage = random.sample(sorted(self.active_lineages), 1)[0]
 
                 if event == "S":
                     self._get_speciated(lineage, time)
@@ -170,7 +170,7 @@ class SpeciesTreeGenerator():
                 # Now we have to choose the lineage doing the event. This will be proportional to the value of the rates
                 ###
 
-                active_lineages = list(self.active_lineages)
+                active_lineages = list(sorted(self.active_lineages))
 
                 lineage = numpy.random.choice(active_lineages, 1, p=af.normalize(
                     [sum((self.branchwise_rates[x][0], self.branchwise_rates[x][1])) for x in active_lineages]))[0]
@@ -257,22 +257,22 @@ class SpeciesTreeGenerator():
 
                 if action == 0:
 
-                    lineage1, lineage2 = random.sample(self.active_lineages, 2)
+                    lineage1, lineage2 = random.sample(sorted(self.active_lineages), 2)
                     self._get_speciated(lineage1, time)
                     self._get_extinct(lineage2, time)
 
                 elif action == 1:
 
-                    lineage = random.sample(self.active_lineages, 1)[0]
+                    lineage = random.sample(sorted(self.active_lineages), 1)[0]
                     self._get_speciated(lineage, time)
                     n_lineages_alive += 1
 
                 elif action == 2:
 
-                    lineage = random.sample(self.active_lineages, 1)[0]
+                    lineage = random.sample(sorted(self.active_lineages), 1)[0]
                     self._get_extinct(lineage, time)
                     n_lineages_alive -= 1
-                    
+
     def run_m(self):
 
         self.start()
@@ -283,15 +283,15 @@ class SpeciesTreeGenerator():
         total_time = self.parameters["TOTAL_TIME"]
         total_lineages = self.parameters["TOTAL_LINEAGES"]
         max_lineages = self.parameters["MAX_LINEAGES"]
-        
+
         handle = self.parameters["MASS_EXTINCTION"].split("-") # I should add the possibility of having several extinctions
         extinction_time, p_extinction = float(handle[0]), float(handle[1])
         time = 0
 
         n_lineages_alive = 1
-        
+
         is_extinction_over = False
-        
+
         while True:
 
             if n_lineages_alive == 0:
@@ -299,27 +299,27 @@ class SpeciesTreeGenerator():
                 print("All dead")
                 success = False
                 return success
-                                 
+
             if self.parameters["VERBOSE"] == 1:
                 print("Time: %s ; Number of lineages alive: %s" % (str(time), str(n_lineages_alive)))
 
             time_to_next_event = self.get_time_to_next_event(n_lineages_alive, (speciation, extinction))
-            
+
             if time + time_to_next_event >= extinction_time and is_extinction_over == False:
-                
+
                 self.increase_distances(extinction_time - time)
-                
+
                 time = extinction_time
                 extinctions = set()
                 for lineage in self.active_lineages:
-                    if numpy.random.uniform(0, 1) <= p_extinction:                                        
+                    if numpy.random.uniform(0, 1) <= p_extinction:
                         extinctions.add(lineage)
                 for lineage in extinctions:
-                    self._get_extinct(lineage, time)                
+                    self._get_extinct(lineage, time)
                     self.events.append((time, "E", lineage))
-                    n_lineages_alive -= 1 
+                    n_lineages_alive -= 1
                 is_extinction_over = True
-            
+
             elif stopping_rule == 0 and time + time_to_next_event >= total_time:
 
                 self.increase_distances(total_time - time)
@@ -335,7 +335,7 @@ class SpeciesTreeGenerator():
                     self.events.append((time + time_to_next_event, "F", lineage))
                 success = True
                 return success
-            
+
             elif n_lineages_alive >= max_lineages:
 
                 print("Aborting. Max n of lineages attained")
@@ -349,7 +349,7 @@ class SpeciesTreeGenerator():
 
                 self.increase_distances(time_to_next_event)
                 event = self.choose_event(speciation, extinction)
-                lineage = random.sample(self.active_lineages, 1)[0]
+                lineage = random.sample(sorted(self.active_lineages), 1)[0]
 
                 if event == "S":
                     self._get_speciated(lineage, time)
@@ -357,60 +357,60 @@ class SpeciesTreeGenerator():
 
                 elif event == "E":
                     self._get_extinct(lineage, time)
-                    n_lineages_alive -= 1                
-                    
+                    n_lineages_alive -= 1
+
     def run_s(self):
 
         # Shift-birth-death model
-        
+
         hspeciation = self.parameters["BASE_SPECIATION"]
         hextinction = self.parameters["BASE_EXTINCTION"]
         cat_speciation = int(self.parameters["NUM_SPECIATION_RATE_CATEGORIES"])
         cat_extinction = int(self.parameters["NUM_EXTINCTION_RATE_CATEGORIES"])
         s_speciation = af.obtain_value(self.parameters["SHIFT_SPECIATION_RATE_FREQUENCY"])
         s_extinction = af.obtain_value(self.parameters["SHIFT_EXTINCTION_RATE_FREQUENCY"])
-        
+
         # We get the categories for speciations
-        
+
         distribution, value = hspeciation.split(":")
         value = float(value)
-        
+
         if distribution == "g":
-            speciation_rates = af.normalize_middle(af.discretize(value,cat_speciation,"gamma"))        
+            speciation_rates = af.normalize_middle(af.discretize(value,cat_speciation,"gamma"))
         elif distribution == "l":
-            speciation_rates = af.normalize_middle(af.discretize(value,cat_speciation,"lognorm"))        
+            speciation_rates = af.normalize_middle(af.discretize(value,cat_speciation,"lognorm"))
         else:
             print("Unrecognized distribution. Please, use g or l")
             return False
-        
+
         # We get the categories for extinctions
-        
+
         distribution, value = hextinction.split(":")
         value = float(value)
-        
+
         if distribution == "g":
-            extinction_rates = af.normalize_middle(af.discretize(value,cat_extinction,"gamma"))        
+            extinction_rates = af.normalize_middle(af.discretize(value,cat_extinction,"gamma"))
         elif distribution == "l":
             extinction_rates = af.normalize_middle(af.discretize(value,cat_extinction,"lognorm"))
         else:
             print("Unrecognized distribution. Please, use g or l")
             return False
-        
+
         self.extinction_rates = extinction_rates
         self.speciation_rates = speciation_rates
-        
-        # We will write the shift events 
-        
+
+        # We will write the shift events
+
         self.shift_events = list()
-        
+
         # We put the initial category right in the middle
-        
+
         self.category_position = dict()
         self.category_position["Root"] = (int(cat_speciation/2), int(cat_extinction/2))
-        
+
         speciation = speciation_rates[self.category_position["Root"][0]]
         extinction = extinction_rates[self.category_position["Root"][1]]
-        
+
         self.branchwise_rates = dict()
         self.branchwise_rates["Root"] = (speciation, extinction, s_speciation, s_extinction)
 
@@ -469,10 +469,10 @@ class SpeciesTreeGenerator():
                 # Now we have to choose the lineage doing the event. This will be proportional to the value of the rates
                 ###
 
-                active_lineages = list(self.active_lineages)
+                active_lineages = list(sorted(self.active_lineages))
 
                 lineage = numpy.random.choice(active_lineages, 1, p=af.normalize(
-                    [sum(self.branchwise_rates[x])                      
+                    [sum(self.branchwise_rates[x])
                      for x in active_lineages]))[0]
 
                 myspeciation = self.branchwise_rates[lineage][0]
@@ -486,57 +486,57 @@ class SpeciesTreeGenerator():
                 if event == "S":
                     c1, c2 = self._get_speciated(lineage, time)
                     n_lineages_alive += 1
-                    
+
                     # We inherit the values
-                    
-                    self.branchwise_rates[c1] = (myspeciation, myextinction, myshiftspeciation, myshiftextinction)                        
-                    self.branchwise_rates[c2] = (myspeciation, myextinction, myshiftspeciation, myshiftextinction)                        
-                    
+
+                    self.branchwise_rates[c1] = (myspeciation, myextinction, myshiftspeciation, myshiftextinction)
+                    self.branchwise_rates[c2] = (myspeciation, myextinction, myshiftspeciation, myshiftextinction)
+
                     self.category_position[c1] = self.category_position[lineage]
                     self.category_position[c2] = self.category_position[lineage]
 
                 elif event == "E":
                     self._get_extinct(lineage, time)
-                    n_lineages_alive -= 1                 
-                
-                elif event == "SS":                        
-                        
+                    n_lineages_alive -= 1
+
+                elif event == "SS":
+
                     # Shift speciation
-                    
-                    cat = self.category_position[lineage][0]                    
-                    if cat == cat_speciation-1:        
+
+                    cat = self.category_position[lineage][0]
+                    if cat == cat_speciation-1:
                         direction = numpy.random.choice([-1,0])
                     elif cat == 0:
-                        direction = numpy.random.choice([0,1])            
+                        direction = numpy.random.choice([0,1])
                     else:
                         direction = numpy.random.choice([-1,1], p = [0.5,0.5])
-                    
-                    p_sp, p_ex = self.category_position[lineage]                    
-                    self.category_position[lineage] = (p_sp + direction, p_ex)                    
-                    new_speciation = speciation_rates[self.category_position[lineage][0]]                                        
-                    self.shift_events.append((time, "SS", lineage, self.branchwise_rates[lineage][0], new_speciation))                    
+
+                    p_sp, p_ex = self.category_position[lineage]
+                    self.category_position[lineage] = (p_sp + direction, p_ex)
+                    new_speciation = speciation_rates[self.category_position[lineage][0]]
+                    self.shift_events.append((time, "SS", lineage, self.branchwise_rates[lineage][0], new_speciation))
                     self.events.append((time, "SS",  lineage + ";" + str(self.branchwise_rates[lineage][0]) + "->" + str(new_speciation)))
-                    self.branchwise_rates[lineage] = (new_speciation, myextinction, myshiftspeciation, myshiftextinction) 
-                                        
-                    
+                    self.branchwise_rates[lineage] = (new_speciation, myextinction, myshiftspeciation, myshiftextinction)
+
+
                 elif event == "SE":
-                    
-                    # Shift event                        
-                    cat = self.category_position[lineage][1]                    
-                    if cat == cat_extinction-1:        
+
+                    # Shift event
+                    cat = self.category_position[lineage][1]
+                    if cat == cat_extinction-1:
                         direction = numpy.random.choice([-1,0])
                     elif cat == 0:
-                        direction = numpy.random.choice([0,1])            
+                        direction = numpy.random.choice([0,1])
                     else:
                         direction = numpy.random.choice([-1,1], p = [0.5,0.5])
-                    p_sp, p_ex = self.category_position[lineage]                    
-                    self.category_position[lineage] = (p_sp, p_ex + direction)                    
+                    p_sp, p_ex = self.category_position[lineage]
+                    self.category_position[lineage] = (p_sp, p_ex + direction)
                     new_extinction = extinction_rates[self.category_position[lineage][1]]
-                    self.shift_events.append((time, "SE", lineage, self.branchwise_rates[lineage][1], new_extinction))   
+                    self.shift_events.append((time, "SE", lineage, self.branchwise_rates[lineage][1], new_extinction))
                     self.events.append((time, "SE", lineage + ";" + str(self.branchwise_rates[lineage][1]) + "->" + str(new_extinction)))
-                    self.branchwise_rates[lineage] = (myspeciation, new_extinction, myshiftspeciation, myshiftextinction)        
-                    
-                    
+                    self.branchwise_rates[lineage] = (myspeciation, new_extinction, myshiftspeciation, myshiftextinction)
+
+
 
     def increase_distances(self, time):
 
@@ -557,11 +557,11 @@ class SpeciesTreeGenerator():
         total = 0.0
         for lineage in self.active_lineages:
             total += sum(self.branchwise_rates[lineage])
-            
+
         time = numpy.random.exponential(1 / total)
         return time
-    
-    
+
+
     def _get_speciated(self, lineage, time):
 
         self.lineages_counter += 1
@@ -594,11 +594,11 @@ class SpeciesTreeGenerator():
             return "S"
         else:
             return "E"
-        
+
     def choose_event_s_mode(self, speciation, extinction, shif_speciation, shif_extinction):
 
         draw = numpy.random.choice(["S", "E", "SS", "SE"], 1,
-                                   p=af.normalize([speciation, extinction, 
+                                   p=af.normalize([speciation, extinction,
                                                    shif_speciation, shif_extinction]))
         return draw
 
@@ -836,43 +836,43 @@ class SpeciesTreeGenerator():
                         break
 
         return wholetree.write(format=1, format_root_node = True), extanttree.write(format=1, format_root_node = True), map_collapsed
-    
+
     def scale_trees(self, extant_tree, scaling):
-        
+
         mextant_tree = ete3.Tree(extant_tree, format=1)
         eroot = mextant_tree.get_tree_root()
         eleaf = mextant_tree.get_leaves()[0]
         crown_length = eroot.get_distance(eleaf)
-        
+
         mfactor = scaling / float(crown_length)
-        
+
         for n in mextant_tree.traverse():
             n.dist *= mfactor
-        
-        scaled_events = list()        
-        
+
+        scaled_events = list()
+
         beginning = ""
-        
+
         for t, kind, nodes in self.events:
             if kind == "S" and eroot.name == nodes.split(";")[0]:
                 beginning = float(t)
                 break
         if beginning == "":
             beginning = 0
-            
-            
-        for t, kind, nodes in self.events:           
+
+
+        for t, kind, nodes in self.events:
             scaled_events.append(( (float(t) - beginning) * mfactor, kind, nodes))
-        
+
         #print(mfactor, beginning, eroot.name)
-        
+
         return (mextant_tree.write(format=1), scaled_events)
-    
-    
+
+
     def quick_pruner():
-        
+
         mextant_tree
-        
+
 
     def write_events_file(self, events_file):
 
@@ -936,48 +936,33 @@ class SpeciesTreeGenerator():
 
             #line = "\t".join(["Crown_ED", str(crown_ed)]) + "\n"
             #f.write(line)
-    
+
     def write_scaled_files(self, scaled_tree, scaled_extant_tree_file, scaled_events, scaled_events_file):
-        
+
         stree = ete3.Tree(scaled_tree, format=1)
         with open(scaled_extant_tree_file, "w") as f:
             f.write(stree.write(format=1, format_root_node = True))
         with open(scaled_events_file, "w") as f:
-            
+
             header = ["SCALED_TIME","EVENT","NODES"]
-            header = "\t".join(map(str, header)) + "\n" 
+            header = "\t".join(map(str, header)) + "\n"
             f.write(header)
             for tp in scaled_events:
                 f.write("\t".join(list(map(str,tp)))+"\n")
-    
+
     #def write_shifts(self, shift_file):
-        
+
     #    with open(shift_file, "w") as f:
-            
+
     #        header = ["NODE", "TIME_INTERVAL", "EFFECTIVE_RATE"]
-    #        header = "\t".join(map(str, header)) + "\n" 
+    #        header = "\t".join(map(str, header)) + "\n"
     #        f.write(header)
-            
-    def write_categories(self, categories_file):        
-        
+
+    def write_categories(self, categories_file):
+
         with open(categories_file, "w") as f:
-            
+
             f.write("SPECIATION_RATE_CATEGORIES\n")
             f.write("\t".join(map(str,self.speciation_rates))+"\n")
             f.write("EXTINCTION_RATE_CATEGORIES\n")
             f.write("\t".join(map(str,self.extinction_rates))+"\n")
-            
-            
-        
-    
-    
-    
-    
-            
-            
-            
-            
-        
-        
-        
-        
