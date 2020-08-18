@@ -191,7 +191,8 @@ def prepare_species_tree_parameters(parameters):
         if parameter == "SPECIES_EVOLUTION_MODE" or parameter == "N_LINEAGES" or parameter == "MIN_LINEAGES" \
                 or parameter == "TOTAL_LINEAGES" or parameter == "STOPPING_RULE" or parameter == "MAX_LINEAGES"\
                 or parameter == "VERBOSE" or parameter == "SEED" or parameter == "SCALE_TREE" \
-                or parameter == "NUM_SPECIATION_RATE_CATEGORIES" or parameter == "NUM_EXTINCTION_RATE_CATEGORIES":
+                or parameter == "NUM_SPECIATION_RATE_CATEGORIES" or parameter == "NUM_EXTINCTION_RATE_CATEGORIES"\
+                or parameter == "SIMULATE_SEQUENCES" or parameter == "SCALE_GENE_TREES":
             parameters[parameter] = int(value)
 
     return parameters
@@ -696,7 +697,7 @@ def generate_gene_tree(events):
     return completetree, extanttree
 
 
-def write_pruned_sequences(tree_file, fasta_folder):
+def write_pruned_sequences(tree_file, fasta_folder, scaled=False):
 
     with open(tree_file) as f:
         line = f.readline().strip()
@@ -707,7 +708,11 @@ def write_pruned_sequences(tree_file, fasta_folder):
 
     surviving_nodes = {x.name for x in my_tree.get_leaves()}
     file_name = tree_file.split("/")[-1].split("_")[0]
-    entries = fasta_reader(fasta_folder + "/" + file_name + "_complete.fasta")
+
+    if scaled == False:
+        entries = fasta_reader(fasta_folder + "/" + file_name + "_complete.fasta")
+    else:
+        entries = fasta_reader(fasta_folder + "/" + file_name + "_substitution_scaled.fasta")
 
     clean_entries = list()
     for h, seq in entries:

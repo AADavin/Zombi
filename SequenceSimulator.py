@@ -45,7 +45,7 @@ class SequenceSimulator():
         name_mapping = self.get_mapping_internal_names(tree, my_tree)
         partition = pyvolve.Partition(models=self.model, size=self.size)
         evolver = pyvolve.Evolver(tree=tree, partitions=partition)
-        fasta_file = tree_file.split("/")[-1].replace("_completetree.nwk", "_complete") + ".fasta"
+        fasta_file = tree_file.split("/")[-1].replace("_completetree.nwk", "_complete").replace(".nwk","") + ".fasta"
         evolver(seqfile=os.path.join(sequences_folder, fasta_file), ratefile=None, infofile=None, write_anc=True)
 
         # Correct the names
@@ -399,6 +399,18 @@ class SequenceSimulator():
             for item in self.shift_events:
                 line = "\t".join(map(str,item)) + "\n"
                 f.write(line)
+
+    def write_shift_events(self, events_file):
+
+        header = ["TIME","SHIFT"]
+        header = "\t".join(map(str, header)) + "\n"
+
+        with open(events_file, "w") as f:
+            f.write(header)
+            for item in self.shift_events:
+                mitem = item[0],item[-1]
+                line = "\t".join(map(str,mitem)) + "\n"
+                f.write(line)
                 
     def write_substitution_scaled_stree(self, complete_tree, extant_tree, substitution_scaled_complete_tree_file, 
                                         substitution_scaled_extant_tree_file, branchwise_file):
@@ -445,10 +457,8 @@ class SequenceSimulator():
         with open(substitution_scaled_complete_tree_file, "w") as f:
             f.write(complete_tree.write(format=1))  
         
-        with open(substitution_scaled_extant_tree_file, "w") as f:
-        
-            f.write(self.quick_pruner(complete_tree, extant_sps, er.name).write(format=1, format_root_node = True))
-        
+        with open(substitution_scaled_extant_tree_file, "w") as f:        
+            f.write(self.quick_pruner(complete_tree, extant_sps, er.name).write(format=1, format_root_node = True))        
             
         with open(branchwise_file, "w") as f:
             for node, vls in self.branchwise_rates.items(): 
@@ -526,18 +536,18 @@ class SequenceSimulator():
             else:
                 gtree = ete3.Tree(line, format=1)
         
-        # We get all the nodes
-        
-        #all_nodes = {n.name:0 for n in gtree.traverse()}
-        
+        # We get all the nodes        
+        #all_nodes = {n.name:0 for n in gtree.traverse()}        
         # We read the events and the beginning point of a node and the ending
+        
         all_nodes = dict()
+        
         
         with open(events_gtree) as f:              
             
             vls = f.readlines()[1:]            
             vls = [x.strip().split("\t") for x in vls if x.split("\t")[1] in ["S","O","D","T","L","E","F"]]
-            
+        
             for t, event, nodes in vls:                  
                 
                 if event == "O":
@@ -566,9 +576,11 @@ class SequenceSimulator():
             
             origin_found = False
             ending_found = False
+
+            start_point, start_multiplier = [(i,vl) for i,vl in enumerate(vls) if vl[0] <= o_t][-1]
                         
-            for vl in vls:                                             
-                t, e, sr = vl                
+            for vl in vls[start_point:]:   
+                t, e, sr = vl                                
                 if origin_found == False and float(t) <= o_t:
                     eff.append(o_t)
                     eff.append(sr)
@@ -583,14 +595,13 @@ class SequenceSimulator():
                     eff.append(t)
                     eff.append(t)
                     eff.append(sr)
-                    
-                    
+            
             #print(sp_n, o_t, e_t, self.branchwise_rates[sp_n], eff)
             t_eff = 0
-            for x in parse_eff(eff):
-                
-                t1, cat, t2 = x
+            for x in parse_eff(eff):                                
+                t1, cat, t2 = x                
                 t_eff += ((t2 - t1) / tt) * cat
+                
         
             node2eff[node] = t_eff
         # We multiply the tree
@@ -600,15 +611,16 @@ class SequenceSimulator():
                 name = "Root_1"
             else:
                 name = n.name
-            n.dist *= node2eff[name]
-                
+            
+            if node2eff[name] <= 0:
+                print("Fatal error")                  
+            n.dist *= node2eff[name]                
+            
         return gtree.write(format=1, format_root_node=True)
         
         
-    def write_categories(self, categories_file):        
-        
+    def write_categories(self, categories_file):                
         with open(categories_file, "w") as f:
-
             f.write("SUBSTITUTION_RATE_CATEGORIES\n")
             f.write("\t".join(map(str,self.substitution_rates))+"\n")
 

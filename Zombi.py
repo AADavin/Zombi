@@ -264,7 +264,7 @@ class Zombi():
             # First we simulate the sequence shifts in the Complete Tree
             
             ss.simulate_shifts(experiment_folder + "/T/Events.tsv")
-            ss.write_events(experiment_folder + "/S/ShiftEvents.tsv")                                                           
+            ss.write_shift_events(experiment_folder + "/S/ShiftEvents.tsv")                                                           
             ss.write_categories(experiment_folder + "/S/Categories.tsv")
             # We create a new Species Tree with the branch modified to reflect these changes
             
@@ -272,18 +272,21 @@ class Zombi():
                                       experiment_folder + "/T/ExtantTree.nwk",       
                                      experiment_folder + "/S/SubstitutionScaledCompleteTree.nwk",
                                      experiment_folder + "/S/SubstitutionScaledExtantTree.nwk",
-                                    experiment_folder + "/S/Branchwise_rates.nwk")
+                                    experiment_folder + "/S/Branchwise_rates.tsv")
             
             
             # We modify the length of the complete gene trees according to the previous table
             
             if int(parameters["SCALE_GENE_TREES"]) == 1:
+
                 
                 complete_trees = [x for x in os.listdir(gene_trees_folder) if "complete" in x]            
                 scaled_trees_folder = experiment_folder + "/S/SubstitutionScaledTrees/"
                 os.mkdir(scaled_trees_folder)
 
                 for tree in complete_trees:
+                    if parameters["VERBOSE"] == 1:
+                        print("Scaling trees for gene family %s" % tree.split("_")[0])
                     ntree = ss.write_effective_gtree(experiment_folder + "/G/Gene_trees/" + tree, 
                                                      experiment_folder + "/G/Gene_families/" + tree.split("_")[0] + "_events.tsv")
 
@@ -291,26 +294,24 @@ class Zombi():
                     if ntree != None:
                         with open(os.path.join(scaled_trees_folder, tree.split("_")[0] + "_substitution_scaled.nwk"), "w") as f:                    
                             f.write(ntree)
-                
-                
-            #ss.obtain_rates_multipliers(experiment_folder + "/CustomRates/GT_Substitution_rates.tsv",
-            #                            experiment_folder + "/CustomRates/ST_Substitution_rates.tsv")
 
-            # And we save it
+            # Now we simulate the sequences    
 
-            #ss.write_rates_sttree(experiment_folder + "/T/CompleteTree.nwk",
-            #                      os.path.join(experiment_folder, "T/RatesTree.nwk"))
-
-            #
-
-            #for tree_file in complete_trees:
-            #    tree_path = os.path.join(gene_trees_folder, tree_file)
-            #    if parameters["VERBOSE"] == 1:
-            #        print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
-            #    ss.run_u(tree_path, sequences_folder)
-            #    af.write_pruned_sequences(tree_path.replace("complete", "pruned"), sequences_folder)
-                
-                
+            if int(parameters["SIMULATE_SEQUENCE"]) == 1 and int(parameters["SCALE_GENE_TREES"]) == 0:
+                print("If you want to simulate the sequence you need to set SCALE_GENE_TREES to 1 first")
+            elif int(parameters["SIMULATE_SEQUENCE"]) == 1 and int(parameters["SCALE_GENE_TREES"]) == 1:
+                complete_trees = [x for x in os.listdir(scaled_trees_folder) if "nwk" in x]
+                scaled_fastas_folder = os.path.join(sequences_folder, "Fastas")
+                os.mkdir(scaled_fastas_folder)
+                for tree_file in complete_trees:
+                    tree_path = os.path.join(scaled_trees_folder, tree_file)
+                    if parameters["VERBOSE"] == 1:
+                        print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
+                    
+                    ss.run(tree_path, scaled_fastas_folder)                 
+                    tree_path = os.path.join(gene_trees_folder, tree_file)               
+                    af.write_pruned_sequences(tree_path.replace("_substitution_scaled.nwk", "_prunedtree.nwk"), scaled_fastas_folder, True)
+            
 
         elif advanced_mode == "f":
 
