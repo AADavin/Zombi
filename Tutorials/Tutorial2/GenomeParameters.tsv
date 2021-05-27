@@ -3,19 +3,22 @@
 #
 ## Main events
 #
-## The next three events can have gene-family rates when using the Gm mode
+## When using the G mode, these events use genome-wise rate.
+## The next three events can have gene-family rates when using the Gm mode.
+## Rates represent the frequency (and fixation probability) of the different events measure in time units (see your Species Tree)
+##
 #
 DUPLICATION f:1
 TRANSFER f:2
 LOSS f:3
 #
-## The next three events use always genome rates
+## The next three events use always genome-wise rates
 #
 INVERSION f:0
 TRANSPOSITION f:0
 ORIGINATION f:0
 #
-## Extensions
+## Extensions. Extensions determine how many contiguous genes are affected by a single event
 #
 DUPLICATION_EXTENSION g:1
 TRANSFER_EXTENSION g:1
@@ -29,8 +32,8 @@ TRANSPOSITION_EXTENSION g:0.3
 #
 REPLACEMENT_TRANSFER 1
 #
-# If ASSORTATIVE_TRANSFER is True, the transfer occur preferentially between closely related lineages. The weighted probability is proportional to the normalized phylogenetic
-# distance ^ - ALPHA. Can be computationally expensive, use at your discretion
+# If ASSORTATIVE_TRANSFER is True, the transfer occur preferentially between closely related lineages. The weighted probability is proportional to e ^ - ALPHA * normalized phylogenetic distance.
+#  Can be computationally expensive, use at your discretion
 #
 ASSORTATIVE_TRANSFER False
 ALPHA 1
@@ -43,13 +46,14 @@ INITIAL_GENOME_SIZE	500
 #
 MIN_GENOME_SIZE	10
 #
-## Output related parameters
+## Output related parameters. Use SCALE_TREE != 0 only if you used that too in the Species Tree mode. Use the same number
 #
 EVENTS_PER_BRANCH 1
 PROFILES 1
 GENE_TREES 1
 RECONCILED_TREES 0
 VERBOSE 1
+SCALE_TREE 0 
 #
 ### GF SPECIFIC PARAMETERS ###
 #
@@ -58,7 +62,9 @@ INTERGENE_LENGTH 100
 PSEUDOGENIZATION 0.5
 #
 ### GM SPECIFIC PARAMETERS ###
+# Include the whole path to the parameters file. The parameters file has a first line (header) and 4 tab separated columns with the name of the gene family (ignore), D, T and L rate.
 RATE_FILE ./Tutorials/Tutorial2/CyanoRates.tsv
+# If SCALE_RATES = True, it will scale the rates used in the parameters file to the height of the tree, from the leaves to the root node (not the initial node, remember that Zombi also simulates the stem above the root)
 SCALE_RATES True
 #
 ## SEED : If 0, the SEED is chosen randomly
