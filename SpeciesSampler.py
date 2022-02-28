@@ -157,7 +157,7 @@ class SpeciesSampler():
 
         if self.computed_datasets[1] == True:
 
-            gtrees = self.cut_st(species_to_sample)
+            gtrees = self.cut_gt(species_to_sample)
             self.write_sampled_trees(gtrees)
 
         if self.computed_datasets[2] == True:
