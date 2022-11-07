@@ -134,7 +134,7 @@ class Zombi():
 
         parameters = af.prepare_genome_parameters(af.read_parameters(parameters_file))
         events_file = os.path.join(experiment_folder, "T/Events.tsv")
-        scaled_file = os.path.join(experiment_folder, "T/ScaledEvents.tsv")
+        scaled_file = os.path.join(experiment_folder, "T/REDScaledEvents.tsv")
         genome_folder = os.path.join(experiment_folder, "G")
         os.system("cp " + parameters_file + " " + genome_folder)
 
