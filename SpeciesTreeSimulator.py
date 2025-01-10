@@ -31,8 +31,8 @@ class SpeciesTreeGenerator():
         self.inactive_lineages = set()
         self.distances = dict()
 
-        self.active_lineages.add("Root")
-        self.distances["Root"] = 0.0
+        self.active_lineages.add("100000")
+        self.distances["100000"] = 0.0
 
     def run(self):
 
@@ -111,7 +111,7 @@ class SpeciesTreeGenerator():
         extinction = af.obtain_value(self.parameters["EXTINCTION"])
 
         self.branchwise_rates = dict()
-        self.branchwise_rates["Root"] = (speciation, extinction)
+        self.branchwise_rates["100000"] = (speciation, extinction)
 
         self.start()
 
@@ -406,13 +406,13 @@ class SpeciesTreeGenerator():
         # We put the initial category right in the middle
 
         self.category_position = dict()
-        self.category_position["Root"] = (int(cat_speciation/2), int(cat_extinction/2))
+        self.category_position["100000"] = (int(cat_speciation/2), int(cat_extinction/2))
 
-        speciation = speciation_rates[self.category_position["Root"][0]]
-        extinction = extinction_rates[self.category_position["Root"][1]]
+        speciation = speciation_rates[self.category_position["100000"][0]]
+        extinction = extinction_rates[self.category_position["100000"][1]]
 
         self.branchwise_rates = dict()
-        self.branchwise_rates["Root"] = (speciation, extinction, s_speciation, s_extinction)
+        self.branchwise_rates["100000"] = (speciation, extinction, s_speciation, s_extinction)
 
         self.start()
 
@@ -565,11 +565,11 @@ class SpeciesTreeGenerator():
     def _get_speciated(self, lineage, time):
 
         self.lineages_counter += 1
-        c1name = "n" + str(self.lineages_counter)
+        c1name = 100000 + int(self.lineages_counter)
         self.active_lineages.add(c1name)
 
         self.lineages_counter += 1
-        c2name = "n" + str(self.lineages_counter)
+        c2name = 100000 + int(self.lineages_counter)
         self.active_lineages.add(c2name)
 
         self.distances[c1name] = 0.0
@@ -721,7 +721,7 @@ class SpeciesTreeGenerator():
         eroot = extanttree.get_tree_root()
         eroot.name = ""
         wroot = wholetree.get_tree_root()
-        wroot.name = "Root"
+        wroot.name = "100000"
         wroot.dist = float(events[0][0]) # We add the root distance
 
         t = (len(events))
@@ -729,7 +729,7 @@ class SpeciesTreeGenerator():
         wquick_nodes = dict()
         equick_nodes = dict()
 
-        wquick_nodes["Root"] = wroot
+        wquick_nodes["100000"] = wroot
 
         # I create a dict for storing the collapsed nodes:
 
@@ -827,7 +827,7 @@ class SpeciesTreeGenerator():
 
         # There is a more efficient way to do this
 
-        if eroot.name != "Root":
+        if eroot.name != "100000":
             for time, event, nodes in events:
                 if event == "S":
                     n0,n1,n2 = nodes.split(";")
