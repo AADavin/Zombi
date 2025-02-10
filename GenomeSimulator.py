@@ -197,7 +197,7 @@ class GenomeSimulator():
                     line = [str(time), event, nodes]
                     line = "\t".join(line) + "\n"
                     f.write(line)
-        
+
             if scale != 0: # Only working if Species Tree has been scaled too the same distance!
 
                 # First I read where the root is:
@@ -212,8 +212,8 @@ class GenomeSimulator():
 
                 # Second, I read the total length of the tree
 
-                with open(events_file) as f:                
-                    for l in f:                    
+                with open(events_file) as f:
+                    for l in f:
                         t, event, nodes = l.strip().split("\t")
                         node1 = nodes.split(";")[0]
                         if node1 == eroot:
@@ -374,7 +374,7 @@ class GenomeSimulator():
     def fill_genome(self, intergenic_sequences = False, family_rates = False, interactome = False):
 
         genome = Genome()
-        genome.species = "Root"
+        genome.species = "100000"
         time = 0
 
         initial_genome_size = self.parameters["INITIAL_GENOME_SIZE"].split(";")
@@ -446,7 +446,7 @@ class GenomeSimulator():
         genome = self.fill_genome()
 
         self.active_genomes.add(genome.species)
-        self.all_genomes["Root"] = genome
+        self.all_genomes["100000"] = genome
 
         # We add the original genome too
 
@@ -526,7 +526,7 @@ class GenomeSimulator():
         # We prepare to important dicts in this mode
 
         self.active_genomes.add(genome.species)
-        self.all_genomes["Root"] = genome
+        self.all_genomes["100000"] = genome
 
         # We add the initial genome too
 
@@ -597,7 +597,7 @@ class GenomeSimulator():
         # We prepare to important dicts in this mode
 
         self.active_genomes.add(genome.species)
-        self.all_genomes["Root"] = genome
+        self.all_genomes["100000"] = genome
 
         # We add the initial genome too
 
@@ -665,7 +665,7 @@ class GenomeSimulator():
 
         genome = self.fill_genome()
         self.active_genomes.add(genome.species)
-        self.all_genomes["Root"] = genome
+        self.all_genomes["100000"] = genome
 
         # We add the original genome too
 
@@ -739,7 +739,7 @@ class GenomeSimulator():
             chromosome.obtain_locations()
 
         self.active_genomes.add(genome.species)
-        self.all_genomes["Root"] = genome
+        self.all_genomes["100000"] = genome
 
         # We add the original genome too
 
@@ -2060,7 +2060,7 @@ class GenomeSimulator():
         else:
             r1, r2, r3, r4 = r
             segment = chromosome1.obtain_segment(r1)
-            
+
         new_identifiers1 = self.return_new_identifiers_for_segment(segment)
         new_identifiers2 = self.return_new_identifiers_for_segment(segment)
 
@@ -2097,7 +2097,7 @@ class GenomeSimulator():
 
         position = int(l[4]) + 1
 
-        
+
         for i, gene in enumerate(copied_segment2):
             chromosome2.genes.insert(position + i, gene)
         for i, intergene in enumerate(new_intergene_segment):
@@ -2273,7 +2273,7 @@ class GenomeSimulator():
             self.all_gene_families[gene.gene_family].register_event(str(time), "I", ";".join(map(str,[lineage, gene.gene_id])))
 
     def make_inversion_intergenic(self, c1, c2, d, lineage, time):
-        
+
         chromosome = self.all_genomes[lineage].select_random_chromosome()
         r = chromosome.return_affected_region(c1, c2, d)
 
