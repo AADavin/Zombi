@@ -344,7 +344,7 @@ class Zombi():
 
             lengths_folder = os.path.join(genome_folder, "Genomes")
             genome_lengths = [x for x in os.listdir(lengths_folder) if
-                              "LENGTH" in x and "Initial" not in x and "Root" not in x]
+                              "LENGTH" in x and "Initial" not in x and "100000" not in x]
 
             for length_file in genome_lengths:
 

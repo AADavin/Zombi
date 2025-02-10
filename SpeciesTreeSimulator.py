@@ -565,11 +565,11 @@ class SpeciesTreeGenerator():
     def _get_speciated(self, lineage, time):
 
         self.lineages_counter += 1
-        c1name = 100000 + int(self.lineages_counter)
+        c1name = str(100000 + int(self.lineages_counter))
         self.active_lineages.add(c1name)
 
         self.lineages_counter += 1
-        c2name = 100000 + int(self.lineages_counter)
+        c2name = str(100000 + int(self.lineages_counter))
         self.active_lineages.add(c2name)
 
         self.distances[c1name] = 0.0
