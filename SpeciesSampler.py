@@ -202,7 +202,7 @@ class SpeciesSampler():
                 species.append(sp)
                 weights.append(wt)
 
-        species_to_sample = numpy.random.choice(species, n, p=af.normalize(weights))
+        species_to_sample = numpy.random.choice(list(sorted(species)), n, p=af.normalize(weights))
 
         if self.computed_datasets[0] == True:
             stree = self.cut_st(species_to_sample)
@@ -259,6 +259,3 @@ if __name__ == "__main__":
     elif mode == "w":
         ss = SpeciesSampler(experiment_folder)
         ss.mode_w(input)
-
-
-
