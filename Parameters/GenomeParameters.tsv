@@ -14,9 +14,9 @@ LOSS f:3
 #
 ## The next three events use always genome-wise rates
 #
-INVERSION f:2
-TRANSPOSITION f:2
-ORIGINATION f:2
+INVERSION f:0
+TRANSPOSITION f:0
+ORIGINATION f:0
 #
 ## Extensions. Extensions determine how many contiguous genes are affected by a single event
 #
@@ -52,8 +52,8 @@ EVENTS_PER_BRANCH 1
 PROFILES 1
 GENE_TREES 1
 RECONCILED_TREES 0
-VERBOSE 1
-SCALE_TREE 0 
+VERBOSE 0
+SCALE_TREE 0
 #
 ### GF SPECIFIC PARAMETERS ###
 #
