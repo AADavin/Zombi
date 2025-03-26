@@ -366,7 +366,7 @@ def choose_advanced_recipient(self, time, alive_lineages, donor):
         possible_recipients.append(recipient)
         weights.append(td)
 
-    draw = numpy.random.choice(possible_recipients, 1, p= normalize(weights))
+    draw = numpy.random.choice(list(sorted(possible_recipients)), 1, p= normalize(weights))
 
 
 def generate_newick_trees(events):
