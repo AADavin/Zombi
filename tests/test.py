@@ -1,18 +1,43 @@
 import os
 import filecmp
 from typing import Dict
-
+import re
 
 
 def fill_template(template_path: str, output_path: str, replacements: Dict[str, str]):
     with open(template_path, 'r') as file:
-        content = file.read()
-    for key, value in replacements.items():
-        if key == 'ASSORTATIVE_TRANSFER_FIELD':
-            # Special handling for boolean replacement
-            content = content.replace(key, 'True')
-        else:
-            content = content.replace(key, str(value))
+        lines = file.readlines()
+
+    new_lines = []
+    pattern = r'\b(?:' + '|'.join(re.escape(key) for key in replacements.keys()) + r')\b'
+    
+    for line in lines:
+        stripped = line.strip()
+        # Skip comment or empty lines
+        if not stripped or stripped.startswith("#"):
+            continue
+        # Only process lines that split into exactly 2 tokens (parameter and value)
+        tokens = stripped.split()
+        if len(tokens) != 2:
+            continue
+
+        def replacer(match):
+            placeholder = match.group(0)
+            if placeholder == 'ASSORTATIVE_TRANSFER_FIELD':
+                return 'True'
+            elif placeholder == 'ALPHA_FIELD':
+                return f'{replacements[placeholder]}'
+            else:
+                return str(replacements[placeholder])
+        
+        new_line = re.sub(pattern, replacer, line)
+        new_lines.append(new_line)
+    
+    # Ensure the file ends with a newline.
+    content = "".join(new_lines)
+    if not content.endswith('\n'):
+        content += '\n'
+    
     with open(output_path, 'w') as file:
         file.write(content)
 

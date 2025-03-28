@@ -1070,7 +1070,7 @@ class GenomeSimulator():
             possible_recipients = [x for x in self.active_genomes if x != lineage]
 
             if len(possible_recipients) > 0:
-
+                donor = lineage
                 if self.parameters["ASSORTATIVE_TRANSFER"] == "True":
                     recipient = self.choose_assortative_recipient(time, possible_recipients, donor)
                     if recipient == None:
@@ -1078,7 +1078,7 @@ class GenomeSimulator():
                 else:
                     recipient = random.choice(list(sorted(possible_recipients)))
 
-                donor = lineage
+                
                 self.make_transfer(t_e, donor, recipient, time, family_mode = True)
                 return "T", donor + "->" + recipient
 
