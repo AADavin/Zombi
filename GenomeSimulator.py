@@ -12,7 +12,6 @@ from functools import reduce
 # from GenomeClasses import GeneFamily, Gene, Intergene, CircularChromosome, LinearChromosome, Genome
 
 class GenomeSimulator():
-
     def __init__(self, parameters, events_file):
 
         self.parameters = parameters
@@ -1719,18 +1718,18 @@ class GenomeSimulator():
             self.all_gene_families[gene.gene_family].register_event(time, "D", ";".join(map(str, nodes)))
 
 
-    def choose_assortative_recipient(self, time, possible_recipients, donor):
-
+    def choose_assortative_recipient_original(self, time, possible_recipients, donor):
+        print("using original function")
         alpha = self.parameters["ALPHA"]
         weights = list()
 
-        mdonor = self.complete_tree&donor
+        mdonor = self.complete_tree & donor
 
         for recipient in possible_recipients:
-            mrecipient = self.complete_tree&recipient
+            mrecipient = self.complete_tree & recipient
             ca = self.complete_tree.get_common_ancestor(mrecipient, mdonor).name
             x1 = self.distances_to_start[ca]
-            td =  time - x1
+            td = time - x1
             weights.append(td)
 
         beta = min(alpha * af.normalize(weights))
@@ -1740,6 +1739,68 @@ class GenomeSimulator():
         draw = numpy.random.choice(list(sorted(possible_recipients)), 1, p=pvector)[0]
 
         return draw
+
+    def choose_assortative_recipient_new(self, time, possible_recipients, donor, normalize_weights=True):
+        print("using new function")
+        possible_recipients = sorted(possible_recipients)
+        alpha = self.parameters["ALPHA"]
+
+        if not hasattr(self, "_common_ancestors"):
+            self._common_ancestors = {}
+        if donor not in self._common_ancestors:
+            self._common_ancestors[donor] = {}
+
+        mdonor = self.complete_tree & donor
+
+        for recipient in possible_recipients:
+            if recipient not in self._common_ancestors[donor]:
+                mrecipient = self.complete_tree & recipient
+                ca_name = self.complete_tree.get_common_ancestor(mrecipient, mdonor).name
+                self._common_ancestors[donor][recipient] = ca_name
+
+        if not hasattr(self, "_distance_vectors"):
+            self._distance_vectors = {}
+        if donor not in self._distance_vectors:
+            self._distance_vectors[donor] = {}
+
+        recipients_key = hash(tuple(possible_recipients))
+
+        if recipients_key in self._distance_vectors[donor]:
+            distances = self._distance_vectors[donor][recipients_key]
+        else:
+            distances = numpy.array([
+                self.distances_to_start[self._common_ancestors[donor][recipient]]
+                for recipient in possible_recipients
+            ])
+            self._distance_vectors[donor][recipients_key] = distances
+
+        weights = time - distances
+
+        if normalize_weights:
+            sum_weights = numpy.sum(weights)
+            if sum_weights > 0:
+                norm_weights = weights / sum_weights
+            else:
+                norm_weights = numpy.ones_like(weights) / len(weights)
+        else:
+            norm_weights = weights
+
+        alpha_weights = alpha * norm_weights
+        beta = numpy.min(alpha_weights)
+        val = alpha_weights - beta
+
+        exp_val = numpy.exp(-val)
+        sum_exp = numpy.sum(exp_val)
+        pvector = exp_val / sum_exp
+
+        draw = numpy.random.choice(possible_recipients, 1, p=pvector)[0]
+        return draw
+
+    def choose_assortative_recipient(self, time, possible_recipients, donor):
+        if os.getenv("USE_NEW_FUNCTION") == "1":
+            return self.choose_assortative_recipient_new(time, possible_recipients, donor)
+        else:
+            return self.choose_assortative_recipient_original(time, possible_recipients, donor)
 
     def choose_advanced_recipient(self, possible_recipients, donor):
 
