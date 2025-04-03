@@ -23,7 +23,7 @@ class GenomeSimulator():
                 numpy.random.seed(parameters["SEED"])
                 print(mseed)
         except:
-            pass
+            print("No seed provided. Using default seed.")
 
         self.tree_events = self._read_events_file(events_file)
         self.distances_to_start = self._read_distances_to_start(events_file) # Only useful when computing assortative transfers
@@ -893,7 +893,7 @@ class GenomeSimulator():
                 # We choose a recipient
 
                 if self.parameters["ASSORTATIVE_TRANSFER"] == "True":
-                    recipient = self.choose_assortative_recipient(time, possible_recipients, donor)
+                    recipient = self.choose_assortative_recipient(time, possible_recipients, donor, self.parameters["NORMALIZE_ASSORTATIVE_TRANSFER"])
                     if recipient == None:
                         return None
                 else:
@@ -956,7 +956,7 @@ class GenomeSimulator():
             if len(possible_recipients) > 0:
                 donor = lineage
                 if self.parameters["ASSORTATIVE_TRANSFER"] == "True":
-                    recipient = self.choose_assortative_recipient(time, possible_recipients, donor)
+                    recipient = self.choose_assortative_recipient(time, possible_recipients, donor, self.parameters["NORMALIZE_ASSORTATIVE_TRANSFER"])
                     if recipient == None:
                         return None
                 else:
@@ -1072,7 +1072,7 @@ class GenomeSimulator():
             if len(possible_recipients) > 0:
                 donor = lineage
                 if self.parameters["ASSORTATIVE_TRANSFER"] == "True":
-                    recipient = self.choose_assortative_recipient(time, possible_recipients, donor)
+                    recipient = self.choose_assortative_recipient(time, possible_recipients, donor, self.parameters["NORMALIZE_ASSORTATIVE_TRANSFER"])
                     if recipient == None:
                         return None
                 else:
@@ -1227,7 +1227,7 @@ class GenomeSimulator():
             if len(possible_recipients) > 0:
                 donor = lineage
                 if self.parameters["ASSORTATIVE_TRANSFER"] == "True":
-                    recipient = self.choose_assortative_recipient(time, possible_recipients, donor)
+                    recipient = self.choose_assortative_recipient(time, possible_recipients, donor, self.parameters["NORMALIZE_ASSORTATIVE_TRANSFER"])
                     if recipient == None:
                         return None
                 else:
