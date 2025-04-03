@@ -22,7 +22,7 @@ class RateCustomizer():
             mytree = ete3.Tree(f.readline().strip(), format=1)
 
         root = mytree.get_tree_root()
-        root.name = "Root"
+        root.name = "100000"
 
         self.branch_substitution_rates = dict()
 
@@ -56,7 +56,7 @@ class RateCustomizer():
     def generate_transfers_file(self):
 
         rates = dict()
-        alive_lineages = {"Root"}
+        alive_lineages = {"100000"}
 
         with open(os.path.join(experiment_folder,"T/Events.tsv")) as f:
 
@@ -111,7 +111,7 @@ class RateCustomizer():
         with open(tree_file) as f:
             mytree = ete3.Tree(f.readline().strip(), format=1)
             root = mytree.get_tree_root()
-            root.name = "Root"
+            root.name = "100000"
 
         branch_rates = dict()
 
@@ -145,7 +145,7 @@ class RateCustomizer():
         with open(tree_file) as f:
             mytree = ete3.Tree(f.readline().strip(), format=1)
             root = mytree.get_tree_root()
-            root.name = "Root"
+            root.name = "100000"
 
         branch_rates = dict()
 
@@ -224,5 +224,3 @@ if __name__ == "__main__":
 
         rc.generate_substitution_speciestree_file()
         rc.generate_substitution_genetree_file()
-
-
