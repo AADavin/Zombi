@@ -1718,29 +1718,7 @@ class GenomeSimulator():
             self.all_gene_families[gene.gene_family].register_event(time, "D", ";".join(map(str, nodes)))
 
 
-    def choose_assortative_recipient_original(self, time, possible_recipients, donor):
-        print("using original function")
-        alpha = self.parameters["ALPHA"]
-        weights = list()
-
-        mdonor = self.complete_tree & donor
-
-        for recipient in possible_recipients:
-            mrecipient = self.complete_tree & recipient
-            ca = self.complete_tree.get_common_ancestor(mrecipient, mdonor).name
-            x1 = self.distances_to_start[ca]
-            td = time - x1
-            weights.append(td)
-
-        beta = min(alpha * af.normalize(weights))
-        val = (alpha * af.normalize(weights)) - beta
-        pvector = af.normalize(numpy.exp(-val))
-
-        draw = numpy.random.choice(list(sorted(possible_recipients)), 1, p=pvector)[0]
-
-        return draw
-
-    def choose_assortative_recipient_new(self, time, possible_recipients, donor, normalize_weights=True):
+    def choose_assortative_recipient(self, time, possible_recipients, donor, normalize_weights=True):
         print("using new function")
         possible_recipients = sorted(possible_recipients)
         alpha = self.parameters["ALPHA"]
@@ -1795,12 +1773,6 @@ class GenomeSimulator():
 
         draw = numpy.random.choice(possible_recipients, 1, p=pvector)[0]
         return draw
-
-    def choose_assortative_recipient(self, time, possible_recipients, donor):
-        if os.getenv("USE_NEW_FUNCTION") == "1":
-            return self.choose_assortative_recipient_new(time, possible_recipients, donor)
-        else:
-            return self.choose_assortative_recipient_original(time, possible_recipients, donor)
 
     def choose_advanced_recipient(self, possible_recipients, donor):
 
