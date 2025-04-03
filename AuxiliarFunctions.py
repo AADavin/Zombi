@@ -12,16 +12,16 @@ def normalize(array):
         return (array/total)
     else:
         return array
-
-
+    
+    
 def normalize_middle(array):
     middle = array[int(len(array)/2)]
-
+    
     if middle != 0:
         return array/middle
     else:
         return array
-
+    
 
 def inverse(array):
     transformed_array = 1./numpy.array(array)
@@ -141,19 +141,19 @@ def discretize(alpha, ncat, dist="lognorm"):
 
     # adapted from Kevin Gori
     # Taken from https://gist.github.com/kgori/95f604131ce92ec15f4338635a86dfb9
-
+    
     if dist == "gamma":
         dist = ss.gamma(alpha, scale=1 / alpha)
     elif dist == "lognorm":
         dist = ss.lognorm(s=alpha, scale=numpy.exp(0.5 * alpha**2))
-
-    quantiles = dist.ppf(numpy.arange(0, ncat) / ncat)
+   
+    quantiles = dist.ppf(numpy.arange(0, ncat) / ncat)    
     rates = numpy.zeros(ncat, dtype=numpy.double)
-
+    
     for i in range(ncat-1):
-        rates[i] = ncat * scipy.integrate.quad(lambda x: x * dist.pdf(x),
+        rates[i] = ncat * scipy.integrate.quad(lambda x: x * dist.pdf(x), 
                                                quantiles[i], quantiles[i+1])[0]
-    rates[ncat-1] = ncat * scipy.integrate.quad(lambda x: x * dist.pdf(x),
+    rates[ncat-1] = ncat * scipy.integrate.quad(lambda x: x * dist.pdf(x), 
                                                 quantiles[ncat-1], numpy.inf)[0]
     return rates
 
@@ -184,10 +184,10 @@ def prepare_species_tree_parameters(parameters):
 
         if parameter == "LINEAGE_PROFILE":
             parameters[parameter] = [tuple([int(j) for j in x.split("-")]) for x in value.split(";")]
-
+            
         if parameter == "MASSIVE_EXTINCTION":
             parameters[parameter] = [tuple([float(j) for j in x.split("-")]) for x in value.split(";")]
-
+            
         if parameter == "SPECIES_EVOLUTION_MODE" or parameter == "N_LINEAGES" or parameter == "MIN_LINEAGES" \
                 or parameter == "TOTAL_LINEAGES" or parameter == "STOPPING_RULE" or parameter == "MAX_LINEAGES"\
                 or parameter == "VERBOSE" or parameter == "SEED" or parameter == "SCALE_TREE" \
@@ -269,7 +269,7 @@ def generate_events(tree_file):
         tree = ete3.Tree(treeline, format=1)
 
     root = tree.get_tree_root()
-    root.name = "100000"
+    root.name = "Root"
 
     ## There is probably a better way to write this
 
@@ -337,7 +337,7 @@ def return_vector_of_distances(self, tree_file):
 
         self.mytree = ete3.Tree(f.readline().strip(), format=1)
         root = self.mytree.get_tree_root()
-        root.name = "100000"
+        root.name = "Root"
         for node in self.mytree.traverse():
             if node.is_root():
                 continue
@@ -366,7 +366,7 @@ def choose_advanced_recipient(self, time, alive_lineages, donor):
         possible_recipients.append(recipient)
         weights.append(td)
 
-    draw = numpy.random.choice(list(sorted(possible_recipients)), 1, p= normalize(weights))
+    draw = numpy.random.choice(possible_recipients, 1, p= normalize(weights))
 
 
 def generate_newick_trees(events):
@@ -462,12 +462,12 @@ def generate_newick_trees(events):
     eroot = extanttree.get_tree_root()
     eroot.name = ""
     wroot = completetree.get_tree_root()
-    wroot.name = "100000"
+    wroot.name = "Root"
 
     wquick_nodes = dict()
     equick_nodes = dict()
 
-    wquick_nodes["100000"] = wroot
+    wquick_nodes["Root"] = wroot
 
     for i, values in enumerate(events):
 
@@ -740,3 +740,6 @@ def write_sampled_sequences(tree_file, infasta_folder, outfasta_folder):
             clean_entries.append((h, seq))
 
     fasta_writer(outfasta_folder + "/" + file_name + "_sampled.fasta", clean_entries)
+
+
+

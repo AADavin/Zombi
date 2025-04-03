@@ -17,14 +17,10 @@ class GenomeSimulator():
 
         self.parameters = parameters
 
-        try:
-            mseed = self.parameters["SEED"]
-            if mseed != 0:
-                random.seed(parameters["SEED"])
-                numpy.random.seed(parameters["SEED"])
-                print(mseed)
-        except:
-            pass
+        mseed = self.parameters["SEED"]
+        if mseed != 0:
+            random.seed(parameters["SEED"])
+            numpy.random.seed(parameters["SEED"])
 
         self.tree_events = self._read_events_file(events_file)
         self.distances_to_start = self._read_distances_to_start(events_file) # Only useful when computing assortative transfers
@@ -201,7 +197,7 @@ class GenomeSimulator():
                     line = [str(time), event, nodes]
                     line = "\t".join(line) + "\n"
                     f.write(line)
-
+        
             if scale != 0: # Only working if Species Tree has been scaled too the same distance!
 
                 # First I read where the root is:
@@ -216,8 +212,8 @@ class GenomeSimulator():
 
                 # Second, I read the total length of the tree
 
-                with open(events_file) as f:
-                    for l in f:
+                with open(events_file) as f:                
+                    for l in f:                    
                         t, event, nodes = l.strip().split("\t")
                         node1 = nodes.split(";")[0]
                         if node1 == eroot:
@@ -378,7 +374,7 @@ class GenomeSimulator():
     def fill_genome(self, intergenic_sequences = False, family_rates = False, interactome = False):
 
         genome = Genome()
-        genome.species = "100000"
+        genome.species = "Root"
         time = 0
 
         initial_genome_size = self.parameters["INITIAL_GENOME_SIZE"].split(";")
@@ -450,7 +446,7 @@ class GenomeSimulator():
         genome = self.fill_genome()
 
         self.active_genomes.add(genome.species)
-        self.all_genomes["100000"] = genome
+        self.all_genomes["Root"] = genome
 
         # We add the original genome too
 
@@ -530,7 +526,7 @@ class GenomeSimulator():
         # We prepare to important dicts in this mode
 
         self.active_genomes.add(genome.species)
-        self.all_genomes["100000"] = genome
+        self.all_genomes["Root"] = genome
 
         # We add the initial genome too
 
@@ -601,7 +597,7 @@ class GenomeSimulator():
         # We prepare to important dicts in this mode
 
         self.active_genomes.add(genome.species)
-        self.all_genomes["100000"] = genome
+        self.all_genomes["Root"] = genome
 
         # We add the initial genome too
 
@@ -669,7 +665,7 @@ class GenomeSimulator():
 
         genome = self.fill_genome()
         self.active_genomes.add(genome.species)
-        self.all_genomes["100000"] = genome
+        self.all_genomes["Root"] = genome
 
         # We add the original genome too
 
@@ -743,7 +739,7 @@ class GenomeSimulator():
             chromosome.obtain_locations()
 
         self.active_genomes.add(genome.species)
-        self.all_genomes["100000"] = genome
+        self.all_genomes["Root"] = genome
 
         # We add the original genome too
 
@@ -866,14 +862,14 @@ class GenomeSimulator():
     def choose_recipient(self, lineages_alive, donor):
         possible_recipients = [x for x in lineages_alive if x != donor]
         if len(possible_recipients) > 1:
-            recipient = numpy.random.choice(list(sorted(possible_recipients)))
+            recipient = random.choice(possible_recipients)
             return recipient
         else:
             return None
 
     def evolve_genomes(self, duplication, transfer, loss, inversion, transposition, origination, time):
 
-        lineage = numpy.random.choice(list(sorted(self.active_genomes)))
+        lineage = random.choice(list(self.active_genomes))
         event = self.choose_event(duplication, transfer, loss, inversion, transposition, origination)
 
         if event == "D":
@@ -898,7 +894,7 @@ class GenomeSimulator():
                     if recipient == None:
                         return None
                 else:
-                    recipient = random.choice(list(sorted(possible_recipients)))
+                    recipient = random.choice(possible_recipients)
 
                 self.make_transfer(t_e, donor, recipient, time)
                 return "T", donor+"->"+recipient
@@ -940,7 +936,7 @@ class GenomeSimulator():
         i_e = self.parameters["INVERSION_EXTENSION"]
         c_e = self.parameters["TRANSPOSITION_EXTENSION"]
 
-        lineage = random.choice(list(sorted(self.active_genomes)))
+        lineage = random.choice(list(self.active_genomes))
         event = self.choose_event_i(duplication, transfer, loss, inversion, transposition, origination, remove, rewire)
 
         if event == "D":
@@ -961,7 +957,7 @@ class GenomeSimulator():
                     if recipient == None:
                         return None
                 else:
-                    recipient = random.choice(list(sorted(possible_recipients)))
+                    recipient = random.choice(possible_recipients)
 
                 donor = lineage
                 self.make_transfer_interactome(t_e, donor, recipient, time)
@@ -996,7 +992,7 @@ class GenomeSimulator():
             interactome = self.all_genomes[lineage].interactome
 
             node_degrees = [d + 1 for n, d in interactome.degree()]
-            choice = numpy.random.choice(list(sorted(interactome.nodes)), 1, p=af.normalize(node_degrees))[0]
+            choice = numpy.random.choice(interactome.nodes, 1, p=af.normalize(node_degrees))[0]
 
             interactome.add_node(str(gene))
             interactome.add_edge(str(gene), choice)
@@ -1039,7 +1035,7 @@ class GenomeSimulator():
                         lineage_weight += vl
             mweights.append(lineage_weight)
 
-        lineage = numpy.random.choice(list(sorted(mactive_genomes)), 1, p=af.normalize(mweights))[0]
+        lineage = numpy.random.choice(mactive_genomes, 1, p=af.normalize(mweights))[0]
 
         d, t, l, i, p, o = 0, 0, 0, 0, 0, 0
 
@@ -1077,7 +1073,7 @@ class GenomeSimulator():
                     if recipient == None:
                         return None
                 else:
-                    recipient = random.choice(list(sorted(possible_recipients)))
+                    recipient = random.choice(possible_recipients)
 
                 donor = lineage
                 self.make_transfer(t_e, donor, recipient, time, family_mode = True)
@@ -1118,7 +1114,7 @@ class GenomeSimulator():
     def advanced_evolve_genomes(self, time):
 
         active_genomes = list(self.active_genomes)
-        lineage = numpy.random.choice(list(sorted(active_genomes)), 1, p=af.normalize(
+        lineage = numpy.random.choice(active_genomes, 1, p=af.normalize(
             [sum(self.branch_event_rates[x]) for x in active_genomes]))[0]
 
         d,t,l,i,c,o = self.branch_event_rates[lineage]
@@ -1200,7 +1196,7 @@ class GenomeSimulator():
         multiplier = 1.0 / (mean_gene_length + mean_intergene_length)
 
 
-        lineage = random.choice(list(sorted(self.active_genomes)))
+        lineage = random.choice(list(self.active_genomes))
         event = self.choose_event(duplication, transfer, loss, inversion, transposition, origination)
 
         for chromosome in self.all_genomes[lineage]:
@@ -1232,7 +1228,7 @@ class GenomeSimulator():
                     if recipient == None:
                         return None
                 else:
-                    recipient = random.choice(list(sorted(possible_recipients)))
+                    recipient = random.choice(possible_recipients)
 
                 donor = lineage
 
@@ -1737,7 +1733,7 @@ class GenomeSimulator():
         val = (alpha * af.normalize(weights)) - beta
         pvector = af.normalize(numpy.exp(-val))
 
-        draw = numpy.random.choice(list(sorted(possible_recipients)), 1, p=pvector)[0]
+        draw = numpy.random.choice(possible_recipients, 1, p=pvector)[0]
 
         return draw
 
@@ -1752,7 +1748,7 @@ class GenomeSimulator():
             return None
 
 
-        draw = numpy.random.choice(list(sorted(possible_recipients)), 1, p=af.normalize(weights))[0]
+        draw = numpy.random.choice(possible_recipients, 1, p=af.normalize(weights))[0]
 
         return draw
 
@@ -1797,7 +1793,7 @@ class GenomeSimulator():
 
             if len(possible_positions) != 0:
 
-                direction, positions, chromosome2 = random.choice(list(sorted(possible_positions)))
+                direction, positions, chromosome2 = random.choice(possible_positions)
 
 
                 if direction == "F":
@@ -1925,7 +1921,7 @@ class GenomeSimulator():
 
             if len(possible_positions) != 0:
 
-                direction, positions, chromosome2 = random.choice(list(sorted(possible_positions)))
+                direction, positions, chromosome2 = random.choice(possible_positions)
 
 
                 if direction == "F":
@@ -2047,7 +2043,7 @@ class GenomeSimulator():
                 # It is not a replacement transfer. Preferential attachment
 
                 node_degrees = [d + 1 for n, d in self.all_genomes[recipient].interactome.degree()]
-                choice = numpy.random.choice(list(sorted(self.all_genomes[recipient].interactome.nodes)), 1, p=af.normalize(node_degrees))[0]
+                choice = numpy.random.choice(self.all_genomes[recipient].interactome.nodes, 1, p=af.normalize(node_degrees))[0]
                 self.all_genomes[recipient].interactome.add_node(str(copied_segment2[i]))
                 self.all_genomes[recipient].interactome.add_edge(str(copied_segment2[i]), choice)
 
@@ -2064,7 +2060,7 @@ class GenomeSimulator():
         else:
             r1, r2, r3, r4 = r
             segment = chromosome1.obtain_segment(r1)
-
+            
         new_identifiers1 = self.return_new_identifiers_for_segment(segment)
         new_identifiers2 = self.return_new_identifiers_for_segment(segment)
 
@@ -2101,7 +2097,7 @@ class GenomeSimulator():
 
         position = int(l[4]) + 1
 
-
+        
         for i, gene in enumerate(copied_segment2):
             chromosome2.genes.insert(position + i, gene)
         for i, intergene in enumerate(new_intergene_segment):
@@ -2277,7 +2273,7 @@ class GenomeSimulator():
             self.all_gene_families[gene.gene_family].register_event(str(time), "I", ";".join(map(str,[lineage, gene.gene_id])))
 
     def make_inversion_intergenic(self, c1, c2, d, lineage, time):
-
+        
         chromosome = self.all_genomes[lineage].select_random_chromosome()
         r = chromosome.return_affected_region(c1, c2, d)
 
@@ -2405,10 +2401,10 @@ class GenomeSimulator():
         interactome = self.all_genomes[lineage].interactome
         normalized_weights = af.normalize([d + 1 for n, d in interactome.degree()])
         n1 = chromosome.genes[position]
-        n2 = numpy.random.choice(list(sorted(interactome.nodes)), 1, p=normalized_weights)[0]
+        n2 = numpy.random.choice(interactome.nodes, 1, p=normalized_weights)[0]
 
         while (str(n1) == str(n2)):
-            n2 = numpy.random.choice(list(sorted(interactome.nodes)), 1, p=normalized_weights)[0]
+            n2 = numpy.random.choice(interactome.nodes, 1, p=normalized_weights)[0]
 
         self.all_genomes[lineage].interactome.add_edge(str(n1), str(n2))
         self.all_gene_families[n1.gene_family].register_event(str(time), "RW", ";".join(map(str, [lineage, n1, n2])))
@@ -3261,7 +3257,7 @@ class CircularChromosome(Chromosome):
 
             norm = af.normalize([vl for x, vl in gene2rate.items()])
             mgenes = [i for i in range(len(self.genes))]
-            affected_genes = numpy.random.choice(list(sorted(mgenes)),size = 1,p=norm)
+            affected_genes = numpy.random.choice(mgenes,size = 1,p=norm)
             return affected_genes
 
         else:
@@ -3293,7 +3289,7 @@ class CircularChromosome(Chromosome):
 
                     all_weights.append(reduce(lambda x, y: x * y, [gene2rate[self.genes[x]] for x in affected_genes]))
                 #print(all_weights)
-                position = numpy.random.choice(list(sorted([i for i, g in enumerate(self.genes)])), 1, p=af.normalize(all_weights))[0]
+                position = numpy.random.choice([i for i, g in enumerate(self.genes)], 1, p=af.normalize(all_weights))[0]
                 affected_genes = list()
 
                 # Returns the index list of the affected genes
@@ -3346,7 +3342,7 @@ class CircularChromosome(Chromosome):
 
                 all_weights.append(reduce(lambda x, y: x * y, [corrected_node_degrees[x] for x in affected_genes]))
 
-        position = numpy.random.choice(list(sorted([i for i,g in enumerate(self.genes)])), 1, p=af.normalize(all_weights))[0]
+        position = numpy.random.choice([i for i,g in enumerate(self.genes)], 1, p=af.normalize(all_weights))[0]
         affected_genes = list()
 
         # Returns the index list of the affected genes

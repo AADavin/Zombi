@@ -1,3 +1,6 @@
+from SpeciesTreeSimulator import SpeciesTreeGenerator
+from GenomeSimulator import GenomeSimulator
+from SequenceSimulator import SequenceSimulator
 import AuxiliarFunctions as af
 import argparse
 import os
@@ -14,7 +17,6 @@ class Zombi():
         self.sequence_parameters = dict()
 
     def T(self, parameters_file, experiment_folder, advanced_mode):
-        from SpeciesTreeSimulator import SpeciesTreeGenerator
 
         tree_folder = os.path.join(experiment_folder, "T")
 
@@ -82,17 +84,17 @@ class Zombi():
         if run_counter >= 100:
             print("Aborting computation of the Species Tree. Please use other speciation and extinction rates!")
             return 0
-
-        complete_tree, extant_tree, collapsed_nodes = stg.generate_newick_trees()
-
+                        
+        complete_tree, extant_tree, collapsed_nodes = stg.generate_newick_trees()       
+                
         events_file = os.path.join(tree_folder, "Events.tsv")
         stg.write_events_file(events_file)
 
         complete_tree_file = os.path.join(tree_folder, "CompleteTree.nwk")
         extant_tree_file = os.path.join(tree_folder, "ExtantTree.nwk")
         collapsed_nodes_file = os.path.join(tree_folder, "CollapsedNodes.tsv")
-
-
+        
+        
         with open(complete_tree_file, "w") as f:
             f.write(complete_tree)
 
@@ -103,33 +105,32 @@ class Zombi():
             for k, v in collapsed_nodes.items():
                 line = "\t".join([k, v]) + "\n"
                 f.write(line)
-
+        
         lengths_file = os.path.join(tree_folder, "Lengths.tsv")
         stg.write_lengths(lengths_file, complete_tree, extant_tree)
-
+        
         if parameters["SCALE_TREE"] != 0:
             scaled_extant_tree_file = os.path.join(tree_folder, "REDScaledExtantTree.tsv")
             scaled_events_file = os.path.join(tree_folder, "REDScaledEvents.tsv")
             scaled_tree, scaled_events = stg.scale_trees(extant_tree,parameters["SCALE_TREE"])
             stg.write_scaled_files(scaled_tree, scaled_extant_tree_file,
                                    scaled_events, scaled_events_file)
-
+        
         if advanced_mode == "b" or advanced_mode == "a":
             rates_file = os.path.join(tree_folder, "Rates.tsv")
             stg.write_rates(rates_file)
-
+            
         if advanced_mode == "s":
             #shift_s_file = os.path.join(tree_folder, "ShiftsSpeciations.tsv")
             #shift_e_file = os.path.join(tree_folder, "ShiftsExtinctions.tsv")
             cat_file = os.path.join(tree_folder, "ShiftsCategories.tsv")
-
+            
             #stg.write_shifts(shift_s_file)
-            #stg.write_shifts(shift_e_file)
+            #stg.write_shifts(shift_e_file)            
             stg.write_categories(cat_file)
-
+            
 
     def G(self, parameters_file, experiment_folder, advanced_mode):
-        from GenomeSimulator import GenomeSimulator
 
         parameters = af.prepare_genome_parameters(af.read_parameters(parameters_file))
         events_file = os.path.join(experiment_folder, "T/Events.tsv")
@@ -181,7 +182,7 @@ class Zombi():
         if advanced_mode == "m":
             print("Writing Family rates")
             gss.write_family_rates(genome_folder)
-
+        
         print("Writing Gene Families")
 
         gss.write_gene_family_events(gene_families_folder)
@@ -190,13 +191,13 @@ class Zombi():
             print("Writing Profiles")
             profiles_folder = os.path.join(genome_folder, "Profiles")
             gss.write_profiles(profiles_folder)
-
+                        
         if parameters["EVENTS_PER_BRANCH"] == 1:
             scale = parameters["SCALE_TREE"]
             print("Writing Events Per Branch")
-            events_per_branch_folder = os.path.join(genome_folder, "Events_per_branch")
+            events_per_branch_folder = os.path.join(genome_folder, "Events_per_branch")            
             gss.write_events_per_branch(events_per_branch_folder, scale, scaled_file, events_file)
-
+            
         if parameters["GENE_TREES"] == 1 and parameters["RECONCILED_TREES"] == 1:
             print("Writing Gene Trees")
             gene_trees_folder = os.path.join(genome_folder, "Gene_trees")
@@ -213,7 +214,6 @@ class Zombi():
             gss.write_gene_trees(gene_trees_folder, reconciliations=True, gene_trees=False)
 
     def S(self, parameters_file, experiment_folder, advanced_mode):
-        from SequenceSimulator import SequenceSimulator
 
         gene_trees_folder = os.path.join(experiment_folder, "G/Gene_trees")
         sequences_folder = os.path.join(experiment_folder, "S")
@@ -258,44 +258,44 @@ class Zombi():
                     print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
                 ss.run_u(tree_path, sequences_folder)
                 af.write_pruned_sequences(tree_path.replace("complete", "pruned"), sequences_folder)
-
+                
         elif advanced_mode == "s":
 
             # First we simulate the sequence shifts in the Complete Tree
-
+            
             ss.simulate_shifts(experiment_folder + "/T/Events.tsv")
-            ss.write_shift_events(experiment_folder + "/S/ShiftEvents.tsv")
+            ss.write_shift_events(experiment_folder + "/S/ShiftEvents.tsv")                                                           
             ss.write_categories(experiment_folder + "/S/Categories.tsv")
             # We create a new Species Tree with the branch modified to reflect these changes
-
-            ss.write_substitution_scaled_stree(experiment_folder + "/T/CompleteTree.nwk",
-                                      experiment_folder + "/T/ExtantTree.nwk",
+            
+            ss.write_substitution_scaled_stree(experiment_folder + "/T/CompleteTree.nwk", 
+                                      experiment_folder + "/T/ExtantTree.nwk",       
                                      experiment_folder + "/S/SubstitutionScaledCompleteTree.nwk",
                                      experiment_folder + "/S/SubstitutionScaledExtantTree.nwk",
                                     experiment_folder + "/S/Branchwise_rates.tsv")
-
-
+            
+            
             # We modify the length of the complete gene trees according to the previous table
-
+            
             if int(parameters["SCALE_GENE_TREES"]) == 1:
 
-
-                complete_trees = [x for x in os.listdir(gene_trees_folder) if "complete" in x]
+                
+                complete_trees = [x for x in os.listdir(gene_trees_folder) if "complete" in x]            
                 scaled_trees_folder = experiment_folder + "/S/SubstitutionScaledTrees/"
                 os.mkdir(scaled_trees_folder)
 
                 for tree in complete_trees:
                     if parameters["VERBOSE"] == 1:
                         print("Scaling trees for gene family %s" % tree.split("_")[0])
-                    ntree = ss.write_effective_gtree(experiment_folder + "/G/Gene_trees/" + tree,
+                    ntree = ss.write_effective_gtree(experiment_folder + "/G/Gene_trees/" + tree, 
                                                      experiment_folder + "/G/Gene_families/" + tree.split("_")[0] + "_events.tsv")
 
                     # We write the trees
                     if ntree != None:
-                        with open(os.path.join(scaled_trees_folder, tree.split("_")[0] + "_substitution_scaled.nwk"), "w") as f:
+                        with open(os.path.join(scaled_trees_folder, tree.split("_")[0] + "_substitution_scaled.nwk"), "w") as f:                    
                             f.write(ntree)
 
-            # Now we simulate the sequences
+            # Now we simulate the sequences    
 
             if int(parameters["SIMULATE_SEQUENCE"]) == 1 and int(parameters["SCALE_GENE_TREES"]) == 0:
                 print("If you want to simulate the sequence you need to set SCALE_GENE_TREES to 1 first")
@@ -307,11 +307,11 @@ class Zombi():
                     tree_path = os.path.join(scaled_trees_folder, tree_file)
                     if parameters["VERBOSE"] == 1:
                         print("Simulating sequence for gene family %s" % tree_file.split("_")[0])
-
-                    ss.run(tree_path, scaled_fastas_folder)
-                    tree_path = os.path.join(gene_trees_folder, tree_file)
+                    
+                    ss.run(tree_path, scaled_fastas_folder)                 
+                    tree_path = os.path.join(gene_trees_folder, tree_file)               
                     af.write_pruned_sequences(tree_path.replace("_substitution_scaled.nwk", "_prunedtree.nwk"), scaled_fastas_folder, True)
-
+            
 
         elif advanced_mode == "f":
 
@@ -344,7 +344,7 @@ class Zombi():
 
             lengths_folder = os.path.join(genome_folder, "Genomes")
             genome_lengths = [x for x in os.listdir(lengths_folder) if
-                              "LENGTH" in x and "Initial" not in x and "100000" not in x]
+                              "LENGTH" in x and "Initial" not in x and "Root" not in x]
 
             for length_file in genome_lengths:
 
