@@ -36,6 +36,7 @@ REPLACEMENT_TRANSFER 1
 #  Can be computationally expensive, use at your discretion
 #
 ASSORTATIVE_TRANSFER False
+NORMALIZE_ASSORTATIVE_TRANSFER True
 ALPHA 100
 #
 ## Genome size related parameters

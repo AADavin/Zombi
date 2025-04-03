@@ -12,7 +12,6 @@ from functools import reduce
 # from GenomeClasses import GeneFamily, Gene, Intergene, CircularChromosome, LinearChromosome, Genome
 
 class GenomeSimulator():
-
     def __init__(self, parameters, events_file):
 
         self.parameters = parameters
@@ -24,7 +23,7 @@ class GenomeSimulator():
                 numpy.random.seed(parameters["SEED"])
                 print(mseed)
         except:
-            pass
+            print("No seed provided. Using default seed.")
 
         self.tree_events = self._read_events_file(events_file)
         self.distances_to_start = self._read_distances_to_start(events_file) # Only useful when computing assortative transfers
@@ -894,7 +893,7 @@ class GenomeSimulator():
                 # We choose a recipient
 
                 if self.parameters["ASSORTATIVE_TRANSFER"] == "True":
-                    recipient = self.choose_assortative_recipient(time, possible_recipients, donor)
+                    recipient = self.choose_assortative_recipient(time, possible_recipients, donor, self.parameters["NORMALIZE_ASSORTATIVE_TRANSFER"])
                     if recipient == None:
                         return None
                 else:
@@ -955,15 +954,15 @@ class GenomeSimulator():
             possible_recipients = [x for x in self.active_genomes if x != lineage]
 
             if len(possible_recipients) > 0:
-
+                donor = lineage
                 if self.parameters["ASSORTATIVE_TRANSFER"] == "True":
-                    recipient = self.choose_assortative_recipient(time, possible_recipients, donor)
+                    recipient = self.choose_assortative_recipient(time, possible_recipients, donor, self.parameters["NORMALIZE_ASSORTATIVE_TRANSFER"])
                     if recipient == None:
                         return None
                 else:
                     recipient = random.choice(list(sorted(possible_recipients)))
 
-                donor = lineage
+                
                 self.make_transfer_interactome(t_e, donor, recipient, time)
                 return "T", donor + "->" + recipient
 
@@ -1071,15 +1070,15 @@ class GenomeSimulator():
             possible_recipients = [x for x in self.active_genomes if x != lineage]
 
             if len(possible_recipients) > 0:
-
+                donor = lineage
                 if self.parameters["ASSORTATIVE_TRANSFER"] == "True":
-                    recipient = self.choose_assortative_recipient(time, possible_recipients, donor)
+                    recipient = self.choose_assortative_recipient(time, possible_recipients, donor, self.parameters["NORMALIZE_ASSORTATIVE_TRANSFER"])
                     if recipient == None:
                         return None
                 else:
                     recipient = random.choice(list(sorted(possible_recipients)))
 
-                donor = lineage
+                
                 self.make_transfer(t_e, donor, recipient, time, family_mode = True)
                 return "T", donor + "->" + recipient
 
@@ -1226,15 +1225,14 @@ class GenomeSimulator():
             possible_recipients = [x for x in self.active_genomes if x != lineage]
 
             if len(possible_recipients) > 0:
-
+                donor = lineage
                 if self.parameters["ASSORTATIVE_TRANSFER"] == "True":
-                    recipient = self.choose_assortative_recipient(time, possible_recipients, donor)
+                    recipient = self.choose_assortative_recipient(time, possible_recipients, donor, self.parameters["NORMALIZE_ASSORTATIVE_TRANSFER"])
                     if recipient == None:
                         return None
                 else:
                     recipient = random.choice(list(sorted(possible_recipients)))
 
-                donor = lineage
 
                 r = self.select_advanced_length(lineage, t_e * multiplier)
 
@@ -1719,26 +1717,60 @@ class GenomeSimulator():
             self.all_gene_families[gene.gene_family].register_event(time, "D", ";".join(map(str, nodes)))
 
 
-    def choose_assortative_recipient(self, time, possible_recipients, donor):
-
+    def choose_assortative_recipient(self, time, possible_recipients, donor, normalize_weights=True):
+        print("using new function")
+        possible_recipients = sorted(possible_recipients)
         alpha = self.parameters["ALPHA"]
-        weights = list()
 
-        mdonor = self.complete_tree&donor
+        if not hasattr(self, "_common_ancestors"):
+            self._common_ancestors = {}
+        if donor not in self._common_ancestors:
+            self._common_ancestors[donor] = {}
+
+        mdonor = self.complete_tree & donor
 
         for recipient in possible_recipients:
-            mrecipient = self.complete_tree&recipient
-            ca = self.complete_tree.get_common_ancestor(mrecipient, mdonor).name
-            x1 = self.distances_to_start[ca]
-            td =  time - x1
-            weights.append(td)
+            if recipient not in self._common_ancestors[donor]:
+                mrecipient = self.complete_tree & recipient
+                ca_name = self.complete_tree.get_common_ancestor(mrecipient, mdonor).name
+                self._common_ancestors[donor][recipient] = ca_name
 
-        beta = min(alpha * af.normalize(weights))
-        val = (alpha * af.normalize(weights)) - beta
-        pvector = af.normalize(numpy.exp(-val))
+        if not hasattr(self, "_distance_vectors"):
+            self._distance_vectors = {}
+        if donor not in self._distance_vectors:
+            self._distance_vectors[donor] = {}
 
-        draw = numpy.random.choice(list(sorted(possible_recipients)), 1, p=pvector)[0]
+        recipients_key = hash(tuple(possible_recipients))
 
+        if recipients_key in self._distance_vectors[donor]:
+            distances = self._distance_vectors[donor][recipients_key]
+        else:
+            distances = numpy.array([
+                self.distances_to_start[self._common_ancestors[donor][recipient]]
+                for recipient in possible_recipients
+            ])
+            self._distance_vectors[donor][recipients_key] = distances
+
+        weights = time - distances
+
+        if normalize_weights:
+            sum_weights = numpy.sum(weights)
+            if sum_weights > 0:
+                norm_weights = weights / sum_weights
+            else:
+                norm_weights = numpy.ones_like(weights) / len(weights)
+        else:
+            norm_weights = weights
+
+        alpha_weights = alpha * norm_weights
+        beta = numpy.min(alpha_weights)
+        val = alpha_weights - beta
+
+        exp_val = numpy.exp(-val)
+        sum_exp = numpy.sum(exp_val)
+        pvector = exp_val / sum_exp
+
+        draw = numpy.random.choice(possible_recipients, 1, p=pvector)[0]
         return draw
 
     def choose_advanced_recipient(self, possible_recipients, donor):
